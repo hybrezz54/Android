@@ -13,6 +13,14 @@ public class PrimaryListFragment extends ListFragment {
 
     private String[] mValues;
 
+    public static PrimaryListFragment newInstance(int sectionNumber) {
+        PrimaryListFragment fragment = new PrimaryListFragment();
+        /*Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);*/
+        return fragment;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 

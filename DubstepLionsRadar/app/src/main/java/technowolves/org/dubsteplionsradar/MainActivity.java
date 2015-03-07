@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity
@@ -51,9 +52,21 @@ public class MainActivity extends ActionBarActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+
+        switch (position) {
+            case 0:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                        .commit();
+                break;
+            case 1:
+            case 2:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, PrimaryListFragment.newInstance(position + 1))
+                        .commit();
+            break;
+        }
+
     }
 
     public void onSectionAttached(int number) {
@@ -100,8 +113,10 @@ public class MainActivity extends ActionBarActivity
 
         if (id == R.id.action_settings)
             return true;
-        else if (id == R.id.action_about)
+        else if (id == R.id.action_about)  {
+            Toast.makeText(getApplicationContext(), "Example action.", Toast.LENGTH_SHORT).show();
             return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
