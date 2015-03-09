@@ -1,5 +1,7 @@
 package technowolves.org.dubsteplionsradar;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +21,10 @@ import java.util.ArrayList;
 public class PrimaryListFragment extends ListFragment {
 
     private static final String VALUE_KEY = "TEAM_LIST";
+    private static final String PREFS_KEY = "technowolves.org.dubsteplionsradar.PREFERENCE_FILE_KEY";
+    private static final String SIZE_KEY = "ARRAY_SIZE";
+    private static final String NUMBER_KEY = "TEAM_NUMBER";
+    private static final String NAME_KEY = "TEAM_NAME";
 
     private static int mSection;
     private ArrayList<Team> mValues;
@@ -43,9 +49,10 @@ public class PrimaryListFragment extends ListFragment {
             mValues = savedInstanceState.getParcelableArrayList(VALUE_KEY);
         else {
             mValues = new ArrayList<Team>();
-            mValues.add(new Team("5518", "Techno Wolves"));
+            //mValues.add(new Team("5518", "Techno Wolves"));
         }
 
+        load();
         mAdapter = new TeamAdapter(getActivity(), mValues);
         setListAdapter(mAdapter);
     }
@@ -60,6 +67,8 @@ public class PrimaryListFragment extends ListFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelableArrayList(VALUE_KEY, mValues);
+        //mManager.saveFragmentInstanceState(this);
+        save();
     }
 
     @Override
@@ -110,13 +119,32 @@ public class PrimaryListFragment extends ListFragment {
     }
 
     public void add(Team team) {
-        //mValues.add(team);
-        //mAdapter.add(team);
-        ((TeamAdapter) getListAdapter()).add(team);
-        Log.v("PrimaryListFragment", Integer.toString(mValues.size()));
-        Log.v("PrimaryListFragment", Integer.toString(getListAdapter().getCount()));
-        Log.v("PrimaryListFragment", team.number + team.team);
-        Log.v("PrimaryListFragment", mValues.get(0).number+mValues.get(1).team);
+        mValues.add(team);
+        ((TeamAdapter)getListAdapter()).notifyDataSetChanged();
+        //mManager.saveFragmentInstanceState(this);
+        save();
+    }
+
+    private void load() {
+        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        int size = prefs.getInt(SIZE_KEY, 0);
+
+        for (int i = 0; i < size; i++) {
+            mValues.add(new Team(prefs.getString(NUMBER_KEY + i, ""),
+                    prefs.getString(NAME_KEY + i, "")));
+        }
+    }
+
+    private void save() {
+        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putInt(SIZE_KEY, mValues.size());
+        for (int i = 0; i < mValues.size(); i++) {
+            editor.putString(NUMBER_KEY + i, mValues.get(i).number);
+            editor.putString(NAME_KEY + i, mValues.get(i).team);
+        }
+        editor.commit();
     }
 
 }

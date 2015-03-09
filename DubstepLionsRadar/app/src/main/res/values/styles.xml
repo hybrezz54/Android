@@ -1,8 +1,15 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
+    <style name="TechnoWolvesTheme" parent="Theme.AppCompat.Light">
+        <item name="android:actionBarStyle">@style/RedActionBar</item>
     </style>
+
+    <style name="RedActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/holo_red_light</item>
+        <item name="background">@color/holo_red_light</item>
+    </style>
+
+    <color name="holo_red_light">#ffff4444</color>
+    <color name="holo_red_dark">#ffcc0000</color>
 
 </resources>

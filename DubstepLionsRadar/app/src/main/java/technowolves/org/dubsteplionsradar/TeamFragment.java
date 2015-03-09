@@ -130,6 +130,7 @@ public class TeamFragment extends Fragment {
         mYearOne.setEnabled(false);
         mAwardTwo.setEnabled(false);
         mYearTwo.setEnabled(false);
+        mNotes.setEnabled(false);
     }
 
     private void loadValues() {
@@ -140,6 +141,7 @@ public class TeamFragment extends Fragment {
         int awardTwo = prefs.getInt(AWARD2_KEY, 0);
         int yearOne = prefs.getInt(YEAR1_KEY, 0);
         int yearTwo = prefs.getInt(YEAR2_KEY, 0);
+        String notes = prefs.getString(NOTES_KEY, "");
 
         mNumber.setText(number);
         mTeam.setText(name);
@@ -147,6 +149,7 @@ public class TeamFragment extends Fragment {
         mAwardTwo.setSelection(awardTwo);
         mYearOne.setSelection(yearOne);
         mYearTwo.setSelection(yearTwo);
+        mNotes.setText(notes);
     }
 
     private void saveValues() {
@@ -158,6 +161,7 @@ public class TeamFragment extends Fragment {
         editor.putInt(AWARD2_KEY, mAwardTwo.getSelectedItemPosition());
         editor.putInt(YEAR1_KEY, mYearOne.getSelectedItemPosition());
         editor.putInt(YEAR2_KEY, mYearTwo.getSelectedItemPosition());
+        editor.putString(NOTES_KEY, mNotes.getText().toString());
         editor.commit();
     }
 
