@@ -1,6 +1,7 @@
 package technowolves.org.dubsteplionsradar;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -52,16 +53,19 @@ public class MainActivity extends ActionBarActivity
             case 0:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
                 break;
             case 1:
             case 2:
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, PrimaryListFragment.newInstance(position + 1))
+                        .replace(R.id.container, PrimaryListFragment.newInstance(position + 1),
+                                "PrimaryListFragment")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
             break;
         }
-
+        restoreActionBar();
     }
 
     public void onSectionAttached(int number) {
