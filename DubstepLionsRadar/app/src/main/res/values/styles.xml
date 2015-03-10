@@ -4,9 +4,9 @@
         <item name="android:actionBarStyle">@style/RedActionBar</item>
     </style>
 
-    <style name="RedActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/holo_red_light</item>
-        <item name="background">@color/holo_red_light</item>
+    <style name="RedActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="android:background">@drawable/action_bar_bg</item>
+        <item name="background">@drawable/action_bar_bg</item>
     </style>
 
     <color name="holo_red_light">#ffff4444</color>

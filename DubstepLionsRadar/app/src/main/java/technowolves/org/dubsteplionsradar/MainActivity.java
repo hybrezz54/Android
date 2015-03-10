@@ -55,15 +55,24 @@ public class MainActivity extends ActionBarActivity
                         .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
+                mTitle = getString(R.string.title_section1);
                 break;
             case 1:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, PrimaryListFragment.newInstance(position + 1),
+                                "PrimaryListFragment")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
+                mTitle = getString(R.string.title_section2);
+                break;
             case 2:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PrimaryListFragment.newInstance(position + 1),
                                 "PrimaryListFragment")
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
-            break;
+                mTitle = getString(R.string.title_section3);
+                break;
         }
         restoreActionBar();
     }

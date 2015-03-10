@@ -1,6 +1,8 @@
 package technowolves.org.dubsteplionsradar;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,8 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ public class PrimaryListFragment extends ListFragment {
     private static int mSection;
     private ArrayList<Team> mValues;
     private FragmentManager mManager;
-    private TeamAdapter mAdapter;
 
     public static PrimaryListFragment newInstance(int sectionNumber) {
         PrimaryListFragment fragment = new PrimaryListFragment();
@@ -53,8 +52,8 @@ public class PrimaryListFragment extends ListFragment {
         }
 
         load();
-        mAdapter = new TeamAdapter(getActivity(), mValues);
-        setListAdapter(mAdapter);
+        TeamAdapter adapter = new TeamAdapter(getActivity(), mValues);
+        setListAdapter(adapter);
     }
 
     @Override
@@ -106,13 +105,17 @@ public class PrimaryListFragment extends ListFragment {
         int id = item.getItemId();
         mManager = getFragmentManager();
 
-        if (id == R.id.action_add) {
-            mManager.beginTransaction()
-                    .addToBackStack("PrimaryListFragment")
-                    .replace(R.id.container, TeamFragment.newInstance(mValues.size(), true))
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commit();
-            Log.v("PrimaryListFragment", Integer.toString(mValues.size()));
+        switch (id) {
+            case R.id.action_add:
+                mManager.beginTransaction()
+                        .addToBackStack("PrimaryListFragment")
+                        .replace(R.id.container, TeamFragment.newInstance(mValues.size(), true))
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
+                break;
+            case R.id.action_share:
+                warnDialog();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -145,6 +148,33 @@ public class PrimaryListFragment extends ListFragment {
             editor.putString(NAME_KEY + i, mValues.get(i).team);
         }
         editor.commit();
+    }
+
+    private void warnDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Share via Bluetooth");
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setMessage("Do you wish to turn on bluetooth to send files?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+
     }
 
 }
