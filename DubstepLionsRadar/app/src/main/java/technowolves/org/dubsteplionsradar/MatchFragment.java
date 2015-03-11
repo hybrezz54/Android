@@ -43,7 +43,9 @@ public class MatchFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.action_save) {
-
+            CsvWriter writer = new CsvWriter(getActivity(), new String[] {""},
+                    new String[] {""});
+            writer.writeFile();
         }
 
         return super.onOptionsItemSelected(item);

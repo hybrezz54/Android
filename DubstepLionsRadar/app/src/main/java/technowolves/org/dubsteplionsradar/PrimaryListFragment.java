@@ -167,7 +167,7 @@ public class PrimaryListFragment extends ListFragment {
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                dialog.cancel();
             }
         });
 

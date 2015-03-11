@@ -29,7 +29,6 @@ public class TeamFragment extends Fragment {
     private static final String NOTES_KEY = "NOTES_KEY";
 
     private static boolean isEditing;
-    private boolean saved = false;
     private static int mPosition;
 
     private TextView mNumber;
@@ -69,7 +68,6 @@ public class TeamFragment extends Fragment {
         FragmentManager fm = getFragmentManager();
 
         if (id == R.id.action_save) {
-            saved = true;
             saveValues();
             ((PrimaryListFragment)fm.findFragmentByTag("PrimaryListFragment"))
                     .add(new Team(mNumber.getText().toString(), mTeam.getText().toString()));
@@ -109,7 +107,7 @@ public class TeamFragment extends Fragment {
 
         ArrayAdapter<String> year = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
                 new String[] {"------", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005"});
-        ArrayAdapter<String> award = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item,
+        ArrayAdapter<String> award = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
                 new String[] {"------", "Rookie All Star Award", "Chairman's Award", "Creativity Award", "Dean's List Award",
                 "Engineering Excellence Award", "Engineering Inspiration Award", "Entrepreneurship Award", "Gracious Professionalism", "Imagery Award",
                 "Industrial Design Award", "Industrial Safety Award", "Innovation in Control Award", "Media & Tech. Innovation Award",
