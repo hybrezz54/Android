@@ -3,18 +3,23 @@ package technowolves.org.dubsteplionsradar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -51,6 +56,7 @@ public class PrimaryListFragment extends ListFragment {
             //mValues.add(new Team("5518", "Techno Wolves"));
         }
 
+        setLongClick();
         load();
         TeamAdapter adapter = new TeamAdapter(getActivity(), mValues);
         setListAdapter(adapter);
@@ -128,6 +134,34 @@ public class PrimaryListFragment extends ListFragment {
         save();
     }
 
+    private void setLongClick() {
+
+        getListView().setLongClickable(true);
+
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                PopupMenu popup = new PopupMenu(getActivity(), view);
+                popup.getMenuInflater().inflate(R.menu.list_item, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        int id = menuItem.getItemId();
+                        if (id == R.id.remove_item)
+                            remove(position);
+                        return true;
+                    }
+                });
+
+                popup.show();
+                return true;
+            }
+        });
+
+    }
+
     private void load() {
         SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         int size = prefs.getInt(SIZE_KEY, 0);
@@ -150,17 +184,66 @@ public class PrimaryListFragment extends ListFragment {
         editor.commit();
     }
 
-    private void warnDialog() {
+    private void remove(final int index) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Share via Bluetooth");
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        builder.setTitle("Delete Team Data");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setMessage("Do you wish to turn on bluetooth to send files?");
+        builder.setMessage("Do you really wish to delete this team's data?");
 
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                mValues.remove(index);
 
+                SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.remove(NUMBER_KEY + index);
+                editor.remove(NAME_KEY + index);
+                editor.commit();
+
+                prefs = getActivity().getSharedPreferences(PREFS_KEY + index, Context.MODE_PRIVATE);
+                editor = prefs.edit();
+                editor.clear();
+                editor.commit();
+
+                ((TeamAdapter)getListAdapter()).notifyDataSetChanged();
+                save();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+    }
+
+    private void warnDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        builder.setTitle("Share via Bluetooth");
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setMessage("Do you really wish to send all team data via bluetooth?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                CsvWriter writer = new CsvWriter(getActivity(),
+                        new String[] {"Number", "Name", "Award 1", "Year 1", "Award 2",
+                        "Year 2", "Notes"}, getStringsFromFields(7));
+                writer.writeFile();
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/csv");
+                intent.setPackage("com.android.bluetooth");
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(writer.getFile()));
+                startActivity(intent);
             }
         });
 
@@ -176,5 +259,52 @@ public class PrimaryListFragment extends ListFragment {
         dialog.show();
 
     }
+
+    private String[] getStringsFromFields(final int fields) {
+        String[] strings = new String[fields*mValues.size()];
+        int counter = 0;
+
+        for (int i = 0; i < mValues.size(); i++) {
+            SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY + i, Context.MODE_PRIVATE);
+            strings[counter] = prefs.getString(TeamFragment.NUMBER_KEY, "");
+            counter++;
+            strings[counter] = prefs.getString(TeamFragment.NAME_KEY, "");
+            counter++;
+            strings[counter] = processAward(prefs.getInt(TeamFragment.AWARD1_KEY, 0));
+            counter++;
+            strings[counter] = processYear(prefs.getInt(TeamFragment.YEAR1_KEY, 0));
+            counter++;
+            strings[counter] = processAward(prefs.getInt(TeamFragment.AWARD2_KEY, 0));
+            counter++;
+            strings[counter] = processYear(prefs.getInt(TeamFragment.YEAR2_KEY, 0));
+            counter++;
+            strings[counter] = prefs.getString(TeamFragment.NOTES_KEY, "");
+            counter++;
+        }
+
+        return strings;
+    }
+
+    private String processAward(int index) {
+        return TeamFragment.AWARDS[index];
+    }
+
+    private String processYear(int index) {
+        return TeamFragment.YEARS[index];
+    }
+
+    /*private String[] getStringsFromArray(ArrayList array) {
+        String[] strings = new String[array.size()*2];
+        int counter = 0;
+
+        for (int i = 0; i < array.size(); i++) {
+            strings[counter] = ((Team)array.get(i)).number;
+            counter++;
+            strings[counter] = ((Team)array.get(i)).team;
+            counter++;
+        }
+
+        return strings;
+    }*/
 
 }

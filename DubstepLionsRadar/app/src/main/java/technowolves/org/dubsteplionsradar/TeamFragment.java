@@ -19,14 +19,21 @@ import android.widget.TextView;
 
 public class TeamFragment extends Fragment {
 
-    private static final String PREFS_KEY = "technowolves.org.dubsteplionsradar.PREFERENCE_FILE_KEY";
-    private static final String NUMBER_KEY = "TEAM_NUMBER";
-    private static final String NAME_KEY = "TEAM_NAME";
-    private static final String AWARD1_KEY = "AWARD_ONE_KEY";
-    private static final String AWARD2_KEY = "AWARD_TWO_KEY";
-    private static final String YEAR1_KEY = "YEAR_ONE_KEY";
-    private static final String YEAR2_KEY = "YEAR_TWO_KEY";
-    private static final String NOTES_KEY = "NOTES_KEY";
+    public static final String PREFS_KEY = "technowolves.org.dubsteplionsradar.PREFERENCE_FILE_KEY";
+    public static final String NUMBER_KEY = "TEAM_NUMBER";
+    public static final String NAME_KEY = "TEAM_NAME";
+    public static final String AWARD1_KEY = "AWARD_ONE_KEY";
+    public static final String AWARD2_KEY = "AWARD_TWO_KEY";
+    public static final String YEAR1_KEY = "YEAR_ONE_KEY";
+    public static final String YEAR2_KEY = "YEAR_TWO_KEY";
+    public static final String NOTES_KEY = "NOTES_KEY";
+
+    public static final String[] AWARDS = new String[] {"------", "Rookie All Star Award", "Chairman's Award", "Creativity Award", "Dean's List Award",
+            "Engineering Excellence Award", "Engineering Inspiration Award", "Entrepreneurship Award", "Gracious Professionalism", "Imagery Award",
+            "Industrial Design Award", "Industrial Safety Award", "Innovation in Control Award", "Media & Tech. Innovation Award",
+            "Judges' Award", "Quality Award", "Team Spirit Award", "Woodie Flowers Finalist Award", "Rookie Inspiration Award",
+            "Highest Rookie Seed", "Regional Finalist", "Regional Winner"};
+    public static final String[] YEARS = new String[] {"------", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005"};
 
     private static boolean isEditing;
     private static int mPosition;
@@ -105,14 +112,8 @@ public class TeamFragment extends Fragment {
 
     private void initSpinner() {
 
-        ArrayAdapter<String> year = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
-                new String[] {"------", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005"});
-        ArrayAdapter<String> award = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,
-                new String[] {"------", "Rookie All Star Award", "Chairman's Award", "Creativity Award", "Dean's List Award",
-                "Engineering Excellence Award", "Engineering Inspiration Award", "Entrepreneurship Award", "Gracious Professionalism", "Imagery Award",
-                "Industrial Design Award", "Industrial Safety Award", "Innovation in Control Award", "Media & Tech. Innovation Award",
-                "Judges' Award", "Quality Award", "Team Spirit Award", "Woodie Flowers Finalist Award", "Rookie Inspiration Award",
-                "Highest Rookie Seed", "Regional Finalist", "Regional Winner"});
+        ArrayAdapter<String> year = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, YEARS);
+        ArrayAdapter<String> award = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, AWARDS);
 
         mAwardOne.setAdapter(award);
         mAwardTwo.setAdapter(award);
@@ -162,5 +163,12 @@ public class TeamFragment extends Fragment {
         editor.putString(NOTES_KEY, mNotes.getText().toString());
         editor.commit();
     }
+
+    /*public void removeValues(int index) {
+        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY + index, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.commit();
+    }*/
 
 }

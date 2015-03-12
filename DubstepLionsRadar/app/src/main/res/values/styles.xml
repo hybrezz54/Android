@@ -1,10 +1,10 @@
 <resources>
 
-    <style name="TechnoWolvesTheme" parent="Theme.AppCompat.Light">
-        <item name="android:actionBarStyle">@style/RedActionBar</item>
+    <style name="TechnoWolvesTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!--<item name="android:actionBarStyle">@style/RedActionBar</item>-->
     </style>
 
-    <style name="RedActionBar" parent="@style/Widget.AppCompat.Light.ActionBar">
+    <style name="RedActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/holo_red_light</item>
         <item name="background">@color/holo_red_light</item>
     </style>

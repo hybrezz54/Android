@@ -37,8 +37,8 @@ public class CsvWriter {
         }
     }
 
-    public String getFilePath() {
-        return mPath;
+    public File getFile() {
+        return new File(mPath);
     }
 
     /* Checks if external storage is available for read and write */
@@ -76,13 +76,15 @@ public class CsvWriter {
 
         for (int i = 0; i < header.length; i++) {
             csv += header[i];
-            if (i < (header.length - 1))
+            if ((i % header.length) < (header.length - 1))
                 csv += SEPERATOR;
+            else
+                csv += "\n";
         }
 
         for (int i = 0; i < values.length; i++) {
             csv += values[i];
-            if (i < (header.length - 1))
+            if ((i % header.length) < (header.length - 1))
                 csv += SEPERATOR;
             else
                 csv += "\n";

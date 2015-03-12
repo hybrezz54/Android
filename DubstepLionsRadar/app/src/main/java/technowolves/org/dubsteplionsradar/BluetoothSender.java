@@ -40,7 +40,7 @@ public class BluetoothSender extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
-        if (extras.get(BluetoothAdapter.EXTRA_STATE) == BluetoothAdapter.STATE_ON) {
+        if (((int)extras.get(BluetoothAdapter.EXTRA_STATE)) == BluetoothAdapter.STATE_ON) {
             new BluetoothAccept().start();
         }
     }
