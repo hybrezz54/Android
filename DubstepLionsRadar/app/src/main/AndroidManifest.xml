@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="technowolves.org.dubsteplionsradar" >
+    package="technowolves.org.otpradar" >
 
     <application
         android:allowBackup="true"
@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         
-        <!-- <receiver android:name="technowolves.org.dubsteplionsradar.BluetoothSender">
+        <!-- <receiver android:name="otpradarhSender">
             <intent-filter>
                 <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
                 <action android:name="android.bluetooth.adapter.action.SCAN_MODE_CHANGED" />

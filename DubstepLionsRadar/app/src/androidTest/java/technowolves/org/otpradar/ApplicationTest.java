@@ -1,4 +1,4 @@
-package technowolves.org.dubsteplionsradar;
+package technowolves.org.otpradar;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

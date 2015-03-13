@@ -1,4 +1,4 @@
-package technowolves.org.dubsteplionsradar;
+package technowolves.org.otpradar;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,14 +19,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class PrimaryListFragment extends ListFragment {
 
     private static final String VALUE_KEY = "TEAM_LIST";
-    private static final String PREFS_KEY = "technowolves.org.dubsteplionsradar.PREFERENCE_FILE_KEY";
+    private static final String PREFS_KEY = "technowolves.org.otpradar.PREFERENCE_FILE_KEY";
     private static final String SIZE_KEY = "ARRAY_SIZE";
     private static final String NUMBER_KEY = "TEAM_NUMBER";
     private static final String NAME_KEY = "TEAM_NAME";
@@ -240,7 +239,7 @@ public class PrimaryListFragment extends ListFragment {
                 writer.writeFile();
 
                 Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("text/csv");
+                intent.setType("text/*");
                 intent.setPackage("com.android.bluetooth");
                 intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(writer.getFile()));
                 startActivity(intent);

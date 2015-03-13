@@ -1,4 +1,4 @@
-package technowolves.org.dubsteplionsradar;
+package technowolves.org.otpradar;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 public class TeamFragment extends Fragment {
 
-    public static final String PREFS_KEY = "technowolves.org.dubsteplionsradar.PREFERENCE_FILE_KEY";
+    public static final String PREFS_KEY = "technowolves.org.otpradar.PREFERENCE_FILE_KEY";
     public static final String NUMBER_KEY = "TEAM_NUMBER";
     public static final String NAME_KEY = "TEAM_NAME";
     public static final String AWARD1_KEY = "AWARD_ONE_KEY";

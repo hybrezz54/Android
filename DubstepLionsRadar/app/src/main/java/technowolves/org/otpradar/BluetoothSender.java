@@ -1,4 +1,4 @@
-package technowolves.org.dubsteplionsradar;
+package technowolves.org.otpradar;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;

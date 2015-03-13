@@ -1,4 +1,4 @@
-package technowolves.org.dubsteplionsradar;
+package technowolves.org.otpradar;
 
 import android.os.Parcel;
 import android.os.Parcelable;

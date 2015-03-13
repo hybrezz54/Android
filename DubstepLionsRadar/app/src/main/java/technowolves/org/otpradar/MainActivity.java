@@ -1,4 +1,4 @@
-package technowolves.org.dubsteplionsradar;
+package technowolves.org.otpradar;
 
 import android.app.Activity;
 import android.support.v4.app.FragmentTransaction;
@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity
                         .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
-                mTitle = getString(R.string.title_section1);
+                mTitle = getString(R.string.app_name);
                 break;
             case 1:
                 fragmentManager.beginTransaction()
@@ -80,7 +80,7 @@ public class MainActivity extends ActionBarActivity
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section1);
+                mTitle = getString(R.string.app_name);
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);
