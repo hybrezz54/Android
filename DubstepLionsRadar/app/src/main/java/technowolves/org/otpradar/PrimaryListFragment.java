@@ -52,7 +52,6 @@ public class PrimaryListFragment extends ListFragment {
             mValues = savedInstanceState.getParcelableArrayList(VALUE_KEY);
         else {
             mValues = new ArrayList<Team>();
-            //mValues.add(new Team("5518", "Techno Wolves"));
         }
 
         setLongClick();
@@ -65,6 +64,7 @@ public class PrimaryListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        setRetainInstance(true);
     }
 
     @Override
@@ -83,14 +83,19 @@ public class PrimaryListFragment extends ListFragment {
         switch (mSection) {
             case 2:
                 mManager.beginTransaction()
-                        .addToBackStack("")
+                        .addToBackStack(null)
                         .replace(R.id.container, TeamFragment.newInstance(position, false))
                         .commit();
-                Log.v("PrimaryListFragment", Integer.toString(position));
                 break;
             case 3:
                 mManager.beginTransaction()
-                        .addToBackStack("")
+                        .addToBackStack(null)
+                        .replace(R.id.container, MatchFragment.newInstance(false))
+                        .commit();
+                break;
+            case 4:
+                mManager.beginTransaction()
+                        .addToBackStack(null)
                         .replace(R.id.container, MatchFragment.newInstance(false))
                         .commit();
                 break;
@@ -148,8 +153,19 @@ public class PrimaryListFragment extends ListFragment {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         int id = menuItem.getItemId();
-                        if (id == R.id.remove_item)
-                            remove(position);
+
+                        switch (id) {
+                            case R.id.edit_item:
+
+                                break;
+                            case R.id.remove_all:
+                                removeAll();
+                                break;
+                            case R.id.remove_item:
+                                remove(position);
+                                break;
+                        }
+
                         return true;
                     }
                 });
@@ -188,7 +204,7 @@ public class PrimaryListFragment extends ListFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
         builder.setTitle("Delete Team Data");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setMessage("Do you really wish to delete this team's data?");
+        builder.setMessage("Do you really wish to delete this team's data?\n *WARNING: Doesn't work right!");
 
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
@@ -233,9 +249,8 @@ public class PrimaryListFragment extends ListFragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                CsvWriter writer = new CsvWriter(getActivity(),
-                        new String[] {"Number", "Name", "Award 1", "Year 1", "Award 2",
-                        "Year 2", "Notes"}, getStringsFromFields(7));
+                CsvWriter writer = new CsvWriter(getActivity(), TeamFragment.HEADER,
+                        getStringsFromFields(TeamFragment.HEADER.length));
                 writer.writeFile();
 
                 Intent intent = new Intent(Intent.ACTION_SEND);
@@ -269,6 +284,14 @@ public class PrimaryListFragment extends ListFragment {
             counter++;
             strings[counter] = prefs.getString(TeamFragment.NAME_KEY, "");
             counter++;
+            strings[counter] = prefs.getString(TeamFragment.SITE_KEY, "");
+            counter++;
+            strings[counter] = prefs.getString(TeamFragment.LOCATION_KEY, "");
+            counter++;
+            strings[counter] = prefs.getString(TeamFragment.TOTAL_KEY, "");
+            counter++;
+            strings[counter] = processSimple(prefs.getInt(TeamFragment.OTHER_KEY, 0));
+            counter++;
             strings[counter] = processAward(prefs.getInt(TeamFragment.AWARD1_KEY, 0));
             counter++;
             strings[counter] = processYear(prefs.getInt(TeamFragment.YEAR1_KEY, 0));
@@ -277,11 +300,19 @@ public class PrimaryListFragment extends ListFragment {
             counter++;
             strings[counter] = processYear(prefs.getInt(TeamFragment.YEAR2_KEY, 0));
             counter++;
-            strings[counter] = prefs.getString(TeamFragment.NOTES_KEY, "");
+            strings[counter] = processAward(prefs.getInt(TeamFragment.AWARD3_KEY, 0));
+            counter++;
+            strings[counter] = processYear(prefs.getInt(TeamFragment.YEAR3_KEY, 0));
+            counter++;
+            strings[counter] = processNotes(prefs.getString(TeamFragment.NOTES_KEY, ""));
             counter++;
         }
 
         return strings;
+    }
+
+    private String processSimple(int index) {
+        return TeamFragment.SIMPLE[index];
     }
 
     private String processAward(int index) {
@@ -290,6 +321,10 @@ public class PrimaryListFragment extends ListFragment {
 
     private String processYear(int index) {
         return TeamFragment.YEARS[index];
+    }
+
+    private String processNotes(String text) {
+        return text.replace("\n", "   ");
     }
 
     /*private String[] getStringsFromArray(ArrayList array) {

@@ -60,18 +60,28 @@ public class MainActivity extends ActionBarActivity
             case 1:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PrimaryListFragment.newInstance(position + 1),
-                                "PrimaryListFragment")
+                                "PrimaryListFragment1")
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
                 mTitle = getString(R.string.title_section2);
                 break;
             case 2:
+                Toast.makeText(this, "This section isn't implemented. Check back in a future update.",
+                        Toast.LENGTH_LONG).show();
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PrimaryListFragment.newInstance(position + 1),
-                                "PrimaryListFragment")
+                                "PrimaryListFragment2")
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
                 mTitle = getString(R.string.title_section3);
+                break;
+            case 3:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, PrimaryListFragment.newInstance(position + 1),
+                                "PrimaryListFragment3")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .commit();
+                mTitle = getString(R.string.title_section4);
                 break;
         }
         restoreActionBar();
@@ -87,6 +97,9 @@ public class MainActivity extends ActionBarActivity
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
+                break;
+            case 4:
+                mTitle = getString(R.string.title_section4);
                 break;
         }
     }

@@ -3,8 +3,9 @@
 
     <string name="app_name">OnTheProwl Radar</string>
     <string name="title_section1">Home</string>
-    <string name="title_section2">Teams Info</string>
+    <string name="title_section2">Team Profiles</string>
     <string name="title_section3">Match Data</string>
+    <string name="title_section4">Robot Pics</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_about">About&#8230;</string>
