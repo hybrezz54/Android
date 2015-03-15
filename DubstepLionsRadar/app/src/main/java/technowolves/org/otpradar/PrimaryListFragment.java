@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +32,9 @@ public class PrimaryListFragment extends ListFragment {
     private static int mSection;
     private ArrayList<Team> mValues;
     private FragmentManager mManager;
+
+    private InputFragment mInputFrag = null;
+    private RobotFragment mRobotFrag = null;
 
     public static PrimaryListFragment newInstance(int sectionNumber) {
         PrimaryListFragment fragment = new PrimaryListFragment();
@@ -85,18 +87,37 @@ public class PrimaryListFragment extends ListFragment {
                 mManager.beginTransaction()
                         .addToBackStack(null)
                         .replace(R.id.container, TeamFragment.newInstance(position, false))
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
                 break;
+
             case 3:
+                if (mInputFrag == null)
+                    mInputFrag = InputFragment.newInstance(position, false);
+                else {
+                    mInputFrag.updatePosition(position);
+                    mInputFrag.updateEditing(false);
+                }
+
                 mManager.beginTransaction()
                         .addToBackStack(null)
-                        .replace(R.id.container, MatchFragment.newInstance(false))
+                        .replace(R.id.container, mInputFrag)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
                 break;
+
             case 4:
+                if (mRobotFrag == null)
+                    mRobotFrag = RobotFragment.newInstance(position, false);
+                else {
+                    mRobotFrag.updatePosition(position);
+                    mRobotFrag.updateEditing(false);
+                }
+
                 mManager.beginTransaction()
                         .addToBackStack(null)
-                        .replace(R.id.container, MatchFragment.newInstance(false))
+                        .replace(R.id.container, mRobotFrag)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
                 break;
         }
@@ -118,13 +139,23 @@ public class PrimaryListFragment extends ListFragment {
         switch (id) {
             case R.id.action_add:
                 mManager.beginTransaction()
-                        .addToBackStack("PrimaryListFragment")
+                        .addToBackStack(null)
                         .replace(R.id.container, TeamFragment.newInstance(mValues.size(), true))
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
                 break;
             case R.id.action_share:
-                warnDialog();
+                switch (mSection) {
+                    case 2:
+                        warnDialog();
+                        break;
+                    case 3:
+                        mInputFrag.export(getTeamValues());
+                        break;
+                    case 4:
+                        mRobotFrag.export(getTeamValues());
+                        break;
+                }
                 break;
         }
 
@@ -157,12 +188,50 @@ public class PrimaryListFragment extends ListFragment {
                         switch (id) {
                             case R.id.edit_item:
 
+                                switch (mSection) {
+                                    case 2:
+                                        getFragmentManager().beginTransaction()
+                                                .addToBackStack(null)
+                                                .replace(R.id.container, TeamFragment.newInstance(position, true))
+                                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                                .commit();
+                                        break;
+                                    case 3:
+                                        if (mInputFrag == null)
+                                            mInputFrag = InputFragment.newInstance(position, true);
+                                        else {
+                                            mInputFrag.updatePosition(position);
+                                            mInputFrag.updateEditing(true);
+                                        }
+                                        getFragmentManager().beginTransaction()
+                                                .addToBackStack(null)
+                                                .replace(R.id.container, mInputFrag)
+                                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                                .commit();
+                                        break;
+                                    case 4:
+                                        if (mRobotFrag == null)
+                                            mRobotFrag = RobotFragment.newInstance(position, true);
+                                        else {
+                                            mRobotFrag.updatePosition(position);
+                                            mRobotFrag.updateEditing(true);
+                                        }
+                                        getFragmentManager().beginTransaction()
+                                                .addToBackStack(null)
+                                                .replace(R.id.container, mRobotFrag)
+                                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                                .commit();
+                                        break;
+                                }
                                 break;
+
                             case R.id.remove_all:
                                 removeAll();
                                 break;
                             case R.id.remove_item:
                                 remove(position);
+                                mInputFrag.remove(position);
+                                mRobotFrag.remove(position);
                                 break;
                         }
 
@@ -239,6 +308,51 @@ public class PrimaryListFragment extends ListFragment {
         dialog.show();
     }
 
+    private void removeAll() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        builder.setTitle("Delete Team Data");
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setMessage("Do you really wish to delete all team data?!");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences prefs;
+                SharedPreferences.Editor editor;
+
+                for (int i = 0; i < mValues.size(); i++) {
+                    prefs = getActivity().getSharedPreferences(PREFS_KEY + i, Context.MODE_PRIVATE);
+                    editor = prefs.edit();
+                    editor.clear();
+                    editor.commit();
+                    mInputFrag.remove(i);
+                    mRobotFrag.remove(i);
+                }
+
+                prefs = getActivity().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+                editor = prefs.edit();
+                editor.clear();
+                editor.commit();
+
+                mValues.clear();
+                ((TeamAdapter)getListAdapter()).notifyDataSetChanged();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+
+    }
+
     private void warnDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
@@ -249,7 +363,7 @@ public class PrimaryListFragment extends ListFragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                CsvWriter writer = new CsvWriter(getActivity(), TeamFragment.HEADER,
+                CsvWriter writer = new CsvWriter(getActivity(), "team_data", TeamFragment.HEADER,
                         getStringsFromFields(TeamFragment.HEADER.length));
                 writer.writeFile();
 
@@ -311,6 +425,20 @@ public class PrimaryListFragment extends ListFragment {
         return strings;
     }
 
+    private String[] getTeamValues() {
+        String[] values = new String[mValues.size()*2];
+        int counter = 0;
+
+        for(int i = 0; i < mValues.size(); i++) {
+            values[counter] = mValues.get(i).number;
+            counter++;
+            values[counter] = mValues.get(i).team;
+            counter++;
+        }
+
+        return values;
+    }
+
     private String processSimple(int index) {
         return TeamFragment.SIMPLE[index];
     }
@@ -326,19 +454,5 @@ public class PrimaryListFragment extends ListFragment {
     private String processNotes(String text) {
         return text.replace("\n", "   ");
     }
-
-    /*private String[] getStringsFromArray(ArrayList array) {
-        String[] strings = new String[array.size()*2];
-        int counter = 0;
-
-        for (int i = 0; i < array.size(); i++) {
-            strings[counter] = ((Team)array.get(i)).number;
-            counter++;
-            strings[counter] = ((Team)array.get(i)).team;
-            counter++;
-        }
-
-        return strings;
-    }*/
 
 }

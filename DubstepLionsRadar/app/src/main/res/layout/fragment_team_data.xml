@@ -19,6 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:paddingTop="16dp"
                 android:text="- TEAM INFO -"
                 android:textStyle="bold"
                 android:textSize="20sp"/>
@@ -188,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:paddingTop="16dp"
-                android:text="- ROBOT INFO -"
+                android:text="- DRIVE SQUAD -"
                 android:textStyle="bold"
                 android:textSize="20sp"/>
 
@@ -198,19 +199,55 @@
                 android:background="@color/holo_red_dark"
                 android:layout_marginBottom="5dp"/>
 
-            <Spinner
-                android:id="@+id/robotStyle"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:spinnerMode="dropdown"/>
+                android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/driveTrain"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:text="Driver \n Experience: "
+                    android:textSize="20sp"
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+
+                <RatingBar
+                    android:id="@+id/driverRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:numStars="5"
+                    android:stepSize="0.5"/>
+
+                </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:spinnerMode="dropdown"/>
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:text="Human Player \n Experience: "
+                    android:textSize="18.5sp"
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+
+                <RatingBar
+                    android:id="@+id/hpRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:numStars="5"
+                    android:stepSize="0.5"/>
+
+            </LinearLayout>
 
             </LinearLayout>
 

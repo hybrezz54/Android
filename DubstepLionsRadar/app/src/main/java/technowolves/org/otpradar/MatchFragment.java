@@ -40,13 +40,11 @@ public class MatchFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        /*int id = item.getItemId();
 
         if (id == R.id.action_save) {
-            CsvWriter writer = new CsvWriter(getActivity(), new String[] {""},
-                    new String[] {""});
-            writer.writeFile();
-        }
+
+        }*/
 
         return super.onOptionsItemSelected(item);
     }

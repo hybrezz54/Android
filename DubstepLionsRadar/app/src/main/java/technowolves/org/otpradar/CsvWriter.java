@@ -13,12 +13,14 @@ public class CsvWriter {
     private static final String SEPERATOR = ",";
 
     private Context mContext;
+    private String dirName;
     private String[] header;
     private String[] values;
     private String mPath = "";
 
-    public CsvWriter(Context context, String[] header, String[] values) {
+    public CsvWriter(Context context, String dirName, String[] header, String[] values) {
         mContext = context;
+        this.dirName = dirName;
         this.header = header;
         this.values = values;
     }
@@ -26,8 +28,8 @@ public class CsvWriter {
     public void writeFile() {
         if (isExternalStorageWritable()) {
             try {
-                mPath = getStorageDir(mContext, "data")
-                        .getPath() + File.separator + getCurrentTime() + ".csv";
+                mPath = getStorageDir(mContext, dirName).getPath() + File.separator
+                        + getCurrentTime() + ".csv";
                 FileOutputStream fOut = new FileOutputStream(mPath);
                 fOut.write(csvString().getBytes());
                 fOut.close();

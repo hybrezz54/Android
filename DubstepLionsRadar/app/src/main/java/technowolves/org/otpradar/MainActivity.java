@@ -66,8 +66,6 @@ public class MainActivity extends ActionBarActivity
                 mTitle = getString(R.string.title_section2);
                 break;
             case 2:
-                Toast.makeText(this, "This section isn't implemented. Check back in a future update.",
-                        Toast.LENGTH_LONG).show();
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PrimaryListFragment.newInstance(position + 1),
                                 "PrimaryListFragment2")
