@@ -380,7 +380,10 @@ public class PrimaryListFragment extends ListFragment {
                 ArrayList<Uri> uris = new ArrayList<Uri>();
                 uris.add(Uri.fromFile(writer.getFile()));
                 uris.add(InputFragment.newInstance(0, false).getFileAfterWrite(getTeamValues(), getActivity()));
-                uris.add(RobotFragment.newInstance(0, false).getFileAfterWrite(getTeamValues(), getActivity()));
+
+                RobotFragment robotFrag = RobotFragment.newInstance(0, false);
+                uris.add(robotFrag.getFileAfterWrite(getTeamValues(), getActivity()));
+                uris.add(robotFrag.getImageFile());
 
                 Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                 intent.setType("text/*");
