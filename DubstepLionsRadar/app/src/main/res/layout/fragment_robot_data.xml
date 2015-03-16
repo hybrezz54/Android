@@ -28,19 +28,22 @@
                 android:background="@color/holo_red_dark"
                 android:layout_marginBottom="5dp"/>
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/robotPic"
+                android:layout_width="match_parent"
+                android:layout_height="144dp"
+                android:contentDescription="Robot Pic"
+                android:layout_margin="5dp"
+                android:src="@drawable/main_bg"/>
+
+            <Button
+                android:id="@+id/picButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:layout_margin="5dp"
+                android:text="TAKE PIC"/>
 
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"
-                    android:text="PICS"/>
-
-                </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

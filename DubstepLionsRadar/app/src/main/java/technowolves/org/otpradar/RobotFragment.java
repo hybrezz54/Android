@@ -6,8 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,14 +24,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class RobotFragment extends Fragment {
 
     private static final String PREFS_KEY = "technowolves.org.otpradar.RobotFragment.PREFERENCE_FILE_KEY";
+    private static final String IMAGE_KEY = "ROBOT_PICTURE";
     private static final String STYLE_KEY = "ROBOT_STYLE";
     private static final String DRIVE_KEY = "DRIVE_TRAIN";
     private static final String WHEELS_KEY = "WHEELS";
@@ -37,6 +49,8 @@ public class RobotFragment extends Fragment {
     private static final String ARG_POS_NUMBER = "ROBOT_FRAG_POS";
     private static final String ARG_EDITING = "ROBOT_FRAG_STATE";
 
+    public static final int REQUEST_IMG_CAPTURE = 3;
+
     private static final String[] HEADER = new String[] {"Team #", "Team Name", "Robot Style", "Drive Train", "Wheel Type", "Robot Rating", "Robot Notes"};
     private static final String[] ROBOT_STYLE = new String[] {"------", "Insane Tote Stacker/Lifter", "Recycle container carrier", "Tote hauler/pusher",
             "Tote Stacker/Lifter + Container Carry", "Tote Hauler/Pusher + Container Carry", "Tote Lifter + Tote pusher + Container Carry"};
@@ -45,10 +59,13 @@ public class RobotFragment extends Fragment {
 
     private boolean isEditing;
     private int mPosition;
+    private String mPhotoPath;
 
     private SharedPreferences mPrefs;
     private Activity mActivity;
 
+    private ImageView mRobotImg;
+    private Button mPicButton;
     private Spinner mRobotStyle;
     private Spinner mDriveTrain;
     private Spinner mWheels;
@@ -86,14 +103,40 @@ public class RobotFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_robot_data, container, false);
+        mRobotImg = (ImageView) rootView.findViewById(R.id.robotPic);
+        mPicButton = (Button) rootView.findViewById(R.id.picButton);
         mRobotStyle = (Spinner) rootView.findViewById(R.id.robotStyle);
         mDriveTrain = (Spinner) rootView.findViewById(R.id.driveTrain);
         mWheels = (Spinner) rootView.findViewById(R.id.wheels);
         mRate = (RatingBar) rootView.findViewById(R.id.robotRate);
         mNotes = (EditText) rootView.findViewById(R.id.robotNotes);
 
+        mPicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                if (intent.resolveActivity(mActivity.getPackageManager()) != null) {
+
+                    File photo = null;
+                    try {
+                        photo = createImageFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (photo != null) {
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+                        startActivityForResult(intent, REQUEST_IMG_CAPTURE);
+                    }
+
+                }
+            }
+        });
+
         initSpinner();
         loadValues();
+        setPic();
 
         if (!isEditing)
             viewsEnabled(false);
@@ -131,6 +174,17 @@ public class RobotFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_IMG_CAPTURE && resultCode == Activity.RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap img = (Bitmap) extras.get("data");
+            mRobotImg.setImageBitmap(img);
+        }
     }
 
     public void export(final String[] teams, final Activity activity) {
@@ -180,6 +234,11 @@ public class RobotFragment extends Fragment {
         return Uri.fromFile(writer.getFile());
     }
 
+    public Uri getImageFile() {
+        File file = new File(mPhotoPath);
+        return Uri.fromFile(file);
+    }
+
     public void remove(int position) {
         SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY + position, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -190,12 +249,27 @@ public class RobotFragment extends Fragment {
     public void updatePosition(int position) {
         mPosition = position;
         updatePrefs();
+        loadPhotoPath();
         //loadValues();
     }
 
     public void updateEditing(boolean editing) {
         this.isEditing = editing;
         viewsEnabled(editing);
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = mPosition + "_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        mPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
     }
 
     private String[] getStringsFromFields(String[] front, int length) {
@@ -227,6 +301,8 @@ public class RobotFragment extends Fragment {
     }
 
     private void loadValues() {
+        loadPhotoPath();
+
         int style = mPrefs.getInt(STYLE_KEY, 0);
         int drive = mPrefs.getInt(DRIVE_KEY, 0);
         int wheel = mPrefs.getInt(WHEELS_KEY, 0);
@@ -242,6 +318,7 @@ public class RobotFragment extends Fragment {
 
     private void saveValues() {
         SharedPreferences.Editor editor = mPrefs.edit();
+        editor.putString(IMAGE_KEY, mPhotoPath);
         editor.putInt(STYLE_KEY, mRobotStyle.getSelectedItemPosition());
         editor.putInt(DRIVE_KEY, mDriveTrain.getSelectedItemPosition());
         editor.putInt(WHEELS_KEY, mWheels.getSelectedItemPosition());
@@ -250,12 +327,40 @@ public class RobotFragment extends Fragment {
         editor.commit();
     }
 
+    private void loadPhotoPath() {
+        mPhotoPath = mPrefs.getString(IMAGE_KEY, "");
+    }
+
     private void viewsEnabled(boolean isEditing) {
         mRobotStyle.setEnabled(isEditing);
         mDriveTrain.setEnabled(isEditing);
         mWheels.setEnabled(isEditing);
         mRate.setEnabled(isEditing);
         mNotes.setEnabled(isEditing);
+    }
+
+    private void setPic() {
+        // Get the dimensions of the View
+        int targetW = mRobotImg.getWidth();
+        int targetH = mRobotImg.getHeight();
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(mPhotoPath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(mPhotoPath, bmOptions);
+        mRobotImg.setImageBitmap(bitmap);
     }
 
     private void initSpinner() {
