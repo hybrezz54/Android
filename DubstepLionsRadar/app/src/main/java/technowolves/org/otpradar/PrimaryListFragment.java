@@ -33,9 +33,6 @@ public class PrimaryListFragment extends ListFragment {
     private ArrayList<Team> mValues;
     private FragmentManager mManager;
 
-    private InputFragment mInputFrag = null;
-    private RobotFragment mRobotFrag = null;
-
     public static PrimaryListFragment newInstance(int sectionNumber) {
         PrimaryListFragment fragment = new PrimaryListFragment();
         mSection = sectionNumber;
@@ -92,31 +89,17 @@ public class PrimaryListFragment extends ListFragment {
                 break;
 
             case 3:
-                if (mInputFrag == null)
-                    mInputFrag = InputFragment.newInstance(position, false);
-                else {
-                    mInputFrag.updatePosition(position);
-                    mInputFrag.updateEditing(false);
-                }
-
                 mManager.beginTransaction()
                         .addToBackStack(null)
-                        .replace(R.id.container, mInputFrag)
+                        .replace(R.id.container, InputFragment.newInstance(position, false))
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
                 break;
 
             case 4:
-                if (mRobotFrag == null)
-                    mRobotFrag = RobotFragment.newInstance(position, false);
-                else {
-                    mRobotFrag.updatePosition(position);
-                    mRobotFrag.updateEditing(false);
-                }
-
                 mManager.beginTransaction()
                         .addToBackStack(null)
-                        .replace(R.id.container, mRobotFrag)
+                        .replace(R.id.container, RobotFragment.newInstance(position, false))
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
                 break;
@@ -126,9 +109,7 @@ public class PrimaryListFragment extends ListFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
-        if(mSection == 2)
-            getActivity().getMenuInflater().inflate(R.menu.main, menu);
+        getActivity().getMenuInflater().inflate(R.menu.main, menu);
     }
 
     @Override
@@ -147,15 +128,18 @@ public class PrimaryListFragment extends ListFragment {
             case R.id.action_share:
                 switch (mSection) {
                     case 2:
-                        warnDialog();
+                        exportTeamData();
                         break;
                     case 3:
-                        mInputFrag.export(getTeamValues());
+                        InputFragment.newInstance(0, false).export(getTeamValues(), getActivity());
                         break;
                     case 4:
-                        mRobotFrag.export(getTeamValues());
+                        RobotFragment.newInstance(0, false).export(getTeamValues(), getActivity());
                         break;
                 }
+                break;
+            case R.id.action_share_all:
+                exportAll();
                 break;
         }
 
@@ -197,28 +181,16 @@ public class PrimaryListFragment extends ListFragment {
                                                 .commit();
                                         break;
                                     case 3:
-                                        if (mInputFrag == null)
-                                            mInputFrag = InputFragment.newInstance(position, true);
-                                        else {
-                                            mInputFrag.updatePosition(position);
-                                            mInputFrag.updateEditing(true);
-                                        }
                                         getFragmentManager().beginTransaction()
                                                 .addToBackStack(null)
-                                                .replace(R.id.container, mInputFrag)
+                                                .replace(R.id.container, InputFragment.newInstance(position, true))
                                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                                                 .commit();
                                         break;
                                     case 4:
-                                        if (mRobotFrag == null)
-                                            mRobotFrag = RobotFragment.newInstance(position, true);
-                                        else {
-                                            mRobotFrag.updatePosition(position);
-                                            mRobotFrag.updateEditing(true);
-                                        }
                                         getFragmentManager().beginTransaction()
                                                 .addToBackStack(null)
-                                                .replace(R.id.container, mRobotFrag)
+                                                .replace(R.id.container, RobotFragment.newInstance(position, true))
                                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                                                 .commit();
                                         break;
@@ -230,8 +202,8 @@ public class PrimaryListFragment extends ListFragment {
                                 break;
                             case R.id.remove_item:
                                 remove(position);
-                                mInputFrag.remove(position);
-                                mRobotFrag.remove(position);
+                                InputFragment.newInstance(0, false).remove(position);
+                                RobotFragment.newInstance(0, false).remove(position);
                                 break;
                         }
 
@@ -313,21 +285,23 @@ public class PrimaryListFragment extends ListFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
         builder.setTitle("Delete Team Data");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setMessage("Do you really wish to delete all team data?!");
+        builder.setMessage("Do you really wish to delete all team data?");
 
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 SharedPreferences prefs;
                 SharedPreferences.Editor editor;
+                InputFragment inputFrag = InputFragment.newInstance(0, false);
+                RobotFragment robotFrag = RobotFragment.newInstance(0, false);
 
                 for (int i = 0; i < mValues.size(); i++) {
                     prefs = getActivity().getSharedPreferences(PREFS_KEY + i, Context.MODE_PRIVATE);
                     editor = prefs.edit();
                     editor.clear();
                     editor.commit();
-                    mInputFrag.remove(i);
-                    mRobotFrag.remove(i);
+                    inputFrag.remove(i);
+                    robotFrag.remove(i);
                 }
 
                 prefs = getActivity().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
@@ -353,7 +327,7 @@ public class PrimaryListFragment extends ListFragment {
 
     }
 
-    private void warnDialog() {
+    private void exportTeamData() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
         builder.setTitle("Share via Bluetooth");
@@ -388,6 +362,47 @@ public class PrimaryListFragment extends ListFragment {
 
     }
 
+    private void exportAll() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        builder.setTitle("Share All via Bluetooth");
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setMessage("Do you really wish to send ALL collected data via bluetooth?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                CsvWriter writer = new CsvWriter(getActivity(), "team_data", TeamFragment.HEADER,
+                        getStringsFromFields(TeamFragment.HEADER.length));
+                writer.writeFile();
+
+
+                ArrayList<Uri> uris = new ArrayList<Uri>();
+                uris.add(Uri.fromFile(writer.getFile()));
+                uris.add(InputFragment.newInstance(0, false).getFileAfterWrite(getTeamValues(), getActivity()));
+                uris.add(RobotFragment.newInstance(0, false).getFileAfterWrite(getTeamValues(), getActivity()));
+
+                Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+                intent.setType("text/*");
+                intent.setPackage("com.android.bluetooth");
+                intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+                startActivity(intent);
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+
+    }
+
     private String[] getStringsFromFields(final int fields) {
         String[] strings = new String[fields*mValues.size()];
         int counter = 0;
@@ -400,7 +415,7 @@ public class PrimaryListFragment extends ListFragment {
             counter++;
             strings[counter] = prefs.getString(TeamFragment.SITE_KEY, "");
             counter++;
-            strings[counter] = prefs.getString(TeamFragment.LOCATION_KEY, "");
+            strings[counter] = processLocation(prefs.getString(TeamFragment.LOCATION_KEY, ""));
             counter++;
             strings[counter] = prefs.getString(TeamFragment.TOTAL_KEY, "");
             counter++;
@@ -419,6 +434,10 @@ public class PrimaryListFragment extends ListFragment {
             strings[counter] = processYear(prefs.getInt(TeamFragment.YEAR3_KEY, 0));
             counter++;
             strings[counter] = processNotes(prefs.getString(TeamFragment.NOTES_KEY, ""));
+            counter++;
+            strings[counter] = String.valueOf(prefs.getFloat(TeamFragment.HP_KEY, 0f));
+            counter++;
+            strings[counter] = String.valueOf(prefs.getFloat(TeamFragment.DRIVER_KEY, 0f));
             counter++;
         }
 
@@ -452,7 +471,11 @@ public class PrimaryListFragment extends ListFragment {
     }
 
     private String processNotes(String text) {
-        return text.replace("\n", "   ");
+        return text.replace("\n", "   ").replace(",", "");
+    }
+
+    private String processLocation(String text) {
+        return text.replace(",", "");
     }
 
 }

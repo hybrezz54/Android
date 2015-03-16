@@ -1,5 +1,6 @@
 package technowolves.org.otpradar;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +24,7 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 
+
 public class RobotFragment extends Fragment {
 
     private static final String PREFS_KEY = "technowolves.org.otpradar.RobotFragment.PREFERENCE_FILE_KEY";
@@ -36,7 +38,8 @@ public class RobotFragment extends Fragment {
     private static final String ARG_EDITING = "ROBOT_FRAG_STATE";
 
     private static final String[] HEADER = new String[] {"Team #", "Team Name", "Robot Style", "Drive Train", "Wheel Type", "Robot Rating", "Robot Notes"};
-    private static final String[] ROBOT_STYLE = new String[] {"------", "Insane Tote Stacker/Lifter", "Recycle container picker-upper", "Tote hauler/pusher"};
+    private static final String[] ROBOT_STYLE = new String[] {"------", "Insane Tote Stacker/Lifter", "Recycle container carrier", "Tote hauler/pusher",
+            "Tote Stacker/Lifter + Container Carry", "Tote Hauler/Pusher + Container Carry", "Tote Lifter + Tote pusher + Container Carry"};
     private static final String[] DRIVE_TRAIN = new String[] {"------", "Tank", "Mecanum", "Swerve", "Slide", "Holonomic"};
     private static final String[] WHEELS = new String[] {"------", "Mecanum", "Omni", "Tread", "Other"};
 
@@ -44,6 +47,7 @@ public class RobotFragment extends Fragment {
     private int mPosition;
 
     private SharedPreferences mPrefs;
+    private Activity mActivity;
 
     private Spinner mRobotStyle;
     private Spinner mDriveTrain;
@@ -70,9 +74,10 @@ public class RobotFragment extends Fragment {
         mPosition = args.getInt(ARG_POS_NUMBER);
         isEditing = args.getBoolean(ARG_EDITING);
 
+        mActivity = getActivity();
         updatePrefs();
 
-        ActionBar bar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        ActionBar bar = ((ActionBarActivity) mActivity).getSupportActionBar();
         bar.setHomeButtonEnabled(true);
         bar.setTitle("Robot Details");
     }
@@ -128,9 +133,11 @@ public class RobotFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void export(final String[] teams) {
+    public void export(final String[] teams, final Activity activity) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        mActivity = activity;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity, AlertDialog.THEME_HOLO_DARK);
         builder.setTitle("Share via Bluetooth");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.setMessage("Do you really wish to send all robot data via bluetooth?");
@@ -138,7 +145,7 @@ public class RobotFragment extends Fragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                CsvWriter writer = new CsvWriter(getActivity(), "robot_data", HEADER,
+                CsvWriter writer = new CsvWriter(activity, "robot_data", HEADER,
                         getStringsFromFields(teams, HEADER.length));
                 writer.writeFile();
 
@@ -146,7 +153,7 @@ public class RobotFragment extends Fragment {
                 intent.setType("text/*");
                 intent.setPackage("com.android.bluetooth");
                 intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(writer.getFile()));
-                startActivity(intent);
+                activity.startActivity(intent);
             }
         });
 
@@ -163,6 +170,16 @@ public class RobotFragment extends Fragment {
 
     }
 
+    public Uri getFileAfterWrite(final String[] teams, final Activity activity) {
+        mActivity = activity;
+
+        CsvWriter writer = new CsvWriter(activity, "robot_data", HEADER,
+                getStringsFromFields(teams, HEADER.length));
+        writer.writeFile();
+
+        return Uri.fromFile(writer.getFile());
+    }
+
     public void remove(int position) {
         SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY + position, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -173,7 +190,7 @@ public class RobotFragment extends Fragment {
     public void updatePosition(int position) {
         mPosition = position;
         updatePrefs();
-        loadValues();
+        //loadValues();
     }
 
     public void updateEditing(boolean editing) {
@@ -252,7 +269,8 @@ public class RobotFragment extends Fragment {
     }
 
     private void updatePrefs() {
-        mPrefs = getActivity().getSharedPreferences(PREFS_KEY + mPosition, Context.MODE_PRIVATE);
+        if (mActivity != null)
+            mPrefs = mActivity.getSharedPreferences(PREFS_KEY + mPosition, Context.MODE_PRIVATE);
     }
 
     private String processStyles(int index) {
@@ -268,7 +286,7 @@ public class RobotFragment extends Fragment {
     }
 
     private String processNotes(String text) {
-        return text.replace("\n", "   ");
+        return text.replace("\n", "   ").replace(",", "");
     }
 
 }

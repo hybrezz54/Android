@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 
 public class TeamFragment extends Fragment {
@@ -34,9 +35,11 @@ public class TeamFragment extends Fragment {
     public static final String YEAR2_KEY = "YEAR_TWO_KEY";
     public static final String YEAR3_KEY = "YEAR_THREE_KEY";
     public static final String NOTES_KEY = "NOTES_KEY";
+    public static final String DRIVER_KEY = "DRIVER_RATE";
+    public static final String HP_KEY = "HP_RATE";
 
     public static final String[] HEADER = new String[] {"Number", "Name", "Website", "Location", "Total Yrs.", "Another competition this year?", "Award 1",
-            "Year 1", "Award 2", "Year 2", "Award 3", "Year 3", "Notes"};
+            "Year 1", "Award 2", "Year 2", "Award 3", "Year 3", "Notes", "Driver Rating", "Human Player Rating"};
     public static final String[] AWARDS = new String[] {"------", "Rookie All Star Award", "Chairman's Award", "Creativity Award", "Dean's List Award",
             "Engineering Excellence Award", "Engineering Inspiration Award", "Entrepreneurship Award", "Gracious Professionalism", "Imagery Award",
             "Industrial Design Award", "Industrial Safety Award", "Innovation in Control Award", "Media & Tech. Innovation Award",
@@ -44,7 +47,7 @@ public class TeamFragment extends Fragment {
             "Highest Rookie Seed", "Regional Finalist", "Regional Winner"};
     public static final String[] YEARS = new String[] {"------", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005",
             "2004", "2003", "2002", "2001", "2000"};
-    public static final String[] SIMPLE = new String[] {"No", "Yes"};
+    public static final String[] SIMPLE = new String[] {"No - 1st competition this year", "Yes - 2nd competition this year"};
 
     private static boolean isEditing;
     private static int mPosition;
@@ -62,6 +65,8 @@ public class TeamFragment extends Fragment {
     private Spinner mAwardThree;
     private Spinner mYearThree;
     private EditText mNotes;
+    private RatingBar mDriverRate;
+    private RatingBar mHpRate;
 
     public static TeamFragment newInstance(int position, boolean editing) {
         TeamFragment fragment = new TeamFragment();
@@ -128,6 +133,8 @@ public class TeamFragment extends Fragment {
         mAwardThree = (Spinner) rootView.findViewById(R.id.award3);
         mYearThree = (Spinner) rootView.findViewById(R.id.year3);
         mNotes = (EditText) rootView.findViewById(R.id.notes);
+        mDriverRate = (RatingBar) rootView.findViewById(R.id.driverRating);
+        mHpRate = (RatingBar) rootView.findViewById(R.id.hpRating);
 
         initSpinner();
         loadValues();
@@ -173,6 +180,8 @@ public class TeamFragment extends Fragment {
         mAwardThree.setEnabled(false);
         mYearThree.setEnabled(false);
         mNotes.setEnabled(false);
+        mDriverRate.setEnabled(false);
+        mHpRate.setEnabled(false);
     }
 
     private void loadValues() {
@@ -190,6 +199,8 @@ public class TeamFragment extends Fragment {
         int yearTwo = prefs.getInt(YEAR2_KEY, 0);
         int yearThree = prefs.getInt(YEAR3_KEY, 0);
         String notes = prefs.getString(NOTES_KEY, "");
+        float driver = prefs.getFloat(DRIVER_KEY, 0f);
+        float hp = prefs.getFloat(HP_KEY, 0f);
 
         mNumber.setText(number);
         mTeam.setText(name);
@@ -204,6 +215,8 @@ public class TeamFragment extends Fragment {
         mYearTwo.setSelection(yearTwo);
         mYearThree.setSelection(yearThree);
         mNotes.setText(notes);
+        mDriverRate.setRating(driver);
+        mHpRate.setRating(hp);
     }
 
     private void saveValues() {
@@ -222,6 +235,8 @@ public class TeamFragment extends Fragment {
         editor.putInt(YEAR2_KEY, mYearTwo.getSelectedItemPosition());
         editor.putInt(YEAR3_KEY, mYearThree.getSelectedItemPosition());
         editor.putString(NOTES_KEY, mNotes.getText().toString());
+        editor.putFloat(DRIVER_KEY, mDriverRate.getRating());
+        editor.putFloat(HP_KEY, mHpRate.getRating());
         editor.commit();
     }
 

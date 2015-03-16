@@ -1,5 +1,6 @@
 package technowolves.org.otpradar;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+
 public class InputFragment extends Fragment {
 
     private static final String PREFS_KEY = "technowolves.org.otpradar.InputFragment.PREFERENCE_FILE_KEY";
@@ -41,16 +43,17 @@ public class InputFragment extends Fragment {
     private static final String ARG_EDITING = "INPUT_FRAG_STATE";
 
     private static final String[] HEADER = new String[] {"Team #", "Team Name", "Good Team #1", "Good Team #2", "Good Team #3", "Good Team #4",
-            "Bad Team #1", "Bad Team #2", "Bad Team #3", "Bad Team #4", "Strategy", "Prospect"};
+            "Bad Team #1", "Bad Team #2", "Bad Team #3", "Bad Team #4", "Strategy", "Prospect", "Reason"};
     private static final String[] PROSPECT = new String[] {"------", "Highly likely to get into semifinalist rounds", "Not Sure/Neutral",
             "Maybe next year"};
-    private static final String[] REASON = new String[] {"------", "Ongoing Team Probz", "Uncooperative alliance member",
+    private static final String[] REASON = new String[] {"------", "Ongoing Team Probz", "Uncooperative alliance member", "Minor probz w/ decent peformance",
             "BEST ALLIANCE!!! (Others counter weaknesses)", "We are da' bomb! (Think they contributed more to their own success)"};
 
     private boolean isEditing;
     private int mPosition;
 
     private SharedPreferences mPrefs;
+    private Activity mActivity;
 
     private EditText mTeam1;
     private EditText mTeam2;
@@ -83,9 +86,10 @@ public class InputFragment extends Fragment {
         mPosition = args.getInt(ARG_POS_NUMBER);
         isEditing = args.getBoolean(ARG_EDITING);
 
+        mActivity = getActivity();
         updatePrefs();
 
-        ActionBar bar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        ActionBar bar = ((ActionBarActivity) mActivity).getSupportActionBar();
         bar.setHomeButtonEnabled(true);
         bar.setTitle("Team Inputs");
     }
@@ -147,9 +151,11 @@ public class InputFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void export(final String[] teams) {
+    public void export(final String[] teams, final Activity activity) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        mActivity = activity;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity, AlertDialog.THEME_HOLO_DARK);
         builder.setTitle("Share via Bluetooth");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.setMessage("Do you really wish to send all team inputs via bluetooth?");
@@ -157,7 +163,7 @@ public class InputFragment extends Fragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                CsvWriter writer = new CsvWriter(getActivity(), "team_input", HEADER,
+                CsvWriter writer = new CsvWriter(activity, "team_input", HEADER,
                         getStringsFromFields(teams, HEADER.length));
                 writer.writeFile();
 
@@ -165,7 +171,7 @@ public class InputFragment extends Fragment {
                 intent.setType("text/*");
                 intent.setPackage("com.android.bluetooth");
                 intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(writer.getFile()));
-                startActivity(intent);
+                activity.startActivity(intent);
             }
         });
 
@@ -182,6 +188,16 @@ public class InputFragment extends Fragment {
 
     }
 
+    public Uri getFileAfterWrite(final String[] teams, final Activity activity) {
+        mActivity = activity;
+
+        CsvWriter writer = new CsvWriter(activity, "team_input", HEADER,
+                getStringsFromFields(teams, HEADER.length));
+        writer.writeFile();
+
+        return Uri.fromFile(writer.getFile());
+    }
+
     public void remove(int position) {
         SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY + position, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -192,7 +208,7 @@ public class InputFragment extends Fragment {
     public void updatePosition(int position) {
         mPosition = position;
         updatePrefs();
-        loadValues();
+        //loadValues();
     }
 
     public void updateEditing(boolean editing) {
@@ -229,9 +245,7 @@ public class InputFragment extends Fragment {
             counter++;
             values[counter] = mPrefs.getString(BAD_TEAM4_KEY, "");
             counter++;
-            values[counter] = mPrefs.getString(STRATEGY_KEY, "");
-            counter++;
-            values[counter] = mPrefs.getString(STRATEGY_KEY, "");
+            values[counter] = processStrategy(mPrefs.getString(STRATEGY_KEY, ""));
             counter++;
             values[counter] = processProspect(mPrefs.getInt(PROSPECT_KEY, 0));
             counter++;
@@ -307,7 +321,7 @@ public class InputFragment extends Fragment {
     }
 
     private void updatePrefs() {
-        mPrefs = getActivity().getSharedPreferences(PREFS_KEY + mPosition, Context.MODE_PRIVATE);
+        mPrefs = mActivity.getSharedPreferences(PREFS_KEY + mPosition, Context.MODE_PRIVATE);
     }
 
     private String processProspect(int index) {
@@ -316,6 +330,10 @@ public class InputFragment extends Fragment {
 
     private String processReason(int index) {
         return REASON[index];
+    }
+
+    private String processStrategy(String string) {
+        return string.replace("\n", "   ").replace(",", "");
     }
 
 }

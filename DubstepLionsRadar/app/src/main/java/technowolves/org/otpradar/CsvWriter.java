@@ -29,7 +29,7 @@ public class CsvWriter {
         if (isExternalStorageWritable()) {
             try {
                 mPath = getStorageDir(mContext, dirName).getPath() + File.separator
-                        + getCurrentTime() + ".csv";
+                        + getCurrentTime()+ "_" + dirName + ".csv";
                 FileOutputStream fOut = new FileOutputStream(mPath);
                 fOut.write(csvString().getBytes());
                 fOut.close();
