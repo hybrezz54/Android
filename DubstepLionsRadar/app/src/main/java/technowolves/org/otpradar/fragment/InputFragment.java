@@ -1,4 +1,4 @@
-package technowolves.org.otpradar;
+package technowolves.org.otpradar.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,10 +23,13 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import technowolves.org.otpradar.R;
+import technowolves.org.otpradar.util.CsvWriter;
+
 
 public class InputFragment extends Fragment {
 
-    private static final String PREFS_KEY = "technowolves.org.otpradar.InputFragment.PREFERENCE_FILE_KEY";
+    private static final String PREFS_KEY = "technowolves.org.otpradar.fragment.InputFragment.PREFERENCE_FILE_KEY";
     private static final String TEAM1_KEY = "TEAM_ONE";
     private static final String TEAM2_KEY = "TEAM_TWO";
     private static final String TEAM3_KEY = "TEAM_THREE";
@@ -198,8 +201,8 @@ public class InputFragment extends Fragment {
         return Uri.fromFile(writer.getFile());
     }
 
-    public void remove(int position) {
-        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY + position, Context.MODE_PRIVATE);
+    public void remove(int position, Activity activity) {
+        SharedPreferences prefs = activity.getSharedPreferences(PREFS_KEY + position, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.commit();

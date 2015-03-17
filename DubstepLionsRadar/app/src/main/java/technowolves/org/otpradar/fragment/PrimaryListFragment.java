@@ -1,4 +1,4 @@
-package technowolves.org.otpradar;
+package technowolves.org.otpradar.fragment;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -20,6 +20,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+
+import technowolves.org.otpradar.R;
+import technowolves.org.otpradar.util.CsvWriter;
+import technowolves.org.otpradar.framework.Team;
+import technowolves.org.otpradar.framework.TeamAdapter;
 
 public class PrimaryListFragment extends ListFragment {
 
@@ -83,7 +88,7 @@ public class PrimaryListFragment extends ListFragment {
             case 2:
                 mManager.beginTransaction()
                         .addToBackStack(null)
-                        .replace(R.id.container, TeamFragment.newInstance(position, false))
+                        .replace(R.id.container, TeamFragment.newInstance(position, false, true))
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
                 break;
@@ -119,11 +124,13 @@ public class PrimaryListFragment extends ListFragment {
 
         switch (id) {
             case R.id.action_add:
-                mManager.beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.container, TeamFragment.newInstance(mValues.size(), true))
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .commit();
+                if (mSection == 2) {
+                    mManager.beginTransaction()
+                            .addToBackStack(null)
+                            .replace(R.id.container, TeamFragment.newInstance(mValues.size(), true, false))
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .commit();
+                }
                 break;
             case R.id.action_share:
                 switch (mSection) {
@@ -176,7 +183,7 @@ public class PrimaryListFragment extends ListFragment {
                                     case 2:
                                         getFragmentManager().beginTransaction()
                                                 .addToBackStack(null)
-                                                .replace(R.id.container, TeamFragment.newInstance(position, true))
+                                                .replace(R.id.container, TeamFragment.newInstance(position, true, true))
                                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                                                 .commit();
                                         break;
@@ -202,8 +209,8 @@ public class PrimaryListFragment extends ListFragment {
                                 break;
                             case R.id.remove_item:
                                 remove(position);
-                                InputFragment.newInstance(0, false).remove(position);
-                                RobotFragment.newInstance(0, false).remove(position);
+                                InputFragment.newInstance(0, false).remove(position, getActivity());
+                                RobotFragment.newInstance(0, false).remove(position, getActivity());
                                 break;
                         }
 
@@ -216,6 +223,10 @@ public class PrimaryListFragment extends ListFragment {
             }
         });
 
+    }
+
+    public String getTeamNumber(int index) {
+        return mValues.get(index).number;
     }
 
     private void load() {
@@ -300,8 +311,8 @@ public class PrimaryListFragment extends ListFragment {
                     editor = prefs.edit();
                     editor.clear();
                     editor.commit();
-                    inputFrag.remove(i);
-                    robotFrag.remove(i);
+                    inputFrag.remove(i, getActivity());
+                    robotFrag.remove(i, getActivity());
                 }
 
                 prefs = getActivity().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
@@ -383,7 +394,10 @@ public class PrimaryListFragment extends ListFragment {
 
                 RobotFragment robotFrag = RobotFragment.newInstance(0, false);
                 uris.add(robotFrag.getFileAfterWrite(getTeamValues(), getActivity()));
-                uris.add(robotFrag.getImageFile());
+
+                for (int i = 0; i < mValues.size(); i++) {
+                    uris.add(robotFrag.getImageFile(i));
+                }
 
                 Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
                 intent.setType("text/*");

@@ -1,4 +1,4 @@
-package technowolves.org.otpradar;
+package technowolves.org.otpradar.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,6 +18,9 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+
+import technowolves.org.otpradar.R;
+import technowolves.org.otpradar.framework.Team;
 
 public class TeamFragment extends Fragment {
 
@@ -51,6 +54,7 @@ public class TeamFragment extends Fragment {
 
     private static boolean isEditing;
     private static int mPosition;
+    private static boolean isExisting;
 
     private EditText mNumber;
     private EditText mTeam;
@@ -68,13 +72,14 @@ public class TeamFragment extends Fragment {
     private RatingBar mDriverRate;
     private RatingBar mHpRate;
 
-    public static TeamFragment newInstance(int position, boolean editing) {
+    public static TeamFragment newInstance(int position, boolean editing, boolean existing) {
         TeamFragment fragment = new TeamFragment();
         /*Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);*/
         mPosition = position;
         isEditing = editing;
+        isExisting = existing;
         return fragment;
     }
 
@@ -107,9 +112,14 @@ public class TeamFragment extends Fragment {
                 break;
             case R.id.action_save:
                 saveValues();
-                ((PrimaryListFragment)fm.findFragmentByTag("PrimaryListFragment1"))
-                        .add(new Team(mNumber.getText().toString(), mTeam.getText().toString()));
+
+                if (!isExisting) {
+                    ((PrimaryListFragment) fm.findFragmentByTag("PrimaryListFragment1"))
+                            .add(new Team(mNumber.getText().toString(), mTeam.getText().toString()));
+                }
+
                 fm.popBackStack();
+
                 break;
         }
 

@@ -1,4 +1,4 @@
-package technowolves.org.otpradar;
+package technowolves.org.otpradar.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+
+import technowolves.org.otpradar.R;
+import technowolves.org.otpradar.framework.Team;
+import technowolves.org.otpradar.framework.TeamAdapter;
 
 public class SecondaryListFragment extends ListFragment {
 

@@ -1,4 +1,4 @@
-package technowolves.org.otpradar;
+package technowolves.org.otpradar.fragment;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
@@ -21,6 +21,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import technowolves.org.otpradar.R;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -272,7 +274,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     /**
-     * Callbacks interface that all activities using this fragment must implement.
+     * Callbacks interface that all activity using this fragment must implement.
      */
     public static interface NavigationDrawerCallbacks {
         /**

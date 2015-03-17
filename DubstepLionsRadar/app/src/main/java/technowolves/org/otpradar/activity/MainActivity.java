@@ -1,6 +1,7 @@
-package technowolves.org.otpradar;
+package technowolves.org.otpradar.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -13,7 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.Toast;
+
+import technowolves.org.otpradar.fragment.NavigationDrawerFragment;
+import technowolves.org.otpradar.fragment.PrimaryListFragment;
+import technowolves.org.otpradar.R;
 
 
 public class MainActivity extends ActionBarActivity
@@ -133,7 +137,8 @@ public class MainActivity extends ActionBarActivity
         if (id == R.id.action_settings)
             return true;
         else if (id == R.id.action_about)  {
-            Toast.makeText(getApplicationContext(), "Example action.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
             return true;
         }
 

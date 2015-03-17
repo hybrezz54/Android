@@ -1,4 +1,4 @@
-package technowolves.org.otpradar;
+package technowolves.org.otpradar.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,34 +32,41 @@ import android.widget.Spinner;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
+import technowolves.org.otpradar.R;
+import technowolves.org.otpradar.util.CsvWriter;
 
 
 public class RobotFragment extends Fragment {
 
-    private static final String PREFS_KEY = "technowolves.org.otpradar.RobotFragment.PREFERENCE_FILE_KEY";
+    private static final String PREFS_KEY = "technowolves.org.otpradar.fragment.RobotFragment.PREFERENCE_FILE_KEY";
     private static final String IMAGE_KEY = "ROBOT_PICTURE";
     private static final String STYLE_KEY = "ROBOT_STYLE";
     private static final String DRIVE_KEY = "DRIVE_TRAIN";
     private static final String WHEELS_KEY = "WHEELS";
     private static final String RATE_KEY = "ROBOT_RATE";
     private static final String NOTE_KEY = "ROBOT_NOTES";
+    private static final String AUTO1_KEY = "AUTO_STYLE_ONE";
+    private static final String AUTO2_KEY = "AUTO_STYLE_TWO";
 
     private static final String ARG_POS_NUMBER = "ROBOT_FRAG_POS";
     private static final String ARG_EDITING = "ROBOT_FRAG_STATE";
 
     public static final int REQUEST_IMG_CAPTURE = 3;
 
-    private static final String[] HEADER = new String[] {"Team #", "Team Name", "Robot Style", "Drive Train", "Wheel Type", "Robot Rating", "Robot Notes"};
+    private static final String[] HEADER = new String[] {"Team #", "Team Name", "Robot Style", "Drive Train", "Wheel Type", "Robot Rating", "Robot Notes",
+            "Auto Preference #1", "Auto Preference #2"};
     private static final String[] ROBOT_STYLE = new String[] {"------", "Insane Tote Stacker/Lifter", "Recycle container carrier", "Tote hauler/pusher",
             "Tote Stacker/Lifter + Container Carry", "Tote Hauler/Pusher + Container Carry", "Tote Lifter + Tote pusher + Container Carry"};
     private static final String[] DRIVE_TRAIN = new String[] {"------", "Tank", "Mecanum", "Swerve", "Slide", "Holonomic"};
     private static final String[] WHEELS = new String[] {"------", "Mecanum", "Omni", "Tread", "Other"};
+    private static final String[] AUTO_STYLE = new String[] {"------", "Do Nothing", "Move to Auto zone", "Lift tote", "Lift recycle container","Lift tote & move",
+            "Lift container & move", "Push tote", "Push container", "Stack totes", "Spin w/ tote", "Spin w/ container", "Move to Landfill", "Get tote from Landfill",
+            "Get container from Landfill", "Aim for coopertition totes"};
 
     private boolean isEditing;
     private int mPosition;
-    private String mPhotoPath;
+    private String mPhotoPath = "";
 
     private SharedPreferences mPrefs;
     private Activity mActivity;
@@ -71,6 +78,8 @@ public class RobotFragment extends Fragment {
     private Spinner mWheels;
     private RatingBar mRate;
     private EditText mNotes;
+    private Spinner mAuto1;
+    private Spinner mAuto2;
 
     public static RobotFragment newInstance(int position, boolean editing) {
         RobotFragment fragment = new RobotFragment();
@@ -110,6 +119,8 @@ public class RobotFragment extends Fragment {
         mWheels = (Spinner) rootView.findViewById(R.id.wheels);
         mRate = (RatingBar) rootView.findViewById(R.id.robotRate);
         mNotes = (EditText) rootView.findViewById(R.id.robotNotes);
+        mAuto1 = (Spinner) rootView.findViewById(R.id.autoStyle1);
+        mAuto2 = (Spinner) rootView.findViewById(R.id.autoStyle2);
 
         mPicButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,7 +147,6 @@ public class RobotFragment extends Fragment {
 
         initSpinner();
         loadValues();
-        setPic();
 
         if (!isEditing)
             viewsEnabled(false);
@@ -177,13 +187,21 @@ public class RobotFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (!mPhotoPath.equals(""))
+            setPic();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_IMG_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
+            /*Bundle extras = data.getExtras();
             Bitmap img = (Bitmap) extras.get("data");
-            mRobotImg.setImageBitmap(img);
+            mRobotImg.setImageBitmap(img);*/
+            setPic();
         }
     }
 
@@ -234,13 +252,16 @@ public class RobotFragment extends Fragment {
         return Uri.fromFile(writer.getFile());
     }
 
-    public Uri getImageFile() {
+    public Uri getImageFile(final int index) {
+        //mActivity = activity;
+        updatePosition(index);
+        mPhotoPath = mPrefs.getString(IMAGE_KEY, "");
         File file = new File(mPhotoPath);
         return Uri.fromFile(file);
     }
 
-    public void remove(int position) {
-        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY + position, Context.MODE_PRIVATE);
+    public void remove(int position, Activity activity) {
+        SharedPreferences prefs = activity.getSharedPreferences(PREFS_KEY + position, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.commit();
@@ -259,8 +280,11 @@ public class RobotFragment extends Fragment {
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = mPosition + "_" + timeStamp + "_";
+        //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        String number = ((PrimaryListFragment) getFragmentManager().findFragmentByTag("PrimaryListFragment3"))
+                .getTeamNumber(mPosition);
+        String imageFileName = number + "_" + timeStamp;
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
@@ -268,7 +292,8 @@ public class RobotFragment extends Fragment {
                 storageDir      /* directory */
         );
 
-        mPhotoPath = "file:" + image.getAbsolutePath();
+        //mPhotoPath = "file:" + image.getAbsolutePath();
+        mPhotoPath = image.getPath();
         return image;
     }
 
@@ -295,6 +320,10 @@ public class RobotFragment extends Fragment {
             counter++;
             values[counter] = processNotes(mPrefs.getString(NOTE_KEY, ""));
             counter++;
+            values[counter] = processAutoStyle(mPrefs.getInt(AUTO1_KEY, 0));
+            counter++;
+            values[counter] = processAutoStyle(mPrefs.getInt(AUTO2_KEY, 0));
+            counter++;
         }
 
         return values;
@@ -308,12 +337,16 @@ public class RobotFragment extends Fragment {
         int wheel = mPrefs.getInt(WHEELS_KEY, 0);
         float rate = mPrefs.getFloat(RATE_KEY, 0f);
         String notes = mPrefs.getString(NOTE_KEY, "");
+        int auto1 = mPrefs.getInt(AUTO1_KEY, 0);
+        int auto2 = mPrefs.getInt(AUTO2_KEY, 0);
 
         mRobotStyle.setSelection(style);
         mDriveTrain.setSelection(drive);
         mWheels.setSelection(wheel);
         mRate.setRating(rate);
         mNotes.setText(notes);
+        mAuto1.setSelection(auto1);
+        mAuto2.setSelection(auto2);
     }
 
     private void saveValues() {
@@ -324,6 +357,8 @@ public class RobotFragment extends Fragment {
         editor.putInt(WHEELS_KEY, mWheels.getSelectedItemPosition());
         editor.putFloat(RATE_KEY, mRate.getRating());
         editor.putString(NOTE_KEY, mNotes.getText().toString());
+        editor.putInt(AUTO1_KEY, mAuto1.getSelectedItemPosition());
+        editor.putInt(AUTO2_KEY, mAuto2.getSelectedItemPosition());
         editor.commit();
     }
 
@@ -332,15 +367,18 @@ public class RobotFragment extends Fragment {
     }
 
     private void viewsEnabled(boolean isEditing) {
+        mPicButton.setEnabled(isEditing);
         mRobotStyle.setEnabled(isEditing);
         mDriveTrain.setEnabled(isEditing);
         mWheels.setEnabled(isEditing);
         mRate.setEnabled(isEditing);
         mNotes.setEnabled(isEditing);
+        mAuto1.setEnabled(isEditing);
+        mAuto2.setEnabled(isEditing);
     }
 
     private void setPic() {
-        // Get the dimensions of the View
+        /*// Get the dimensions of the View
         int targetW = mRobotImg.getWidth();
         int targetH = mRobotImg.getHeight();
 
@@ -359,18 +397,23 @@ public class RobotFragment extends Fragment {
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(mPhotoPath, bmOptions);
+        Bitmap bitmap = BitmapFactory.decodeFile(mPhotoPath, bmOptions);*/
+
+        Bitmap bitmap = BitmapFactory.decodeFile(mPhotoPath);
         mRobotImg.setImageBitmap(bitmap);
     }
 
     private void initSpinner() {
-        ArrayAdapter<String> styles = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, ROBOT_STYLE);
-        ArrayAdapter<String> drives = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, DRIVE_TRAIN);
-        ArrayAdapter<String> wheels = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, WHEELS);
+        ArrayAdapter<String> styles = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, ROBOT_STYLE);
+        ArrayAdapter<String> drives = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, DRIVE_TRAIN);
+        ArrayAdapter<String> wheels = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, WHEELS);
+        ArrayAdapter<String> auto = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, AUTO_STYLE);
 
         mRobotStyle.setAdapter(styles);
         mDriveTrain.setAdapter(drives);
         mWheels.setAdapter(wheels);
+        mAuto1.setAdapter(auto);
+        mAuto2.setAdapter(auto);
     }
 
     private void updatePrefs() {
@@ -392,6 +435,10 @@ public class RobotFragment extends Fragment {
 
     private String processNotes(String text) {
         return text.replace("\n", "   ").replace(",", "");
+    }
+
+    private String processAutoStyle(int index) {
+        return AUTO_STYLE[index];
     }
 
 }

@@ -1,4 +1,4 @@
-package technowolves.org.otpradar;
+package technowolves.org.otpradar.framework;
 
 import android.os.Parcel;
 import android.os.Parcelable;

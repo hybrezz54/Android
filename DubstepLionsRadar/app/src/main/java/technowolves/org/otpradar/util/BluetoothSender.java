@@ -1,4 +1,4 @@
-package technowolves.org.otpradar;
+package technowolves.org.otpradar.util;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;

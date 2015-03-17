@@ -1,4 +1,4 @@
-package technowolves.org.otpradar;
+package technowolves.org.otpradar.util;
 
 import android.content.Context;
 import android.os.Environment;
