@@ -147,13 +147,135 @@
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:ems="10"
-                android:id="@+id/robotNotes"
-                android:hint="Notes"
+                android:id="@+id/robotStrength"
+                android:hint="Strengths"
                 android:layout_margin="5dp"
-                android:minLines="5"
-                android:maxLines="7"
+                android:minLines="3"
+                android:maxLines="4"
                 android:gravity="right|center"
                 android:textSize="16sp"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:ems="10"
+                android:id="@+id/robotWeakness"
+                android:hint="Weaknesses"
+                android:layout_margin="5dp"
+                android:minLines="3"
+                android:maxLines="4"
+                android:gravity="right|center"
+                android:textSize="16sp"/>
+
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingTop="16dp"
+                android:text="- ROBOT SPECS -"
+                android:textStyle="bold"
+                android:textSize="20sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/holo_red_dark"
+                android:layout_marginBottom="5dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/edtHeight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:hint="Height (in)"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLength="3"/>
+
+                <EditText
+                    android:id="@+id/edtWeight"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:hint="Weight (lbs)"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:maxLength="3"/>
+
+                </LinearLayout>
+				
+			<EditText
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:id="@+id/edtSpeed"
+				android:hint="Robot Speed (ft/s)"
+				android:gravity="right"
+				android:maxLength="2"
+				android:inputType="number"
+				android:layout_margin="5dp"/>
+				
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+				
+				<TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:text="Has Turret:"
+                    android:textSize="24sp"/>
+
+                <Spinner
+                    android:id="@+id/turret"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"/>
+				
+				</LinearLayout>
+				
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+				
+				<TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:text="Has Strafing:"
+                    android:textSize="24sp"/>
+
+                <Spinner
+                    android:id="@+id/strafing"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"/>
+				
+				</LinearLayout>
 
             </LinearLayout>
 
@@ -188,8 +310,9 @@
                     android:layout_weight="1"
                     android:layout_margin="5dp"
                     android:gravity="center"
-                    android:text="1st MOST PREFERENCE:"
-                    android:textSize="20sp"/>
+                    android:layout_gravity="center_vertical"
+                    android:text="Can move totes?"
+                    android:textSize="22sp"/>
 
                 <Spinner
                     android:id="@+id/autoStyle1"
@@ -211,8 +334,9 @@
                     android:layout_weight="1"
                     android:layout_margin="5dp"
                     android:gravity="center"
-                    android:text="2nd MOST PREFERENCE:"
-                    android:textSize="20sp"/>
+                    android:layout_gravity="center_vertical"
+                    android:text="Can move containers?"
+                    android:textSize="22sp"/>
 
                 <Spinner
                     android:id="@+id/autoStyle2"
@@ -223,8 +347,88 @@
 
                 </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:text="Can acquire containers?"
+                    android:textSize="22sp"/>
+
+                <Spinner
+                    android:id="@+id/autoStyle3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"/>
+
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:text="STARTING POSITION:"
+                    android:textSize="22sp"/>
+
+                <Spinner
+                    android:id="@+id/preferredStart"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"/>
+
+                 </LinearLayout>
+
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+			
+			<TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:paddingTop="16dp"
+                android:text="- TELEOP -"
+                android:textStyle="bold"
+                android:textSize="20sp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/holo_red_dark"
+                android:layout_marginBottom="5dp"/>
+				
+			<EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/edtToteCapacity"
+                android:hint="Tote Stack Capacity"
+                android:gravity="right"
+                android:maxLength="2"
+                android:inputType="number"
+                android:layout_margin="5dp"/>
+
+            </LinearLayout>
+			
     </LinearLayout>
 
 </ScrollView>

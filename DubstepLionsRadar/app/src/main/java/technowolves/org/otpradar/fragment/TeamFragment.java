@@ -38,11 +38,16 @@ public class TeamFragment extends Fragment {
     public static final String YEAR2_KEY = "YEAR_TWO_KEY";
     public static final String YEAR3_KEY = "YEAR_THREE_KEY";
     public static final String NOTES_KEY = "NOTES_KEY";
+    public static final String DRIVER1_KEY = "DRIVER_NAME_ONE";
+    public static final String DRIVER2_KEY = "DRIVER_NAME_TWO";
+    public static final String COACH_KEY = "COACH_NAME";
+    public static final String CM_KEY = "COACH_MENTOR";
     public static final String DRIVER_KEY = "DRIVER_RATE";
     public static final String HP_KEY = "HP_RATE";
 
     public static final String[] HEADER = new String[] {"Number", "Name", "Website", "Location", "Total Yrs.", "Another competition this year?", "Award 1",
-            "Year 1", "Award 2", "Year 2", "Award 3", "Year 3", "Notes", "Driver Rating", "Human Player Rating"};
+            "Year 1", "Award 2", "Year 2", "Award 3", "Year 3", "Notes", "Driver #1 Name", "Driver #2 Name", "Drive Coach Name", "Is drive coach mentor?",
+            "Driver Rating", "Human Player Rating"};
     public static final String[] AWARDS = new String[] {"------", "Rookie All Star Award", "Chairman's Award", "Creativity Award", "Dean's List Award",
             "Engineering Excellence Award", "Engineering Inspiration Award", "Entrepreneurship Award", "Gracious Professionalism", "Imagery Award",
             "Industrial Design Award", "Industrial Safety Award", "Innovation in Control Award", "Media & Tech. Innovation Award",
@@ -50,7 +55,8 @@ public class TeamFragment extends Fragment {
             "Highest Rookie Seed", "Regional Finalist", "Regional Winner"};
     public static final String[] YEARS = new String[] {"------", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008", "2007", "2006", "2005",
             "2004", "2003", "2002", "2001", "2000"};
-    public static final String[] SIMPLE = new String[] {"No - 1st competition this year", "Yes - 2nd competition this year"};
+    public static final String[] COMPETITION = new String[] {"No - 1st competition this year", "Yes - 2nd competition this year"};
+    public static final String[] SIMPLE = new String[] {"------", "No", "Yes"};
 
     private static boolean isEditing;
     private static int mPosition;
@@ -69,6 +75,10 @@ public class TeamFragment extends Fragment {
     private Spinner mAwardThree;
     private Spinner mYearThree;
     private EditText mNotes;
+    private EditText mDriver1;
+    private EditText mDriver2;
+    private EditText mCoach;
+    private Spinner mCoachMentor;
     private RatingBar mDriverRate;
     private RatingBar mHpRate;
 
@@ -143,6 +153,10 @@ public class TeamFragment extends Fragment {
         mAwardThree = (Spinner) rootView.findViewById(R.id.award3);
         mYearThree = (Spinner) rootView.findViewById(R.id.year3);
         mNotes = (EditText) rootView.findViewById(R.id.notes);
+        mDriver1 = (EditText) rootView.findViewById(R.id.edtDriver);
+        mDriver2 = (EditText) rootView.findViewById(R.id.edtDriver2);
+        mCoach = (EditText) rootView.findViewById(R.id.edtCoach);
+        mCoachMentor = (Spinner) rootView.findViewById(R.id.coachMentor);
         mDriverRate = (RatingBar) rootView.findViewById(R.id.driverRating);
         mHpRate = (RatingBar) rootView.findViewById(R.id.hpRating);
 
@@ -162,17 +176,19 @@ public class TeamFragment extends Fragment {
 
     private void initSpinner() {
 
+        ArrayAdapter<String> comp = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, COMPETITION);
         ArrayAdapter<String> simple = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, SIMPLE);
         ArrayAdapter<String> year = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, YEARS);
         ArrayAdapter<String> award = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, AWARDS);
 
-        mParticipation.setAdapter(simple);
+        mParticipation.setAdapter(comp);
         mAwardOne.setAdapter(award);
         mAwardTwo.setAdapter(award);
         mAwardThree.setAdapter(award);
         mYearOne.setAdapter(year);
         mYearTwo.setAdapter(year);
         mYearThree.setAdapter(year);
+        mCoachMentor.setAdapter(simple);
 
     }
 
@@ -190,6 +206,10 @@ public class TeamFragment extends Fragment {
         mAwardThree.setEnabled(false);
         mYearThree.setEnabled(false);
         mNotes.setEnabled(false);
+        mDriver1.setEnabled(false);
+        mDriver2.setEnabled(false);
+        mCoach.setEnabled(false);
+        mCoachMentor.setEnabled(false);
         mDriverRate.setEnabled(false);
         mHpRate.setEnabled(false);
     }
@@ -209,6 +229,10 @@ public class TeamFragment extends Fragment {
         int yearTwo = prefs.getInt(YEAR2_KEY, 0);
         int yearThree = prefs.getInt(YEAR3_KEY, 0);
         String notes = prefs.getString(NOTES_KEY, "");
+        String driver1 = prefs.getString(DRIVER1_KEY, "");
+        String driver2 = prefs.getString(DRIVER2_KEY, "");
+        String coach = prefs.getString(COACH_KEY, "");
+        int coachMentor = prefs.getInt(CM_KEY, 0);
         float driver = prefs.getFloat(DRIVER_KEY, 0f);
         float hp = prefs.getFloat(HP_KEY, 0f);
 
@@ -225,6 +249,10 @@ public class TeamFragment extends Fragment {
         mYearTwo.setSelection(yearTwo);
         mYearThree.setSelection(yearThree);
         mNotes.setText(notes);
+        mDriver1.setText(driver1);
+        mDriver2.setText(driver2);
+        mCoach.setText(coach);
+        mCoachMentor.setSelection(coachMentor);
         mDriverRate.setRating(driver);
         mHpRate.setRating(hp);
     }
@@ -245,6 +273,10 @@ public class TeamFragment extends Fragment {
         editor.putInt(YEAR2_KEY, mYearTwo.getSelectedItemPosition());
         editor.putInt(YEAR3_KEY, mYearThree.getSelectedItemPosition());
         editor.putString(NOTES_KEY, mNotes.getText().toString());
+        editor.putString(DRIVER1_KEY, mDriver1.getText().toString());
+        editor.putString(DRIVER1_KEY, mDriver2.getText().toString());
+        editor.putString(COACH_KEY, mCoach.getText().toString());
+        editor.putInt(CM_KEY, mCoachMentor.getSelectedItemPosition());
         editor.putFloat(DRIVER_KEY, mDriverRate.getRating());
         editor.putFloat(HP_KEY, mHpRate.getRating());
         editor.commit();

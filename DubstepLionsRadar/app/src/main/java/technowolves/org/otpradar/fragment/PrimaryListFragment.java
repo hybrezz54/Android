@@ -1,5 +1,6 @@
 package technowolves.org.otpradar.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,6 +38,7 @@ public class PrimaryListFragment extends ListFragment {
     private static int mSection;
     private ArrayList<Team> mValues;
     private FragmentManager mManager;
+    private Activity mActivity;
 
     public static PrimaryListFragment newInstance(int sectionNumber) {
         PrimaryListFragment fragment = new PrimaryListFragment();
@@ -60,7 +62,7 @@ public class PrimaryListFragment extends ListFragment {
 
         setLongClick();
         load();
-        TeamAdapter adapter = new TeamAdapter(getActivity(), mValues);
+        TeamAdapter adapter = new TeamAdapter(mActivity, mValues);
         setListAdapter(adapter);
     }
 
@@ -69,6 +71,12 @@ public class PrimaryListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         setRetainInstance(true);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = activity;
     }
 
     @Override
@@ -114,7 +122,7 @@ public class PrimaryListFragment extends ListFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        getActivity().getMenuInflater().inflate(R.menu.main, menu);
+        mActivity.getMenuInflater().inflate(R.menu.main, menu);
     }
 
     @Override
@@ -138,15 +146,18 @@ public class PrimaryListFragment extends ListFragment {
                         exportTeamData();
                         break;
                     case 3:
-                        InputFragment.newInstance(0, false).export(getTeamValues(), getActivity());
+                        InputFragment.newInstance(0, false).export(getTeamValues(), mActivity);
                         break;
                     case 4:
-                        RobotFragment.newInstance(0, false).export(getTeamValues(), getActivity());
+                        RobotFragment.newInstance(0, false).export(getTeamValues(), mActivity);
                         break;
                 }
                 break;
             case R.id.action_share_all:
                 exportAll();
+                break;
+            case R.id.action_frcscout_export:
+                exportFrcScout();
                 break;
         }
 
@@ -168,7 +179,7 @@ public class PrimaryListFragment extends ListFragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                PopupMenu popup = new PopupMenu(getActivity(), view);
+                PopupMenu popup = new PopupMenu(mActivity, view);
                 popup.getMenuInflater().inflate(R.menu.list_item, popup.getMenu());
 
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -209,8 +220,8 @@ public class PrimaryListFragment extends ListFragment {
                                 break;
                             case R.id.remove_item:
                                 remove(position);
-                                InputFragment.newInstance(0, false).remove(position, getActivity());
-                                RobotFragment.newInstance(0, false).remove(position, getActivity());
+                                InputFragment.newInstance(0, false).remove(position, mActivity);
+                                RobotFragment.newInstance(0, false).remove(position, mActivity);
                                 break;
                         }
 
@@ -230,7 +241,7 @@ public class PrimaryListFragment extends ListFragment {
     }
 
     private void load() {
-        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        SharedPreferences prefs = mActivity.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         int size = prefs.getInt(SIZE_KEY, 0);
 
         for (int i = 0; i < size; i++) {
@@ -240,7 +251,7 @@ public class PrimaryListFragment extends ListFragment {
     }
 
     private void save() {
-        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        SharedPreferences prefs = mActivity.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
         editor.putInt(SIZE_KEY, mValues.size());
@@ -253,7 +264,7 @@ public class PrimaryListFragment extends ListFragment {
 
     private void remove(final int index) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity, AlertDialog.THEME_HOLO_DARK);
         builder.setTitle("Delete Team Data");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.setMessage("Do you really wish to delete this team's data?\n *WARNING: Doesn't work right!");
@@ -263,13 +274,13 @@ public class PrimaryListFragment extends ListFragment {
             public void onClick(DialogInterface dialog, int which) {
                 mValues.remove(index);
 
-                SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+                SharedPreferences prefs = mActivity.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.remove(NUMBER_KEY + index);
                 editor.remove(NAME_KEY + index);
                 editor.commit();
 
-                prefs = getActivity().getSharedPreferences(PREFS_KEY + index, Context.MODE_PRIVATE);
+                prefs = mActivity.getSharedPreferences(PREFS_KEY + index, Context.MODE_PRIVATE);
                 editor = prefs.edit();
                 editor.clear();
                 editor.commit();
@@ -293,7 +304,7 @@ public class PrimaryListFragment extends ListFragment {
 
     private void removeAll() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity, AlertDialog.THEME_HOLO_DARK);
         builder.setTitle("Delete Team Data");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.setMessage("Do you really wish to delete all team data?");
@@ -307,15 +318,15 @@ public class PrimaryListFragment extends ListFragment {
                 RobotFragment robotFrag = RobotFragment.newInstance(0, false);
 
                 for (int i = 0; i < mValues.size(); i++) {
-                    prefs = getActivity().getSharedPreferences(PREFS_KEY + i, Context.MODE_PRIVATE);
+                    prefs = mActivity.getSharedPreferences(PREFS_KEY + i, Context.MODE_PRIVATE);
                     editor = prefs.edit();
                     editor.clear();
                     editor.commit();
-                    inputFrag.remove(i, getActivity());
-                    robotFrag.remove(i, getActivity());
+                    inputFrag.remove(i, mActivity);
+                    robotFrag.remove(i, mActivity);
                 }
 
-                prefs = getActivity().getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+                prefs = mActivity.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
                 editor = prefs.edit();
                 editor.clear();
                 editor.commit();
@@ -340,7 +351,7 @@ public class PrimaryListFragment extends ListFragment {
 
     private void exportTeamData() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity, AlertDialog.THEME_HOLO_DARK);
         builder.setTitle("Share via Bluetooth");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.setMessage("Do you really wish to send all team data via bluetooth?");
@@ -348,7 +359,7 @@ public class PrimaryListFragment extends ListFragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                CsvWriter writer = new CsvWriter(getActivity(), "team_data", TeamFragment.HEADER,
+                CsvWriter writer = new CsvWriter(mActivity, "team_data", TeamFragment.HEADER,
                         getStringsFromFields(TeamFragment.HEADER.length));
                 writer.writeFile();
 
@@ -375,7 +386,7 @@ public class PrimaryListFragment extends ListFragment {
 
     private void exportAll() {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_DARK);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity, AlertDialog.THEME_HOLO_DARK);
         builder.setTitle("Share All via Bluetooth");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.setMessage("Do you really wish to send ALL collected data via bluetooth?");
@@ -383,17 +394,17 @@ public class PrimaryListFragment extends ListFragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                CsvWriter writer = new CsvWriter(getActivity(), "team_data", TeamFragment.HEADER,
+                CsvWriter writer = new CsvWriter(mActivity, "team_data", TeamFragment.HEADER,
                         getStringsFromFields(TeamFragment.HEADER.length));
                 writer.writeFile();
 
 
                 ArrayList<Uri> uris = new ArrayList<Uri>();
                 uris.add(Uri.fromFile(writer.getFile()));
-                uris.add(InputFragment.newInstance(0, false).getFileAfterWrite(getTeamValues(), getActivity()));
+                uris.add(InputFragment.newInstance(0, false).getFileAfterWrite(getTeamValues(), mActivity));
 
                 RobotFragment robotFrag = RobotFragment.newInstance(0, false);
-                uris.add(robotFrag.getFileAfterWrite(getTeamValues(), getActivity()));
+                uris.add(robotFrag.getFileAfterWrite(getTeamValues(), mActivity));
 
                 for (int i = 0; i < mValues.size(); i++) {
                     uris.add(robotFrag.getImageFile(i));
@@ -420,12 +431,51 @@ public class PrimaryListFragment extends ListFragment {
 
     }
 
+    private void exportFrcScout() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity, AlertDialog.THEME_HOLO_DARK);
+        builder.setTitle("Share All via Bluetooth");
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setMessage("Do you really wish to send ALL collected data via bluetooth for FRCScout DB export?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final String[] HEADER = new String[] {"Team Number", "Driver #1", "Driver #2", "Coach", "Is drive coach mentor?", "Robot Height", "Robot Weight",
+                        "Can move totes?", "Can move containers?", "Can acquire containers?", "Preferred starting location", "Tote Stack Capacity", "Human can load totes?",
+                        "Human can load litter?", "Human can throw litter?", "Robot has turret?", "Robot has strafing?", "Robot speed", "Robot Strengths", "Robot Weaknesses"};
+
+                CsvWriter writer = new CsvWriter(mActivity, "frcscout_db", HEADER,
+                        getFrcScoutExportArray(HEADER.length));
+                writer.writeFile();
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/*");
+                intent.setPackage("com.android.bluetooth");
+                intent.putExtra(Intent.EXTRA_STREAM, writer.getFile());
+                startActivity(intent);
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+
+    }
+
     private String[] getStringsFromFields(final int fields) {
         String[] strings = new String[fields*mValues.size()];
         int counter = 0;
 
         for (int i = 0; i < mValues.size(); i++) {
-            SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_KEY + i, Context.MODE_PRIVATE);
+            SharedPreferences prefs = mActivity.getSharedPreferences(PREFS_KEY + i, Context.MODE_PRIVATE);
             strings[counter] = prefs.getString(TeamFragment.NUMBER_KEY, "");
             counter++;
             strings[counter] = prefs.getString(TeamFragment.NAME_KEY, "");
@@ -436,7 +486,7 @@ public class PrimaryListFragment extends ListFragment {
             counter++;
             strings[counter] = prefs.getString(TeamFragment.TOTAL_KEY, "");
             counter++;
-            strings[counter] = processSimple(prefs.getInt(TeamFragment.OTHER_KEY, 0));
+            strings[counter] = processComp(prefs.getInt(TeamFragment.OTHER_KEY, 0));
             counter++;
             strings[counter] = processAward(prefs.getInt(TeamFragment.AWARD1_KEY, 0));
             counter++;
@@ -451,6 +501,14 @@ public class PrimaryListFragment extends ListFragment {
             strings[counter] = processYear(prefs.getInt(TeamFragment.YEAR3_KEY, 0));
             counter++;
             strings[counter] = processNotes(prefs.getString(TeamFragment.NOTES_KEY, ""));
+            counter++;
+            strings[counter] = prefs.getString(TeamFragment.DRIVER1_KEY, "");
+            counter++;
+            strings[counter] = prefs.getString(TeamFragment.DRIVER2_KEY, "");
+            counter++;
+            strings[counter] = prefs.getString(TeamFragment.COACH_KEY, "");
+            counter++;
+            strings[counter] = processSimple(prefs.getInt(TeamFragment.CM_KEY, 0));
             counter++;
             strings[counter] = String.valueOf(prefs.getFloat(TeamFragment.HP_KEY, 0f));
             counter++;
@@ -475,8 +533,39 @@ public class PrimaryListFragment extends ListFragment {
         return values;
     }
 
+    private String[] getFrcScoutExportArray(final int fields) {
+        String[] values = new String[fields*mValues.size()];
+        RobotFragment robotFrag = RobotFragment.newInstance(0, false);
+        int counter = 0;
+
+        for (int i = 0; i < mValues.size(); i++) {
+            SharedPreferences prefs = mActivity.getSharedPreferences(PREFS_KEY + i, Context.MODE_PRIVATE);
+            String[] robot_values = robotFrag.getFrcScoutExportArray(i, mActivity);
+            values[counter] = mValues.get(i).number;
+            counter++;
+            values[counter] = prefs.getString(TeamFragment.DRIVER1_KEY, "");
+            counter++;
+            values[counter] = prefs.getString(TeamFragment.DRIVER2_KEY, "");
+            counter++;
+            values[counter] = prefs.getString(TeamFragment.COACH_KEY, "");
+            counter++;
+            values[counter] = processSimple(prefs.getInt(TeamFragment.CM_KEY, 0));
+            counter++;
+            for (int j = 0; j < robot_values.length; j++) {
+                values[counter] = robot_values[j];
+                counter++;
+            }
+        }
+
+        return values;
+    }
+
     private String processSimple(int index) {
         return TeamFragment.SIMPLE[index];
+    }
+
+    private String processComp(int index) {
+        return TeamFragment.COMPETITION[index];
     }
 
     private String processAward(int index) {

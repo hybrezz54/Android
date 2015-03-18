@@ -78,7 +78,8 @@
                     android:layout_weight="1"
                     android:id="@+id/edtTotal"
                     android:hint="Total Years"
-                    android:gravity="center_horizontal"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
                     android:maxLength="2"
                     android:inputType="number"
                     android:layout_margin="5dp"/>
@@ -90,7 +91,8 @@
                     android:layout_weight="1"
                     android:layout_margin="5dp"
                     android:spinnerMode="dropdown"
-                    android:gravity="center_horizontal"/>
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"/>
 
             </LinearLayout>
 
@@ -199,6 +201,60 @@
                 android:background="@color/holo_red_dark"
                 android:layout_marginBottom="5dp"/>
 
+            <EditText
+                android:id="@+id/edtDriver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:hint="Driver #1 Name"
+                android:gravity="right"
+                android:inputType="textCapWords"/>
+
+            <EditText
+                android:id="@+id/edtDriver2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:hint="Driver #2 Name"
+                android:gravity="right"
+                android:inputType="textCapWords"/>
+
+            <EditText
+                android:id="@+id/edtCoach"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:hint="Coach Name"
+                android:gravity="right"
+                android:inputType="textCapWords"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:text="Is coach a mentor?"
+                    android:textSize="22sp"/>
+
+                <Spinner
+                    android:id="@+id/coachMentor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:layout_margin="5dp"
+                    android:spinnerMode="dropdown"/>
+
+                </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -247,9 +303,103 @@
                     android:numStars="5"
                     android:stepSize="0.5"/>
 
-            </LinearLayout>
+				</LinearLayout>
 
             </LinearLayout>
+			
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_margin="5dp"
+					android:paddingTop="16dp"
+					android:text="- HUMAN PLAYER -"
+					android:textStyle="bold"
+					android:textSize="20sp"/>
+
+				<View
+					android:layout_width="match_parent"
+					android:layout_height="2dp"
+					android:background="@color/holo_red_dark"
+					android:layout_marginBottom="5dp"/>
+					
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal">
+					
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:layout_margin="5dp"
+						android:gravity="center"
+						android:layout_gravity="center_vertical"
+						android:text="Can load totes?"
+						android:textSize="22sp"/>
+
+					<Spinner
+						android:id="@+id/hpTote"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:layout_margin="5dp"/>
+					
+					</LinearLayout>
+					
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal">
+				
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:layout_margin="5dp"
+						android:gravity="center"
+						android:layout_gravity="center_vertical"
+						android:text="Can load litter?"
+						android:textSize="22sp"/>
+
+					<Spinner
+						android:id="@+id/hpLitter"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:layout_margin="5dp"/>
+					
+					</LinearLayout>
+					
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal">
+					
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:layout_margin="5dp"
+						android:gravity="center"
+						android:layout_gravity="center_vertical"
+						android:text="Can throw litter?"
+						android:textSize="22sp"/>
+
+					<Spinner
+						android:id="@+id/hpThrow"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+						android:layout_margin="5dp"/>
+					
+					</LinearLayout>
+				
+				</LinearLayout>
 
         </LinearLayout>
 

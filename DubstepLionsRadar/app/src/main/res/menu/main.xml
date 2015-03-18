@@ -11,4 +11,7 @@
     <item android:id="@+id/action_add" android:title="@string/action_add"
         android:orderInCategory="3" app:showAsAction="ifRoom|withText" />
 
+    <item android:id="@+id/action_frcscout_export" android:title="CSV Export for FRCScout DB..."
+        android:orderInCategory="4" app:showAsAction="never" />
+
 </menu>

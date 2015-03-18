@@ -45,7 +45,10 @@ public class RobotFragment extends Fragment {
     private static final String DRIVE_KEY = "DRIVE_TRAIN";
     private static final String WHEELS_KEY = "WHEELS";
     private static final String RATE_KEY = "ROBOT_RATE";
-    private static final String NOTE_KEY = "ROBOT_NOTES";
+    private static final String STRENGTH_KEY = "ROBOT_STRENGTH";
+    private static final String WEAKNESS_KEY = "ROBOT_WEAKNESS";
+    private static final String WEIGHT_KEY = "ROBOT_WEIGHT";
+    private static final String HEIGHT_KEY = "ROBOT_HEIGHT";
     private static final String AUTO1_KEY = "AUTO_STYLE_ONE";
     private static final String AUTO2_KEY = "AUTO_STYLE_TWO";
 
@@ -54,15 +57,18 @@ public class RobotFragment extends Fragment {
 
     public static final int REQUEST_IMG_CAPTURE = 3;
 
-    private static final String[] HEADER = new String[] {"Team #", "Team Name", "Robot Style", "Drive Train", "Wheel Type", "Robot Rating", "Robot Notes",
-            "Auto Preference #1", "Auto Preference #2"};
+    private static final String[] HEADER = new String[] {"Team #", "Team Name", "Robot Style", "Drive Train", "Wheel Type", "Robot Rating", "Strengths", "Weaknesses",
+            "Robot Weight", "Robot Height", "Auto: move totes?", "Auto: move containers?", "Auto: acquire containers?"};
     private static final String[] ROBOT_STYLE = new String[] {"------", "Insane Tote Stacker/Lifter", "Recycle container carrier", "Tote hauler/pusher",
             "Tote Stacker/Lifter + Container Carry", "Tote Hauler/Pusher + Container Carry", "Tote Lifter + Tote pusher + Container Carry"};
     private static final String[] DRIVE_TRAIN = new String[] {"------", "Tank", "Mecanum", "Swerve", "Slide", "Holonomic"};
     private static final String[] WHEELS = new String[] {"------", "Mecanum", "Omni", "Tread", "Other"};
-    private static final String[] AUTO_STYLE = new String[] {"------", "Do Nothing", "Move to Auto zone", "Lift tote", "Lift recycle container","Lift tote & move",
+    /*private static final String[] AUTO_STYLE = new String[] {"------", "Do Nothing", "Move to Auto zone", "Lift tote", "Lift recycle container","Lift tote & move",
             "Lift container & move", "Push tote", "Push container", "Stack totes", "Spin w/ tote", "Spin w/ container", "Move to Landfill", "Get tote from Landfill",
-            "Get container from Landfill", "Aim for coopertition totes"};
+            "Get container from Landfill", "Aim for coopertition totes"};*/
+    private static final String[] FRCSCOUT_HEADER = new String[] {"Robot Height", "Robot Weight", "Can move totes?", "Can move containers?", "Can acquire containers?",
+            "Preferred starting location", "Tote Stack Capacity", "Human can load totes?", "Human can load litter?", "Human can throw litter?", "Robot has turret?",
+            "Robot has strafing?", "Robot speed", "Robot Strengths", "Robot Weaknesses"};
 
     private boolean isEditing;
     private int mPosition;
@@ -77,7 +83,10 @@ public class RobotFragment extends Fragment {
     private Spinner mDriveTrain;
     private Spinner mWheels;
     private RatingBar mRate;
-    private EditText mNotes;
+    private EditText mStrength;
+    private EditText mWeakness;
+    private EditText mWeight;
+    private EditText mHeight;
     private Spinner mAuto1;
     private Spinner mAuto2;
 
@@ -118,7 +127,10 @@ public class RobotFragment extends Fragment {
         mDriveTrain = (Spinner) rootView.findViewById(R.id.driveTrain);
         mWheels = (Spinner) rootView.findViewById(R.id.wheels);
         mRate = (RatingBar) rootView.findViewById(R.id.robotRate);
-        mNotes = (EditText) rootView.findViewById(R.id.robotNotes);
+        mStrength = (EditText) rootView.findViewById(R.id.robotStrength);
+        mWeakness = (EditText) rootView.findViewById(R.id.robotWeakness);
+        mWeight = (EditText) rootView.findViewById(R.id.edtWeight);
+        mHeight = (EditText) rootView.findViewById(R.id.edtHeight);
         mAuto1 = (Spinner) rootView.findViewById(R.id.autoStyle1);
         mAuto2 = (Spinner) rootView.findViewById(R.id.autoStyle2);
 
@@ -255,29 +267,42 @@ public class RobotFragment extends Fragment {
     public Uri getImageFile(final int index) {
         //mActivity = activity;
         updatePosition(index);
-        mPhotoPath = mPrefs.getString(IMAGE_KEY, "");
+        loadPhotoPath();
         File file = new File(mPhotoPath);
         return Uri.fromFile(file);
     }
 
+    public String[] getFrcScoutExportArray(int index, Activity activity) {
+        mActivity = activity;
+        updatePosition(index);
+
+        String[] values = new String[FRCSCOUT_HEADER.length];
+        values[0] = mPrefs.getString(HEIGHT_KEY, "");
+        values[1] = mPrefs.getString(WEIGHT_KEY, "");
+        values[13] = processNotes(mPrefs.getString(STRENGTH_KEY, ""));
+        values[14] = processNotes(mPrefs.getString(WEAKNESS_KEY, ""));
+
+        return values;
+    }
+
     public void remove(int position, Activity activity) {
-        SharedPreferences prefs = activity.getSharedPreferences(PREFS_KEY + position, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+        updatePosition(position);
+        SharedPreferences.Editor editor = mPrefs.edit();
         editor.clear();
         editor.commit();
     }
 
-    public void updatePosition(int position) {
+    private void updatePosition(int position) {
         mPosition = position;
         updatePrefs();
-        loadPhotoPath();
+        //loadPhotoPath();
         //loadValues();
     }
 
-    public void updateEditing(boolean editing) {
+    /*private void updateEditing(boolean editing) {
         this.isEditing = editing;
         viewsEnabled(editing);
-    }
+    }*/
 
     private File createImageFile() throws IOException {
         //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -318,7 +343,13 @@ public class RobotFragment extends Fragment {
             counter++;
             values[counter] = String.valueOf(mPrefs.getFloat(RATE_KEY, 0f));
             counter++;
-            values[counter] = processNotes(mPrefs.getString(NOTE_KEY, ""));
+            values[counter] = processNotes(mPrefs.getString(STRENGTH_KEY, ""));
+            counter++;
+            values[counter] = processNotes(mPrefs.getString(WEAKNESS_KEY, ""));
+            counter++;
+            values[counter] = mPrefs.getString(WEIGHT_KEY, "");
+            counter++;
+            values[counter] = mPrefs.getString(HEIGHT_KEY, "");
             counter++;
             values[counter] = processAutoStyle(mPrefs.getInt(AUTO1_KEY, 0));
             counter++;
@@ -336,7 +367,10 @@ public class RobotFragment extends Fragment {
         int drive = mPrefs.getInt(DRIVE_KEY, 0);
         int wheel = mPrefs.getInt(WHEELS_KEY, 0);
         float rate = mPrefs.getFloat(RATE_KEY, 0f);
-        String notes = mPrefs.getString(NOTE_KEY, "");
+        String strength = mPrefs.getString(STRENGTH_KEY, "");
+        String weakness = mPrefs.getString(WEAKNESS_KEY, "");
+        String weight = mPrefs.getString(WEIGHT_KEY, "");
+        String height = mPrefs.getString(HEIGHT_KEY, "");
         int auto1 = mPrefs.getInt(AUTO1_KEY, 0);
         int auto2 = mPrefs.getInt(AUTO2_KEY, 0);
 
@@ -344,7 +378,10 @@ public class RobotFragment extends Fragment {
         mDriveTrain.setSelection(drive);
         mWheels.setSelection(wheel);
         mRate.setRating(rate);
-        mNotes.setText(notes);
+        mStrength.setText(strength);
+        mWeakness.setText(weakness);
+        mWeight.setText(weight);
+        mHeight.setText(height);
         mAuto1.setSelection(auto1);
         mAuto2.setSelection(auto2);
     }
@@ -356,7 +393,9 @@ public class RobotFragment extends Fragment {
         editor.putInt(DRIVE_KEY, mDriveTrain.getSelectedItemPosition());
         editor.putInt(WHEELS_KEY, mWheels.getSelectedItemPosition());
         editor.putFloat(RATE_KEY, mRate.getRating());
-        editor.putString(NOTE_KEY, mNotes.getText().toString());
+        editor.putString(STRENGTH_KEY, mStrength.getText().toString());
+        editor.putString(WEIGHT_KEY, mWeight.getText().toString());
+        editor.putString(HEIGHT_KEY, mHeight.getText().toString());
         editor.putInt(AUTO1_KEY, mAuto1.getSelectedItemPosition());
         editor.putInt(AUTO2_KEY, mAuto2.getSelectedItemPosition());
         editor.commit();
@@ -372,7 +411,8 @@ public class RobotFragment extends Fragment {
         mDriveTrain.setEnabled(isEditing);
         mWheels.setEnabled(isEditing);
         mRate.setEnabled(isEditing);
-        mNotes.setEnabled(isEditing);
+        mStrength.setEnabled(isEditing);
+        mWeakness.setEnabled(isEditing);
         mAuto1.setEnabled(isEditing);
         mAuto2.setEnabled(isEditing);
     }
