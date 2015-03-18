@@ -44,10 +44,13 @@ public class TeamFragment extends Fragment {
     public static final String CM_KEY = "COACH_MENTOR";
     public static final String DRIVER_KEY = "DRIVER_RATE";
     public static final String HP_KEY = "HP_RATE";
+	public static final String HPTOTE_KEY = "HP_TOTE";
+	public static final String HPLITTER_KEY = "HP_LITTER";
+	public static final String HPTHROW_KEY = "HP_THROW";
 
     public static final String[] HEADER = new String[] {"Number", "Name", "Website", "Location", "Total Yrs.", "Another competition this year?", "Award 1",
             "Year 1", "Award 2", "Year 2", "Award 3", "Year 3", "Notes", "Driver #1 Name", "Driver #2 Name", "Drive Coach Name", "Is drive coach mentor?",
-            "Driver Rating", "Human Player Rating"};
+            "Driver Rating", "Human Player Rating", "HP: Can load totes?", "HP: Can load litter?", "HP: Can throw litter?"};
     public static final String[] AWARDS = new String[] {"------", "Rookie All Star Award", "Chairman's Award", "Creativity Award", "Dean's List Award",
             "Engineering Excellence Award", "Engineering Inspiration Award", "Entrepreneurship Award", "Gracious Professionalism", "Imagery Award",
             "Industrial Design Award", "Industrial Safety Award", "Innovation in Control Award", "Media & Tech. Innovation Award",
@@ -81,6 +84,9 @@ public class TeamFragment extends Fragment {
     private Spinner mCoachMentor;
     private RatingBar mDriverRate;
     private RatingBar mHpRate;
+	private Spinner mHpTote;
+	private Spinner mHpLitter;
+	private Spinner mHpThrow;
 
     public static TeamFragment newInstance(int position, boolean editing, boolean existing) {
         TeamFragment fragment = new TeamFragment();
@@ -153,12 +159,15 @@ public class TeamFragment extends Fragment {
         mAwardThree = (Spinner) rootView.findViewById(R.id.award3);
         mYearThree = (Spinner) rootView.findViewById(R.id.year3);
         mNotes = (EditText) rootView.findViewById(R.id.notes);
-        mDriver1 = (EditText) rootView.findViewById(R.id.edtDriver);
+        mDriver1 = (EditText) rootView.findViewById(R.id.edtDriver1);
         mDriver2 = (EditText) rootView.findViewById(R.id.edtDriver2);
         mCoach = (EditText) rootView.findViewById(R.id.edtCoach);
         mCoachMentor = (Spinner) rootView.findViewById(R.id.coachMentor);
         mDriverRate = (RatingBar) rootView.findViewById(R.id.driverRating);
         mHpRate = (RatingBar) rootView.findViewById(R.id.hpRating);
+		mHpTote = (Spinner) rootView.findViewById(R.id.hpTote);
+		mHpLitter = (Spinner) rootView.findViewById(R.id.hpLitter);
+		mHpThrow = (Spinner) rootView.findViewById(R.id.hpThrow);
 
         initSpinner();
         loadValues();
@@ -189,6 +198,9 @@ public class TeamFragment extends Fragment {
         mYearTwo.setAdapter(year);
         mYearThree.setAdapter(year);
         mCoachMentor.setAdapter(simple);
+		mHpTote.setAdapter(simple);
+		mHpLitter.setAdapter(simple);
+		mHpThrow.setAdapter(simple);
 
     }
 
@@ -212,6 +224,9 @@ public class TeamFragment extends Fragment {
         mCoachMentor.setEnabled(false);
         mDriverRate.setEnabled(false);
         mHpRate.setEnabled(false);
+		mHpTote.setEnabled(false);
+		mHpLitter.setEnabled(false);
+		mHpThrow.setEnabled(false);
     }
 
     private void loadValues() {
@@ -235,6 +250,9 @@ public class TeamFragment extends Fragment {
         int coachMentor = prefs.getInt(CM_KEY, 0);
         float driver = prefs.getFloat(DRIVER_KEY, 0f);
         float hp = prefs.getFloat(HP_KEY, 0f);
+		int hptote = prefs.getInt(HPTOTE_KEY, 0);
+		int hplitter = prefs.getInt(HPLITTER_KEY, 0);
+		int hpthrow = prefs.getInt(HPTHROW_KEY, 0);
 
         mNumber.setText(number);
         mTeam.setText(name);
@@ -255,6 +273,9 @@ public class TeamFragment extends Fragment {
         mCoachMentor.setSelection(coachMentor);
         mDriverRate.setRating(driver);
         mHpRate.setRating(hp);
+		mHpTote.setSelection(hptote);
+		mHpLitter.setSelection(hplitter);
+		mHpThrow.setSelection(hpthrow);
     }
 
     private void saveValues() {
@@ -274,11 +295,14 @@ public class TeamFragment extends Fragment {
         editor.putInt(YEAR3_KEY, mYearThree.getSelectedItemPosition());
         editor.putString(NOTES_KEY, mNotes.getText().toString());
         editor.putString(DRIVER1_KEY, mDriver1.getText().toString());
-        editor.putString(DRIVER1_KEY, mDriver2.getText().toString());
+        editor.putString(DRIVER2_KEY, mDriver2.getText().toString());
         editor.putString(COACH_KEY, mCoach.getText().toString());
         editor.putInt(CM_KEY, mCoachMentor.getSelectedItemPosition());
         editor.putFloat(DRIVER_KEY, mDriverRate.getRating());
         editor.putFloat(HP_KEY, mHpRate.getRating());
+		editor.putInt(HPTOTE_KEY, mHpTote.getSelectedItemPosition());
+		editor.putInt(HPLITTER_KEY, mHpLitter.getSelectedItemPosition());
+		editor.putInt(HPTHROW_KEY, mHpThrow.getSelectedItemPosition());
         editor.commit();
     }
 

@@ -441,9 +441,10 @@ public class PrimaryListFragment extends ListFragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                final String[] HEADER = new String[] {"Team Number", "Driver #1", "Driver #2", "Coach", "Is drive coach mentor?", "Robot Height", "Robot Weight",
+                final String[] HEADER = new String[] {"Team Number", "Driver #1", "Driver #2", "Coach", "Is drive coach mentor?", "Robot Height (in)", "Robot Weight (lbs)",
                         "Can move totes?", "Can move containers?", "Can acquire containers?", "Preferred starting location", "Tote Stack Capacity", "Human can load totes?",
-                        "Human can load litter?", "Human can throw litter?", "Robot has turret?", "Robot has strafing?", "Robot speed", "Robot Strengths", "Robot Weaknesses"};
+                        "Human can load litter?", "Human can throw litter?", "Robot has turret?", "Robot has strafing?", "Robot speed (ft/s)", "Robot Strengths",
+                        "Robot Weaknesses"};
 
                 CsvWriter writer = new CsvWriter(mActivity, "frcscout_db", HEADER,
                         getFrcScoutExportArray(HEADER.length));
@@ -452,7 +453,7 @@ public class PrimaryListFragment extends ListFragment {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/*");
                 intent.setPackage("com.android.bluetooth");
-                intent.putExtra(Intent.EXTRA_STREAM, writer.getFile());
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(writer.getFile()));
                 startActivity(intent);
             }
         });
@@ -510,9 +511,15 @@ public class PrimaryListFragment extends ListFragment {
             counter++;
             strings[counter] = processSimple(prefs.getInt(TeamFragment.CM_KEY, 0));
             counter++;
+            strings[counter] = String.valueOf(prefs.getFloat(TeamFragment.DRIVER_KEY, 0f));
+            counter++;
             strings[counter] = String.valueOf(prefs.getFloat(TeamFragment.HP_KEY, 0f));
             counter++;
-            strings[counter] = String.valueOf(prefs.getFloat(TeamFragment.DRIVER_KEY, 0f));
+            strings[counter] = processSimple(prefs.getInt(TeamFragment.HPTOTE_KEY, 0));
+            counter++;
+            strings[counter] = processSimple(prefs.getInt(TeamFragment.HPLITTER_KEY, 0));
+            counter++;
+            strings[counter] = processSimple(prefs.getInt(TeamFragment.HPTHROW_KEY, 0));
             counter++;
         }
 
@@ -541,6 +548,7 @@ public class PrimaryListFragment extends ListFragment {
         for (int i = 0; i < mValues.size(); i++) {
             SharedPreferences prefs = mActivity.getSharedPreferences(PREFS_KEY + i, Context.MODE_PRIVATE);
             String[] robot_values = robotFrag.getFrcScoutExportArray(i, mActivity);
+
             values[counter] = mValues.get(i).number;
             counter++;
             values[counter] = prefs.getString(TeamFragment.DRIVER1_KEY, "");
@@ -551,8 +559,18 @@ public class PrimaryListFragment extends ListFragment {
             counter++;
             values[counter] = processSimple(prefs.getInt(TeamFragment.CM_KEY, 0));
             counter++;
-            for (int j = 0; j < robot_values.length; j++) {
+            for (int j = 0; j < (robot_values.length - 5); j++) {
                 values[counter] = robot_values[j];
+                counter++;
+            }
+            values[counter] = processSimple(prefs.getInt(TeamFragment.HPTOTE_KEY, 0));
+            counter++;
+            values[counter] = processSimple(prefs.getInt(TeamFragment.HPLITTER_KEY, 0));
+            counter++;
+            values[counter] = processSimple(prefs.getInt(TeamFragment.HPTHROW_KEY, 0));
+            counter++;
+            for (int j = 5; j > 0; j--) {
+                values[counter] = robot_values[robot_values.length - j];
                 counter++;
             }
         }

@@ -49,8 +49,14 @@ public class RobotFragment extends Fragment {
     private static final String WEAKNESS_KEY = "ROBOT_WEAKNESS";
     private static final String WEIGHT_KEY = "ROBOT_WEIGHT";
     private static final String HEIGHT_KEY = "ROBOT_HEIGHT";
+    private static final String SPEED_KEY = "ROBOT_SPEED";
+    private static final String TURRET_KEY = "ROBOT_TURRET";
+    private static final String STRAFE_KEY = "ROBOT_STRAFE";
     private static final String AUTO1_KEY = "AUTO_STYLE_ONE";
     private static final String AUTO2_KEY = "AUTO_STYLE_TWO";
+    private static final String AUTO3_KEY = "AUTO_STYLE_THREE";
+    private static final String START_KEY = "AUTO_START";
+    private static final String CAPACITY_KEY = "TOTE_CAPACITY";
 
     private static final String ARG_POS_NUMBER = "ROBOT_FRAG_POS";
     private static final String ARG_EDITING = "ROBOT_FRAG_STATE";
@@ -58,7 +64,8 @@ public class RobotFragment extends Fragment {
     public static final int REQUEST_IMG_CAPTURE = 3;
 
     private static final String[] HEADER = new String[] {"Team #", "Team Name", "Robot Style", "Drive Train", "Wheel Type", "Robot Rating", "Strengths", "Weaknesses",
-            "Robot Weight", "Robot Height", "Auto: move totes?", "Auto: move containers?", "Auto: acquire containers?"};
+            "Robot Weight", "Robot Height", "Robot Speed", "Robot Turret", "Robot Strafing", "Auto: move totes?", "Auto: move containers?", "Auto: acquire containers?",
+            "Preferred Starting Location", "Tote Carry Capacity"};
     private static final String[] ROBOT_STYLE = new String[] {"------", "Insane Tote Stacker/Lifter", "Recycle container carrier", "Tote hauler/pusher",
             "Tote Stacker/Lifter + Container Carry", "Tote Hauler/Pusher + Container Carry", "Tote Lifter + Tote pusher + Container Carry"};
     private static final String[] DRIVE_TRAIN = new String[] {"------", "Tank", "Mecanum", "Swerve", "Slide", "Holonomic"};
@@ -67,8 +74,10 @@ public class RobotFragment extends Fragment {
             "Lift container & move", "Push tote", "Push container", "Stack totes", "Spin w/ tote", "Spin w/ container", "Move to Landfill", "Get tote from Landfill",
             "Get container from Landfill", "Aim for coopertition totes"};*/
     private static final String[] FRCSCOUT_HEADER = new String[] {"Robot Height", "Robot Weight", "Can move totes?", "Can move containers?", "Can acquire containers?",
-            "Preferred starting location", "Tote Stack Capacity", "Human can load totes?", "Human can load litter?", "Human can throw litter?", "Robot has turret?",
-            "Robot has strafing?", "Robot speed", "Robot Strengths", "Robot Weaknesses"};
+            "Preferred starting location", "Tote Stack Capacity", "Robot has turret?", "Robot has strafing?", "Robot speed", "Robot Strengths", "Robot Weaknesses"};
+    public static final String[] SIMPLE = new String[] {"------", "No", "Yes"};
+    public static final String[] AUTO_START = new String[] {"------", "Side staging zone w/ no platform", "Middle staging zone", "Side staging zone w/ platform",
+            "Auto zone"};
 
     private boolean isEditing;
     private int mPosition;
@@ -87,8 +96,14 @@ public class RobotFragment extends Fragment {
     private EditText mWeakness;
     private EditText mWeight;
     private EditText mHeight;
+    private EditText mSpeed;
+    private Spinner mTurret;
+    private Spinner mStrafe;
     private Spinner mAuto1;
     private Spinner mAuto2;
+    private Spinner mAuto3;
+    private Spinner mAutoStart;
+    private EditText mCapacity;
 
     public static RobotFragment newInstance(int position, boolean editing) {
         RobotFragment fragment = new RobotFragment();
@@ -131,8 +146,14 @@ public class RobotFragment extends Fragment {
         mWeakness = (EditText) rootView.findViewById(R.id.robotWeakness);
         mWeight = (EditText) rootView.findViewById(R.id.edtWeight);
         mHeight = (EditText) rootView.findViewById(R.id.edtHeight);
+        mSpeed = (EditText) rootView.findViewById(R.id.edtSpeed);
+        mTurret = (Spinner) rootView.findViewById(R.id.turret);
+        mStrafe = (Spinner) rootView.findViewById(R.id.strafing);
         mAuto1 = (Spinner) rootView.findViewById(R.id.autoStyle1);
         mAuto2 = (Spinner) rootView.findViewById(R.id.autoStyle2);
+        mAuto3 = (Spinner) rootView.findViewById(R.id.autoStyle3);
+        mAutoStart = (Spinner) rootView.findViewById(R.id.preferredStart);
+        mCapacity = (EditText) rootView.findViewById(R.id.edtToteCapacity);
 
         mPicButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,8 +300,16 @@ public class RobotFragment extends Fragment {
         String[] values = new String[FRCSCOUT_HEADER.length];
         values[0] = mPrefs.getString(HEIGHT_KEY, "");
         values[1] = mPrefs.getString(WEIGHT_KEY, "");
-        values[13] = processNotes(mPrefs.getString(STRENGTH_KEY, ""));
-        values[14] = processNotes(mPrefs.getString(WEAKNESS_KEY, ""));
+        values[2] = processSimple(mPrefs.getInt(AUTO1_KEY, 0));
+        values[3] = processSimple(mPrefs.getInt(AUTO2_KEY, 0));
+        values[4] = processSimple(mPrefs.getInt(AUTO3_KEY, 0));
+        values[5] = processStart(mPrefs.getInt(START_KEY, 0));
+        values[6] = mPrefs.getString(CAPACITY_KEY, "");
+        values[7] = processSimple(mPrefs.getInt(TURRET_KEY, 0));
+        values[8] = processSimple(mPrefs.getInt(STRAFE_KEY, 0));
+        values[9] = processNotes(mPrefs.getString(SPEED_KEY, ""));
+        values[10] = processNotes(mPrefs.getString(STRENGTH_KEY, ""));
+        values[11] = processNotes(mPrefs.getString(WEAKNESS_KEY, ""));
 
         return values;
     }
@@ -351,9 +380,21 @@ public class RobotFragment extends Fragment {
             counter++;
             values[counter] = mPrefs.getString(HEIGHT_KEY, "");
             counter++;
-            values[counter] = processAutoStyle(mPrefs.getInt(AUTO1_KEY, 0));
+            values[counter] = mPrefs.getString(SPEED_KEY, "");
             counter++;
-            values[counter] = processAutoStyle(mPrefs.getInt(AUTO2_KEY, 0));
+            values[counter] = processSimple(mPrefs.getInt(TURRET_KEY, 0));
+            counter++;
+            values[counter] = processSimple(mPrefs.getInt(STRAFE_KEY, 0));
+            counter++;
+            values[counter] = processSimple(mPrefs.getInt(AUTO1_KEY, 0));
+            counter++;
+            values[counter] = processSimple(mPrefs.getInt(AUTO2_KEY, 0));
+            counter++;
+            values[counter] = processSimple(mPrefs.getInt(AUTO3_KEY, 0));
+            counter++;
+            values[counter] = processStart(mPrefs.getInt(START_KEY, 0));
+            counter++;
+            values[counter] = mPrefs.getString(CAPACITY_KEY, "");
             counter++;
         }
 
@@ -371,8 +412,14 @@ public class RobotFragment extends Fragment {
         String weakness = mPrefs.getString(WEAKNESS_KEY, "");
         String weight = mPrefs.getString(WEIGHT_KEY, "");
         String height = mPrefs.getString(HEIGHT_KEY, "");
+        String speed = mPrefs.getString(SPEED_KEY, "");
+        int turret = mPrefs.getInt(TURRET_KEY, 0);
+        int strafe = mPrefs.getInt(STRAFE_KEY, 0);
         int auto1 = mPrefs.getInt(AUTO1_KEY, 0);
         int auto2 = mPrefs.getInt(AUTO2_KEY, 0);
+        int auto3 = mPrefs.getInt(AUTO3_KEY, 0);
+        int start = mPrefs.getInt(START_KEY, 0);
+        String capacity = mPrefs.getString(CAPACITY_KEY, "");
 
         mRobotStyle.setSelection(style);
         mDriveTrain.setSelection(drive);
@@ -382,8 +429,14 @@ public class RobotFragment extends Fragment {
         mWeakness.setText(weakness);
         mWeight.setText(weight);
         mHeight.setText(height);
+        mSpeed.setText(speed);
+        mTurret.setSelection(turret);
+        mStrafe.setSelection(strafe);
         mAuto1.setSelection(auto1);
         mAuto2.setSelection(auto2);
+        mAuto3.setSelection(auto3);
+        mAutoStart.setSelection(start);
+        mCapacity.setText(capacity);
     }
 
     private void saveValues() {
@@ -394,10 +447,17 @@ public class RobotFragment extends Fragment {
         editor.putInt(WHEELS_KEY, mWheels.getSelectedItemPosition());
         editor.putFloat(RATE_KEY, mRate.getRating());
         editor.putString(STRENGTH_KEY, mStrength.getText().toString());
+        editor.putString(WEAKNESS_KEY, mWeakness.getText().toString());
         editor.putString(WEIGHT_KEY, mWeight.getText().toString());
         editor.putString(HEIGHT_KEY, mHeight.getText().toString());
+        editor.putString(SPEED_KEY, mSpeed.getText().toString());
+        editor.putInt(TURRET_KEY, mTurret.getSelectedItemPosition());
+        editor.putInt(STRAFE_KEY, mStrafe.getSelectedItemPosition());
         editor.putInt(AUTO1_KEY, mAuto1.getSelectedItemPosition());
         editor.putInt(AUTO2_KEY, mAuto2.getSelectedItemPosition());
+        editor.putInt(AUTO3_KEY, mAuto3.getSelectedItemPosition());
+        editor.putInt(START_KEY, mAutoStart.getSelectedItemPosition());
+        editor.putString(CAPACITY_KEY, mCapacity.getText().toString());
         editor.commit();
     }
 
@@ -413,8 +473,16 @@ public class RobotFragment extends Fragment {
         mRate.setEnabled(isEditing);
         mStrength.setEnabled(isEditing);
         mWeakness.setEnabled(isEditing);
+        mWeight.setEnabled(isEditing);
+        mHeight.setEnabled(isEditing);
+        mSpeed.setEnabled(isEditing);
+        mTurret.setEnabled(isEditing);
+        mStrafe.setEnabled(isEditing);
         mAuto1.setEnabled(isEditing);
         mAuto2.setEnabled(isEditing);
+        mAuto3.setEnabled(isEditing);
+        mAutoStart.setEnabled(isEditing);
+        mCapacity.setEnabled(isEditing);
     }
 
     private void setPic() {
@@ -447,13 +515,18 @@ public class RobotFragment extends Fragment {
         ArrayAdapter<String> styles = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, ROBOT_STYLE);
         ArrayAdapter<String> drives = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, DRIVE_TRAIN);
         ArrayAdapter<String> wheels = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, WHEELS);
-        ArrayAdapter<String> auto = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, AUTO_STYLE);
+        ArrayAdapter<String> simple = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, SIMPLE);
+        ArrayAdapter<String> start = new ArrayAdapter<String>(mActivity, android.R.layout.simple_spinner_dropdown_item, AUTO_START);
 
         mRobotStyle.setAdapter(styles);
         mDriveTrain.setAdapter(drives);
         mWheels.setAdapter(wheels);
-        mAuto1.setAdapter(auto);
-        mAuto2.setAdapter(auto);
+        mTurret.setAdapter(simple);
+        mStrafe.setAdapter(simple);
+        mAuto1.setAdapter(simple);
+        mAuto2.setAdapter(simple);
+        mAuto3.setAdapter(simple);
+        mAutoStart.setAdapter(start);
     }
 
     private void updatePrefs() {
@@ -473,12 +546,18 @@ public class RobotFragment extends Fragment {
         return WHEELS[index];
     }
 
+    private String processSimple(int index) {
+        return SIMPLE[index];
+    }
+
+    private String processStart(int index) { return AUTO_START[index]; }
+
     private String processNotes(String text) {
         return text.replace("\n", "   ").replace(",", "");
     }
 
-    private String processAutoStyle(int index) {
+    /*private String processAutoStyle(int index) {
         return AUTO_STYLE[index];
-    }
+    }*/
 
 }
