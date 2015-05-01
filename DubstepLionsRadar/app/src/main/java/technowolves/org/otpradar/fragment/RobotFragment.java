@@ -41,6 +41,7 @@ public class RobotFragment extends Fragment {
 
     private static final String PREFS_KEY = "technowolves.org.otpradar.fragment.RobotFragment.PREFERENCE_FILE_KEY";
     private static final String IMAGE_KEY = "ROBOT_PICTURE";
+    private static final String NAME_KEY = "ROBOT_NAME";
     private static final String STYLE_KEY = "ROBOT_STYLE";
     private static final String DRIVE_KEY = "DRIVE_TRAIN";
     private static final String WHEELS_KEY = "WHEELS";
@@ -63,7 +64,7 @@ public class RobotFragment extends Fragment {
 
     public static final int REQUEST_IMG_CAPTURE = 3;
 
-    private static final String[] HEADER = new String[] {"Team #", "Team Name", "Robot Style", "Drive Train", "Wheel Type", "Robot Rating", "Strengths", "Weaknesses",
+    private static final String[] HEADER = new String[] {"Team #", "Team Name", "Robot Name", "Robot Style", "Drive Train", "Wheel Type", "Robot Rating", "Strengths", "Weaknesses",
             "Robot Weight", "Robot Height", "Robot Speed", "Robot Turret", "Robot Strafing", "Auto: move totes?", "Auto: move containers?", "Auto: acquire containers?",
             "Preferred Starting Location", "Tote Carry Capacity"};
     private static final String[] ROBOT_STYLE = new String[] {"------", "Insane Tote Stacker/Lifter", "Recycle container carrier", "Tote hauler/pusher",
@@ -88,6 +89,7 @@ public class RobotFragment extends Fragment {
 
     private ImageView mRobotImg;
     private Button mPicButton;
+    private EditText mRobotName;
     private Spinner mRobotStyle;
     private Spinner mDriveTrain;
     private Spinner mWheels;
@@ -138,6 +140,7 @@ public class RobotFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_robot_data, container, false);
         mRobotImg = (ImageView) rootView.findViewById(R.id.robotPic);
         mPicButton = (Button) rootView.findViewById(R.id.picButton);
+        mRobotName = (EditText) rootView.findViewById(R.id.edtRobotName);
         mRobotStyle = (Spinner) rootView.findViewById(R.id.robotStyle);
         mDriveTrain = (Spinner) rootView.findViewById(R.id.driveTrain);
         mWheels = (Spinner) rootView.findViewById(R.id.wheels);
@@ -364,6 +367,8 @@ public class RobotFragment extends Fragment {
             values[counter] = front[index];
             counter++;
             index++;
+            values[counter] = mPrefs.getString(NAME_KEY, "");
+            counter++;
             values[counter] = processStyles(mPrefs.getInt(STYLE_KEY, 0));
             counter++;
             values[counter] = processDrives(mPrefs.getInt(DRIVE_KEY, 0));
@@ -404,6 +409,7 @@ public class RobotFragment extends Fragment {
     private void loadValues() {
         loadPhotoPath();
 
+        String name = mPrefs.getString(NAME_KEY, "");
         int style = mPrefs.getInt(STYLE_KEY, 0);
         int drive = mPrefs.getInt(DRIVE_KEY, 0);
         int wheel = mPrefs.getInt(WHEELS_KEY, 0);
@@ -421,6 +427,7 @@ public class RobotFragment extends Fragment {
         int start = mPrefs.getInt(START_KEY, 0);
         String capacity = mPrefs.getString(CAPACITY_KEY, "");
 
+        mRobotName.setText(name);
         mRobotStyle.setSelection(style);
         mDriveTrain.setSelection(drive);
         mWheels.setSelection(wheel);
@@ -442,6 +449,7 @@ public class RobotFragment extends Fragment {
     private void saveValues() {
         SharedPreferences.Editor editor = mPrefs.edit();
         editor.putString(IMAGE_KEY, mPhotoPath);
+        editor.putString(NAME_KEY, mRobotName.getText().toString());
         editor.putInt(STYLE_KEY, mRobotStyle.getSelectedItemPosition());
         editor.putInt(DRIVE_KEY, mDriveTrain.getSelectedItemPosition());
         editor.putInt(WHEELS_KEY, mWheels.getSelectedItemPosition());
@@ -467,6 +475,7 @@ public class RobotFragment extends Fragment {
 
     private void viewsEnabled(boolean isEditing) {
         mPicButton.setEnabled(isEditing);
+        mRobotName.setEnabled(isEditing);
         mRobotStyle.setEnabled(isEditing);
         mDriveTrain.setEnabled(isEditing);
         mWheels.setEnabled(isEditing);
@@ -486,9 +495,9 @@ public class RobotFragment extends Fragment {
     }
 
     private void setPic() {
-        /*// Get the dimensions of the View
-        int targetW = mRobotImg.getWidth();
-        int targetH = mRobotImg.getHeight();
+        //Get the dimensions of the View
+        int targetW = (int) getResources().getDimension(R.dimen.robot_img_view_width);
+        int targetH = (int) getResources().getDimension(R.dimen.robot_img_view_height);
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -505,9 +514,7 @@ public class RobotFragment extends Fragment {
         bmOptions.inSampleSize = scaleFactor;
         bmOptions.inPurgeable = true;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(mPhotoPath, bmOptions);*/
-
-        Bitmap bitmap = BitmapFactory.decodeFile(mPhotoPath);
+        Bitmap bitmap = BitmapFactory.decodeFile(mPhotoPath, bmOptions);
         mRobotImg.setImageBitmap(bitmap);
     }
 

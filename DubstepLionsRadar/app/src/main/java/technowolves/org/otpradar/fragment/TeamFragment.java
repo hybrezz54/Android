@@ -132,6 +132,9 @@ public class TeamFragment extends Fragment {
                 if (!isExisting) {
                     ((PrimaryListFragment) fm.findFragmentByTag("PrimaryListFragment1"))
                             .add(new Team(mNumber.getText().toString(), mTeam.getText().toString()));
+                } else {
+                    ((PrimaryListFragment) fm.findFragmentByTag("PrimaryListFragment1"))
+                            .update(new Team(mNumber.getText().toString(), mTeam.getText().toString()), mPosition);
                 }
 
                 fm.popBackStack();

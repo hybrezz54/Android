@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -138,6 +139,8 @@ public class PrimaryListFragment extends ListFragment {
                             .replace(R.id.container, TeamFragment.newInstance(mValues.size(), true, false))
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .commit();
+                } else {
+                    Toast.makeText(mActivity, "Please add teams through the team profile tab.", Toast.LENGTH_LONG).show();
                 }
                 break;
             case R.id.action_share:
@@ -168,6 +171,13 @@ public class PrimaryListFragment extends ListFragment {
         mValues.add(team);
         ((TeamAdapter)getListAdapter()).notifyDataSetChanged();
         //mManager.saveFragmentInstanceState(this);
+        save();
+    }
+
+    public void update(Team team, int position) {
+        mValues.get(position).number = team.number;
+        mValues.get(position).team = team.team;
+        ((TeamAdapter)getListAdapter()).notifyDataSetChanged();
         save();
     }
 

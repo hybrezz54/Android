@@ -30,8 +30,8 @@
 
             <ImageView
                 android:id="@+id/robotPic"
-                android:layout_width="144dp"
-                android:layout_height="144dp"
+                android:layout_width="@dimen/robot_img_view_width"
+                android:layout_height="@dimen/robot_img_view_height"
                 android:contentDescription="Robot Pic"
                 android:layout_margin="5dp"
                 android:layout_gravity="center_horizontal"
@@ -45,6 +45,14 @@
                 android:layout_margin="5dp"
                 android:text="TAKE PIC"/>
 
+            <EditText
+                android:id="@+id/edtRobotName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:hint="Robot Name"
+                android:textStyle="bold"
+                android:gravity="right|center"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

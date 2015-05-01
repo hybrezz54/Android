@@ -13,6 +13,18 @@ ADDED from AndroidManifest.xml:2:1
 	android:versionCode
 		INJECTED from AndroidManifest.xml:0:0
 		INJECTED from AndroidManifest.xml:0:0
+uses-feature#android.hardware.bluetooth
+ADDED from AndroidManifest.xml:5:5
+	android:required
+		ADDED from AndroidManifest.xml:5:61
+	android:name
+		ADDED from AndroidManifest.xml:5:19
+uses-feature#android.hardware.camer
+ADDED from AndroidManifest.xml:6:5
+	android:required
+		ADDED from AndroidManifest.xml:6:57
+	android:name
+		ADDED from AndroidManifest.xml:6:19
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
 ADDED from AndroidManifest.xml:8:5
 	android:name
