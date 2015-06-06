@@ -8,7 +8,7 @@ android {
         }
     }
     compileSdkVersion 22
-    buildToolsVersion "23.0.0 rc1"
+    buildToolsVersion '23.0.0 rc2'
     defaultConfig {
         applicationId "org.technowolves.otpradar"
         minSdkVersion 15

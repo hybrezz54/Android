@@ -11,4 +11,7 @@
     <string name="drawer_item_one">Team Info</string>
     <string name="drawer_item_two">Robot Specs</string>
     <string name="drawer_item_three">Settings</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

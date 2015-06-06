@@ -1,35 +1,31 @@
 package org.technowolves.otpradar.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.TextView;
 
 import org.technowolves.otpradar.R;
+import org.technowolves.otpradar.fragment.intro.MainFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener{
 
     private static final String DRAWER_POS_KEY = "DRAWER_POS_KEY";
 
     private DrawerLayout mDrawerLayout;
-    private ActionBar mActionBar;
+    private Toolbar mToolbar;
     private NavigationView mNavView;
     private int mPosition;
+
+    private FragmentManager mManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +37,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, InitialActivity.class);
         startActivity(intent);
 
-        mActionBar = getSupportActionBar();
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
+            mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        }
+
+        /*mActionBar = getSupportActionBar();
         mActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
-        mActionBar.setDisplayHomeAsUpEnabled(true);
+        mActionBar.setDisplayHomeAsUpEnabled(true);*/
 
         mNavView = (NavigationView) findViewById(R.id.navigation_view);
 
@@ -51,10 +53,7 @@ public class MainActivity extends AppCompatActivity {
             mPosition = savedInstanceState.getInt(DRAWER_POS_KEY, 0);
         } else {
             mPosition = 0;
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, PlaceholderFragment.newInstance(1))
-                    .commit();
+            initMainFragment(1);
         }
 
         if(mNavView != null)
@@ -70,17 +69,20 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_item_1:
                         menuItem.setChecked(true);
                         mPosition = 0;
-                        mActionBar.setTitle(getString(R.string.drawer_item_one));
+                        mToolbar.setTitle(getString(R.string.drawer_item_one));
                         mDrawerLayout.closeDrawer(GravityCompat.START);
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.container, PlaceholderFragment.newInstance(1))
-                                .commit();
+                        initMainFragment(1);
                         return true;
                     case R.id.navigation_item_2:
                         menuItem.setChecked(true);
                         mPosition = 1;
-                        mActionBar.setTitle(getString(R.string.drawer_item_two));
+                        mToolbar.setTitle(getString(R.string.drawer_item_two));
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
+                        return true;
+                    case R.id.navigation_item_3:
+                        menuItem.setChecked(true);
+                        mPosition = 2;
+                        mToolbar.setTitle(R.string.drawer_item_three);
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                 }
@@ -133,42 +135,16 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(DRAWER_POS_KEY, mPosition);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    @Override
+    public void onFragmentInteraction() {
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
+    }
 
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-        }
+    private void initMainFragment(int position) {
+        mManager = getSupportFragmentManager();
+        mManager.beginTransaction()
+                .replace(R.id.container, MainFragment.newInstance(position))
+                .commit();
     }
 
 }
