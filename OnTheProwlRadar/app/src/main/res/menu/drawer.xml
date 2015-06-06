@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_item_1"
+            android:checked="true"
+            android:title="@string/drawer_item_one"/>
+        <item
+            android:id="@+id/navigation_item_2"
+            android:title="@string/drawer_item_two"/>
+        <item
+            android:id="@+id/navigation_item_3"
+            android:title="@string/drawer_item_three"
+            android:icon="@drawable/ic_settings_black_18dp"/>
+    </group>
+
+</menu>

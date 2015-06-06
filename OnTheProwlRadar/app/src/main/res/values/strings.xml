@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">OnTheProwl Radar</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="init_activity_title">InitialActivity</string>
+    <string name="drawer_item_one">Team Info</string>
+    <string name="drawer_item_two">Robot Specs</string>
+    <string name="drawer_item_three">Settings</string>
+</resources>
