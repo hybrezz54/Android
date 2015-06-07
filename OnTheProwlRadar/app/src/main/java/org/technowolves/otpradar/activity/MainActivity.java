@@ -2,6 +2,7 @@ package org.technowolves.otpradar.activity;
 
 import android.content.Intent;
 import android.os.PersistableBundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
+import android.view.View;
 
 import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.fragment.intro.MainFragment;
@@ -43,21 +45,23 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
             mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         }
 
-        /*mActionBar = getSupportActionBar();
-        mActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
-        mActionBar.setDisplayHomeAsUpEnabled(true);*/
-
         mNavView = (NavigationView) findViewById(R.id.navigation_view);
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null)
             mPosition = savedInstanceState.getInt(DRAWER_POS_KEY, 0);
-        } else {
-            mPosition = 0;
+        else
             initMainFragment(1);
-        }
 
         if(mNavView != null)
             setUpNavigationDrawerContent();
+
+        FloatingActionButton actionButton = (FloatingActionButton) findViewById(R.id.action_edit);
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, R.string.sb_edit, Snackbar.LENGTH_LONG).show();
+            }
+        });
 
     }
 
@@ -68,10 +72,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_1:
                         menuItem.setChecked(true);
-                        mPosition = 0;
-                        mToolbar.setTitle(getString(R.string.drawer_item_one));
-                        mDrawerLayout.closeDrawer(GravityCompat.START);
                         initMainFragment(1);
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_2:
                         menuItem.setChecked(true);
@@ -93,14 +95,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        /*if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.main, menu);
-            restoreActionBar();
-            return true;
-        }*/
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -113,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
+                mToolbar.setTitle(R.string.app_name);
                 return true;
             case R.id.action_settings:
                 return true;
@@ -141,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     }
 
     private void initMainFragment(int position) {
+        mPosition = 0;
+        mToolbar.setTitle(getString(R.string.drawer_item_one));
         mManager = getSupportFragmentManager();
         mManager.beginTransaction()
                 .replace(R.id.container, MainFragment.newInstance(position))
