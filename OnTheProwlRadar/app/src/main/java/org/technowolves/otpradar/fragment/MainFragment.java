@@ -1,4 +1,4 @@
-package org.technowolves.otpradar.fragment.intro;
+package org.technowolves.otpradar.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;

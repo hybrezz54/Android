@@ -15,6 +15,7 @@ public class InitialActivity extends AppIntro {
         // Add your slide's fragments here.
         // AppIntro will automatically generate the dots indicator and buttons.
         addSlide(new SlideOne(), getApplicationContext());
+        addSlide(new SlideOne(), getApplicationContext());
 
         // You can override bar/separator color if you want.
         setBarColor(Color.parseColor("#D32F2F"));

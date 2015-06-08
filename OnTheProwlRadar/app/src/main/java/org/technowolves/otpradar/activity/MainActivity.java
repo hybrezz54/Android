@@ -1,28 +1,28 @@
 package org.technowolves.otpradar.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.PersistableBundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
-import android.view.View;
 
 import org.technowolves.otpradar.R;
-import org.technowolves.otpradar.fragment.intro.MainFragment;
+import org.technowolves.otpradar.fragment.MainFragment;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener{
 
     private static final String DRAWER_POS_KEY = "DRAWER_POS_KEY";
 
     private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar mToolbar;
     private NavigationView mNavView;
     private int mPosition;
@@ -36,14 +36,18 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        Intent intent = new Intent(this, InitialActivity.class);
-        startActivity(intent);
+        /*Intent intent = new Intent(this, InitialActivity.class);
+        startActivity(intent);*/
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
             mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         }
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
+                R.string.drawer_open, R.string.drawer_close);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         mNavView = (NavigationView) findViewById(R.id.navigation_view);
 
@@ -55,13 +59,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         if(mNavView != null)
             setUpNavigationDrawerContent();
 
-        FloatingActionButton actionButton = (FloatingActionButton) findViewById(R.id.action_edit);
+        /*FloatingActionButton actionButton = (FloatingActionButton) findViewById(R.id.action_edit);
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, R.string.sb_edit, Snackbar.LENGTH_LONG).show();
+                Snackbar.make((View) v.getParent(), R.string.sb_edit, Snackbar.LENGTH_LONG).show();
             }
-        });
+        });*/
 
     }
 
@@ -104,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
+        if (mDrawerToggle.onOptionsItemSelected(item))
+            return true;
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
@@ -128,6 +135,18 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
         outState.putInt(DRAWER_POS_KEY, mPosition);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
