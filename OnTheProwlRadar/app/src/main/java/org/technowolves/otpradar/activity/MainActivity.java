@@ -1,6 +1,8 @@
 package org.technowolves.otpradar.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
@@ -19,6 +21,8 @@ import org.technowolves.otpradar.fragment.MainFragment;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener{
 
+    private static final String PREFS_KEY = "org.technowolves.otpradar.PREFERENCES_KEY";
+    private static final String PREFS_OPEN_APP = "APP_OPEN_TIME";
     private static final String DRAWER_POS_KEY = "DRAWER_POS_KEY";
 
     private DrawerLayout mDrawerLayout;
@@ -36,8 +40,14 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        /*Intent intent = new Intent(this, InitialActivity.class);
-        startActivity(intent);*/
+        SharedPreferences prefs = this.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        if (!prefs.getBoolean(PREFS_OPEN_APP, false)) {
+            Intent intent = new Intent(this, InitialActivity.class);
+            startActivity(intent);
+            prefs.edit()
+                    .putBoolean(PREFS_OPEN_APP, true)
+                    .apply();
+        }
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
@@ -59,17 +69,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         if(mNavView != null)
             setUpNavigationDrawerContent();
 
-        /*FloatingActionButton actionButton = (FloatingActionButton) findViewById(R.id.action_edit);
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make((View) v.getParent(), R.string.sb_edit, Snackbar.LENGTH_LONG).show();
-            }
-        });*/
-
     }
 
     private void setUpNavigationDrawerContent() {
+
         mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -95,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 return false;
             }
         });
+
     }
 
     @Override

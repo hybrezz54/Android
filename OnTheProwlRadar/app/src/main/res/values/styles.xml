@@ -10,16 +10,11 @@
         <item name="windowActionBar">false</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
-    </style>
-
     <style name="AppTheme.NavDrawerItem" parent="Theme.AppCompat.Light">
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:textColor">@color/textColorPrimary</item>
         <item name="colorPrimary">@color/textColorPrimary</item>
-        <item name="android:background">@color/colorBackground</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
     </style>
 
 </resources>
