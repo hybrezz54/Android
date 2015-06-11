@@ -33,7 +33,6 @@ public class TeamCursorAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View v = LayoutInflater.from(context).inflate(R.layout.item_team, parent, false);
-        return v;
+        return LayoutInflater.from(context).inflate(R.layout.item_team, parent, false);
     }
 }

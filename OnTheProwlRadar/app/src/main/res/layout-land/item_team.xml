@@ -11,19 +11,21 @@
         android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/txtNumber"
+            android:id="@+id/txtTeamNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="5518"
             android:textStyle="bold"
-            android:textSize="28sp"/>
+            android:textSize="28sp"
+            android:fontFamily="sans-serif-thin"/>
 
         <TextView
-            android:id="@+id/txtTeam"
+            android:id="@+id/txtTeamName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:text="Techno Wolves"/>
+            android:text="Techno Wolves"
+            android:fontFamily="sans-serif-light"/>
 
     </LinearLayout>
 
@@ -41,15 +43,8 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:textStyle="italic"
-            android:text="http://technowolves.org"/>
-
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:textSize="48sp"
-        android:textStyle="bold"
-        android:text=">"/>
+            android:text="http://technowolves.org"
+            android:fontFamily="sans-serif-condensed"/>
 
     </LinearLayout>
 

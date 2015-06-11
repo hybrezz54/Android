@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ListView;
 
 import org.technowolves.otpradar.R;
@@ -63,15 +64,6 @@ public class MainFragment extends ListFragment {
         }
 
         mToolbar = new Toolbar(getActivity());
-
-        /*mValues = new ArrayList<>();
-        mValues.add(new TeamListItem("5518", "Techno Wolves", "http://technowolves.org"));
-        setListAdapter(new TeamListAdapter(getActivity(), mValues));*/
-
-        DatabaseHandler handler = new DatabaseHandler(getActivity());
-        handler.addTeamItem(new DatabaseTeamItem("5518", "Techno Wolves", "http://technowolves.org"));
-        TeamCursorAdapter adapter = new TeamCursorAdapter(getActivity(), handler.getCursor());
-        setListAdapter(adapter);
     }
 
     @Override
@@ -80,12 +72,26 @@ public class MainFragment extends ListFragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        DatabaseHandler handler = new DatabaseHandler(getActivity());
+        handler.addTeamItem(new DatabaseTeamItem("5518", "Techno Wolves", "http://technowolves.org"));
+        TeamCursorAdapter adapter = new TeamCursorAdapter(getActivity(), handler.getCursor());
+        setListAdapter(adapter);
+
+        final Toolbar editToolbar = (Toolbar) rootView.findViewById(R.id.editToolbar);
+
         FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.action_edit);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(rootView.getRootView(),
-                        R.string.sb_edit, Snackbar.LENGTH_LONG).show();
+            if (editToolbar.getVisibility() == View.GONE) {
+                editToolbar.startAnimation(AnimationUtils.loadAnimation(getActivity(),
+                        R.anim.popin_bottom));
+                editToolbar.setVisibility(View.VISIBLE);
+            } else {
+                editToolbar.startAnimation(AnimationUtils.loadAnimation(getActivity(),
+                        R.anim.popout_bottom));
+                editToolbar.setVisibility(View.GONE);
+            }
             }
         });
 

@@ -31,6 +31,16 @@
             app:fabSize="normal"
             android:src="@drawable/ic_mode_edit_white_48dp"/>
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/editToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:visibility="gone"
+            android:background="@color/editToolbarBackground"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark"
+            android:layout_alignParentBottom="true"/>
+
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -15,9 +15,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_TABLE = "team_list";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_NUMBER = "TEAM_NUMBER";
-    public static final String COLUMN_NAME = "TEAM_NAME";
-    public static final String COLUMN_SITE = "TEAM_SITE";
+    public static final String COLUMN_NUMBER = "team_number";
+    public static final String COLUMN_NAME = "team_name";
+    public static final String COLUMN_SITE = "team_site";
 
     private static final String DATABASE_QUERY = "CREATE TABLE IF NOT EXISTS " + DATABASE_TABLE +
             "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_NUMBER + " TEXT NOT NULL, "
@@ -80,7 +80,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public Cursor getCursor() {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT  * FROM " + DatabaseHandler.DATABASE_TABLE;
         Cursor cursor = db.rawQuery(query, null);
         return cursor;

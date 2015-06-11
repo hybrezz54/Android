@@ -8,4 +8,6 @@
     <color name="textColorPrimary">#ffffff</color>
     <color name="textColorSecondary">#ffffff</color>
 
+    <color name="editToolbarBackground">#ff1744</color>
+
 </resources>
