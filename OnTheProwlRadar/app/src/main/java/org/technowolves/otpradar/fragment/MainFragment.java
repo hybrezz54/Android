@@ -1,9 +1,10 @@
 package org.technowolves.otpradar.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v7.widget.Toolbar;
@@ -11,12 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.ListView;
 
 import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.framework.DatabaseHandler;
 import org.technowolves.otpradar.framework.DatabaseTeamItem;
 import org.technowolves.otpradar.framework.TeamCursorAdapter;
+
+import io.codetail.animation.SupportAnimator;
+import io.codetail.animation.ViewAnimationUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,14 +82,15 @@ public class MainFragment extends ListFragment {
 
         final Toolbar editToolbar = (Toolbar) rootView.findViewById(R.id.editToolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.action_edit);
+        final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.action_edit);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             if (editToolbar.getVisibility() == View.GONE) {
-                editToolbar.startAnimation(AnimationUtils.loadAnimation(getActivity(),
+                /*editToolbar.startAnimation(AnimationUtils.loadAnimation(getActivity(),
                         R.anim.popin_bottom));
-                editToolbar.setVisibility(View.VISIBLE);
+                editToolbar.setVisibility(View.VISIBLE);*/
+                revealToolbar(editToolbar, fab);
             } else {
                 editToolbar.startAnimation(AnimationUtils.loadAnimation(getActivity(),
                         R.anim.popout_bottom));
@@ -114,6 +118,58 @@ public class MainFragment extends ListFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private SupportAnimator revealToolbar(Toolbar toolbar, View view) {
+        // previously invisible view
+
+        // get the center for the clipping circle
+        int cx = (view.getLeft() + view.getRight()) / 2;
+        int cy = (view.getTop() + view.getBottom()) / 2;
+
+        // get the final radius for the clipping circle
+        int finalRadius = Math.max(toolbar.getWidth(), toolbar.getHeight());
+
+        // create the animator for this view (the start radius is zero)
+        SupportAnimator anim = ViewAnimationUtils.createCircularReveal(toolbar, cx, cy, 0, finalRadius);
+
+        // make the view visible and start the animation
+        toolbar.setVisibility(View.VISIBLE);
+        anim.start();
+
+        return anim;
+    }
+
+    private void hideToolbar(SupportAnimator anim, Toolbar toolbar) {
+//        // previously invisible view
+//        final Toolbar editToolbar = (Toolbar) view.findViewById(R.id.editToolbar);
+//
+//        // get the center for the clipping circle
+//        int cx = (editToolbar.getLeft() + editToolbar.getRight()) / 2;
+//        int cy = (editToolbar.getTop() + editToolbar.getBottom()) / 2;
+//
+//        // get the final radius for the clipping circle
+//        int initialRadius = editToolbar.getWidth();
+//
+//        // create the animator for this view (the start radius is zero)
+//        SupportAnimator anim = ViewAnimationUtils.createCircularReveal(editToolbar, cx, cy, initialRadius, 0);
+//
+//        // make the view invisible when the animation is done
+//        anim.addListener(new SupportAnimator.AnimatorListener() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                super.onAnimationEnd(animation);
+//                editToolbar.setVisibility(View.INVISIBLE);
+//            }
+//        });
+
+        // reverse animation
+        anim = anim.reverse();
+
+        toolbar.setVisibility(View.INVISIBLE);
+
+        // start the animation
+        anim.start();
     }
 
     /**
