@@ -6,23 +6,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="org.technowolves.otpradar.fragment.MainFragment">
 
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </ListView>
+
     <io.codetail.widget.RevealFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <ListView
-            android:id="@android:id/list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </ListView>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/action_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:padding="4dp"
+            android:padding="@dimen/fab_margin"
+            android:layout_gravity="bottom|end"
             app:fabSize="normal"
             app:backgroundTint="@color/colorAccent"
             android:src="@drawable/ic_mode_edit_white_48dp"/>
@@ -32,8 +31,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
+            android:layout_gravity="bottom"
             android:visibility="gone"
-            android:background="@color/editToolbarBackground"
+            android:background="?attr/colorPrimary"
             app:theme="@style/ThemeOverlay.AppCompat.Dark"
             android:layout_alignParentBottom="true"/>
 

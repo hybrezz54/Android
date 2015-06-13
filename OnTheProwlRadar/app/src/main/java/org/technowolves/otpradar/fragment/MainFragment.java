@@ -1,7 +1,5 @@
 package org.technowolves.otpradar.fragment;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.AbsListView;
 
 import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.framework.DatabaseHandler;
@@ -37,9 +36,10 @@ public class MainFragment extends ListFragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private static int mSection;
-    //private ArrayList<TeamListItem> mValues;
+    private boolean isToolbarShown;
 
     private Toolbar mToolbar;
+    private FloatingActionButton mFab;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,41 +66,52 @@ public class MainFragment extends ListFragment {
             mSection = getArguments().getInt(ARG_SECTION_NUMBER);
         }
 
-        mToolbar = new Toolbar(getActivity());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         DatabaseHandler handler = new DatabaseHandler(getActivity());
         handler.addTeamItem(new DatabaseTeamItem("5518", "Techno Wolves", "http://technowolves.org"));
         TeamCursorAdapter adapter = new TeamCursorAdapter(getActivity(), handler.getCursor());
         setListAdapter(adapter);
 
-        final Toolbar editToolbar = (Toolbar) rootView.findViewById(R.id.editToolbar);
+        mToolbar = (Toolbar) rootView.findViewById(R.id.editToolbar);
+        mToolbar.inflateMenu(R.menu.edit);
 
-        final FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.action_edit);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab = (FloatingActionButton) rootView.findViewById(R.id.action_edit);
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if (editToolbar.getVisibility() == View.GONE) {
-                /*editToolbar.startAnimation(AnimationUtils.loadAnimation(getActivity(),
-                        R.anim.popin_bottom));
-                editToolbar.setVisibility(View.VISIBLE);*/
-                revealToolbar(editToolbar, fab);
-            } else {
-                editToolbar.startAnimation(AnimationUtils.loadAnimation(getActivity(),
-                        R.anim.popout_bottom));
-                editToolbar.setVisibility(View.GONE);
+            if (mToolbar.getVisibility() == View.GONE) {
+                revealToolbar();
             }
             }
         });
 
         return rootView;
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState != SCROLL_STATE_IDLE && isToolbarShown) {
+                    hideToolbar();
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+        });
     }
 
     @Override
@@ -120,56 +131,65 @@ public class MainFragment extends ListFragment {
         mListener = null;
     }
 
-    private SupportAnimator revealToolbar(Toolbar toolbar, View view) {
-        // previously invisible view
+    private void revealToolbar() {
+        isToolbarShown = true;
+        mFab.setVisibility(View.INVISIBLE);
 
         // get the center for the clipping circle
-        int cx = (view.getLeft() + view.getRight()) / 2;
-        int cy = (view.getTop() + view.getBottom()) / 2;
+        int cx = (mFab.getLeft() + mFab.getRight()) / 2;
+        int cy = (mFab.getTop() + mFab.getBottom()) / 2;
 
         // get the final radius for the clipping circle
-        int finalRadius = Math.max(toolbar.getWidth(), toolbar.getHeight());
+        int finalRadius = Math.max(mToolbar.getWidth(), mToolbar.getHeight());
 
         // create the animator for this view (the start radius is zero)
-        SupportAnimator anim = ViewAnimationUtils.createCircularReveal(toolbar, cx, cy, 0, finalRadius);
+        SupportAnimator anim = ViewAnimationUtils.createCircularReveal(mToolbar, cx, cy, 0, finalRadius);
 
         // make the view visible and start the animation
-        toolbar.setVisibility(View.VISIBLE);
+        mToolbar.setVisibility(View.VISIBLE);
         anim.start();
 
-        return anim;
     }
 
-    private void hideToolbar(SupportAnimator anim, Toolbar toolbar) {
-//        // previously invisible view
-//        final Toolbar editToolbar = (Toolbar) view.findViewById(R.id.editToolbar);
-//
-//        // get the center for the clipping circle
-//        int cx = (editToolbar.getLeft() + editToolbar.getRight()) / 2;
-//        int cy = (editToolbar.getTop() + editToolbar.getBottom()) / 2;
-//
-//        // get the final radius for the clipping circle
-//        int initialRadius = editToolbar.getWidth();
-//
-//        // create the animator for this view (the start radius is zero)
-//        SupportAnimator anim = ViewAnimationUtils.createCircularReveal(editToolbar, cx, cy, initialRadius, 0);
-//
-//        // make the view invisible when the animation is done
-//        anim.addListener(new SupportAnimator.AnimatorListener() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                super.onAnimationEnd(animation);
-//                editToolbar.setVisibility(View.INVISIBLE);
-//            }
-//        });
+    private void hideToolbar() {
+        // get the center for the clipping circle
+        int cx = (mFab.getLeft() + mFab.getRight()) / 2;
+        int cy = (mFab.getTop() + mFab.getBottom()) / 2;
 
-        // reverse animation
-        anim = anim.reverse();
+        // get the initial radius for the clipping circle
+        int initialRadius = mFab.getWidth();
 
-        toolbar.setVisibility(View.INVISIBLE);
+        // create the animator for this view (the final radius is zero)
+        SupportAnimator anim = ViewAnimationUtils.createCircularReveal(mToolbar, cx, cy, initialRadius, 0);
+
+        // make the view invisible when the animation is done
+        anim.addListener(new SupportAnimator.AnimatorListener() {
+            @Override
+            public void onAnimationStart() {
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                mToolbar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat() {
+            }
+
+            @Override
+            public void onAnimationCancel() {
+            }
+        });
+
+        isToolbarShown = false;
 
         // start the animation
         anim.start();
+
+        mFab.startAnimation(AnimationUtils.loadAnimation(getActivity(),
+                R.anim.popin_bottom));
+        mFab.setVisibility(View.VISIBLE);
     }
 
     /**

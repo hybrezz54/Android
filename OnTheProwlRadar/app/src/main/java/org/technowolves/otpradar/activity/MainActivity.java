@@ -120,8 +120,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 mToolbar.setTitle(R.string.app_name);
                 return true;
-            case R.id.action_settings:
-                return true;
         }
 
         return super.onOptionsItemSelected(item);
