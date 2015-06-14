@@ -79,6 +79,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Close db connection
     }
 
+    public void deleteAllTeams() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(DATABASE_TABLE, null, null);
+    }
+
     public Cursor getCursor() {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT  * FROM " + DatabaseHandler.DATABASE_TABLE;

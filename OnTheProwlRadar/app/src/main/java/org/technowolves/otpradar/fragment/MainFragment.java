@@ -1,21 +1,37 @@
 package org.technowolves.otpradar.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.internal.view.menu.ActionMenuItemView;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AbsListView;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.framework.DatabaseHandler;
 import org.technowolves.otpradar.framework.DatabaseTeamItem;
 import org.technowolves.otpradar.framework.TeamCursorAdapter;
+
+import java.security.MessageDigest;
 
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
@@ -42,6 +58,8 @@ public class MainFragment extends ListFragment {
     private FloatingActionButton mFab;
 
     private OnFragmentInteractionListener mListener;
+    private TeamCursorAdapter mAdapter;
+    private DatabaseHandler mDatabaseHandler;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -74,13 +92,12 @@ public class MainFragment extends ListFragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        DatabaseHandler handler = new DatabaseHandler(getActivity());
-        handler.addTeamItem(new DatabaseTeamItem("5518", "Techno Wolves", "http://technowolves.org"));
-        TeamCursorAdapter adapter = new TeamCursorAdapter(getActivity(), handler.getCursor());
-        setListAdapter(adapter);
+        mDatabaseHandler = new DatabaseHandler(getActivity());
+        mDatabaseHandler.addTeamItem(new DatabaseTeamItem("5518", "Techno Wolves", "http://technowolves.org"));
+        mAdapter = new TeamCursorAdapter(getActivity(), mDatabaseHandler.getCursor());
+        setListAdapter(mAdapter);
 
-        mToolbar = (Toolbar) rootView.findViewById(R.id.editToolbar);
-        mToolbar.inflateMenu(R.menu.edit);
+        setupToolbar(rootView);
 
         mFab = (FloatingActionButton) rootView.findViewById(R.id.action_edit);
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -100,16 +117,12 @@ public class MainFragment extends ListFragment {
     public void onResume() {
         super.onResume();
 
-        getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
+        getListView().setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (scrollState != SCROLL_STATE_IDLE && isToolbarShown) {
+            public boolean onTouch(View v, MotionEvent event) {
+                if (isToolbarShown)
                     hideToolbar();
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                return false;
             }
         });
     }
@@ -129,6 +142,68 @@ public class MainFragment extends ListFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private void setupToolbar(View view) {
+
+        mToolbar = (Toolbar) view.findViewById(R.id.editToolbar);
+        mToolbar.inflateMenu(R.menu.edit);
+
+        /*// Use Display metrics to get Screen Dimensions
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+
+        // Add 10 spacing on either side of the toolbar
+        mToolbar.setContentInsetsAbsolute(10, 10);
+
+        // Get the ChildCount of your Toolbar, this should only be 1
+        int childCount = mToolbar.getChildCount();
+        // Get the Screen Width in pixels
+        int screenWidth = metrics.widthPixels;
+
+        // Create the Toolbar Params based on the screenWidth
+        Toolbar.LayoutParams toolbarParams = new Toolbar.LayoutParams(screenWidth, Toolbar.LayoutParams.WRAP_CONTENT);
+
+        // Loop through the child Items
+        for(int i = 0; i < childCount; i++){
+            // Get the item at the current index
+            View childView = mToolbar.getChildAt(i);
+            // If its a ViewGroup
+            if(childView instanceof ViewGroup){
+                // Set its layout params
+                childView.setLayoutParams(toolbarParams);
+                // Get the child count of this view group, and compute the item widths based on this count & screen size
+                int innerChildCount = ((ViewGroup) childView).getChildCount();
+                int itemWidth  = (screenWidth / innerChildCount);
+                // Create layout params for the ActionMenuView
+                ActionMenuView.LayoutParams params = new ActionMenuView.LayoutParams(itemWidth, Toolbar.LayoutParams.WRAP_CONTENT);
+                // Loop through the children
+                for(int j = 0; j < innerChildCount; j++){
+                    View grandChild = ((ViewGroup) childView).getChildAt(j);
+                    if(grandChild instanceof ActionMenuItemView){
+                        // set the layout parameters on each View
+                        grandChild.setLayoutParams(params);
+                    }
+                }
+            }
+        }*/
+
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_delete:
+                        deleteAllTeams();
+                        return true;
+                    case R.id.action_add:
+                        addTeam();
+                        return true;
+                }
+                return false;
+            }
+        });
+
     }
 
     private void revealToolbar() {
@@ -190,6 +265,78 @@ public class MainFragment extends ListFragment {
         mFab.startAnimation(AnimationUtils.loadAnimation(getActivity(),
                 R.anim.popin_bottom));
         mFab.setVisibility(View.VISIBLE);
+    }
+
+    private void addTeam() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final View view = LayoutInflater.from(getActivity())
+                .inflate(R.layout.add_team_dlg, null);
+        builder.setView(R.layout.add_team_dlg);
+        builder.setTitle(R.string.edit_add);
+        builder.setMessage("Please enter the team information.");
+
+        final EditText numberInput = (EditText) view.findViewById(R.id.numberInput);
+        final EditText nameInput = (EditText) view.findViewById(R.id.nameInput);
+        final EditText siteInput = (EditText) view.findViewById(R.id.siteInput);
+
+        builder.setPositiveButton("OK", null);
+
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (numberInput.getText().toString().equals("")) {
+                    Snackbar.make(v.getRootView(), "Please enter the team number.", Snackbar.LENGTH_LONG)
+                            .show();
+                } else if (nameInput.getText().toString().equals("")) {
+                    Snackbar.make(v.getRootView(), "Please enter the team name.", Snackbar.LENGTH_LONG)
+                            .show();
+                } else if (siteInput.getText().toString().equals("")) {
+                    Snackbar.make(v.getRootView(), "Please enter the website.", Snackbar.LENGTH_LONG)
+                            .show();
+                } else {
+                    DatabaseTeamItem team = new DatabaseTeamItem(numberInput.getText().toString(),
+                            nameInput.getText().toString(), siteInput.getText().toString());
+                    mDatabaseHandler.addTeamItem(team);
+                    ((TeamCursorAdapter) getListAdapter()).notifyDataSetInvalidated();
+                }
+            }
+        });
+
+    }
+
+    private void deleteAllTeams() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.edit_delete_all);
+        builder.setMessage("Are you sure you would like to delete all team items?");
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mDatabaseHandler.deleteAllTeams();
+                mAdapter.changeCursor(mDatabaseHandler.getCursor());
+                mAdapter.notifyDataSetInvalidated();
+                hideToolbar();
+            }
+        });
+
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     /**

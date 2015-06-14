@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
     </style>
 
     <style name="AppTheme.NavDrawerItem" parent="Theme.AppCompat.Light">
@@ -15,6 +16,12 @@
         <item name="android:textColor">@color/textColorPrimary</item>
         <item name="colorPrimary">@color/textColorPrimary</item>
         <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="AppTheme.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/dlgColorAccent</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:background">@color/colorPrimary</item>
     </style>
 
 </resources>

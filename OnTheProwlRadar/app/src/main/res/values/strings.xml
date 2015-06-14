@@ -13,4 +13,7 @@
     <string name="drawer_item_one">Team Info</string>
     <string name="drawer_item_two">Robot Specs</string>
     <string name="drawer_item_three">Settings</string>
+    <string name="edit_add">Add team&#8230;</string>
+    <string name="edit_delete_all">Delete All</string>
+    <string name="edit_download">Download team list</string>
 </resources>

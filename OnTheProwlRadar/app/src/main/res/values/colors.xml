@@ -9,5 +9,6 @@
     <color name="textColorSecondary">#ffffff</color>
 
     <color name="editToolbarBackground">#ff1744</color>
+    <color name="dlgColorAccent">#ffcc00</color>
 
 </resources>
