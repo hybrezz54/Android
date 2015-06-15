@@ -16,4 +16,16 @@
     <string name="edit_add">Add team&#8230;</string>
     <string name="edit_delete_all">Delete All</string>
     <string name="edit_download">Download team list</string>
+    <string name="header_team_info_one">- TEAM INFO -</string>
+    <string name="header_team_info_two">- DRIVE SQUAD -</string>
+    <string name="header_team_info_three">- HUMAN PLAYER -</string>
+    <string name="team_location">Team Location</string>
+    <string name="total_years">Total Years</string>
+    <string name="notes">Notes</string>
+    <string name="coach_mentor">Is coach a mentor?</string>
+    <string name="driver_rate">Driver Experience:</string>
+    <string name="hp_rate">Human Player Experience:</string>
+    <string name="hp_question_one">Can load totes?</string>
+    <string name="hp_question_two">Can load litter?</string>
+    <string name="hp_question_three">Can throw litter?</string>
 </resources>

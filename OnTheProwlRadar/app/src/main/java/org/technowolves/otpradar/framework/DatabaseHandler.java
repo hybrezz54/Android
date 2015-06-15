@@ -20,7 +20,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public static final String COLUMN_SITE = "team_site";
 
     private static final String DATABASE_QUERY = "CREATE TABLE IF NOT EXISTS " + DATABASE_TABLE +
-            "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_NUMBER + " TEXT NOT NULL, "
+            "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_NUMBER + " TEXT NOT NULL UNIQUE, "
             + COLUMN_NAME + " TEXT NOT NULL, " + COLUMN_SITE + " TEXT NOT NULL)";
 
     public DatabaseHandler(Context context) {
@@ -141,8 +141,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String selectQuery = "SELECT  * FROM " + DATABASE_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
         cursor.close(); // Close the cursor
-        return cursor.getCount();
+        return count;
+    }
+
+    public boolean checkTeamNumber(String number) {
+        return false;
     }
 
 }

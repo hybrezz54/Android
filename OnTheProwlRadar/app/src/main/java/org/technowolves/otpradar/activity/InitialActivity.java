@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.github.paolorotolo.appintro.AppIntro;
 
+import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.fragment.intro.SlideOne;
 
 public class InitialActivity extends AppIntro {
@@ -18,8 +19,8 @@ public class InitialActivity extends AppIntro {
         addSlide(new SlideOne(), getApplicationContext());
 
         // You can override bar/separator color if you want.
-        setBarColor(Color.parseColor("#D32F2F"));
-        setSeparatorColor(Color.parseColor("#2196F3"));
+        setBarColor(getResources().getColor(R.color.colorPrimary));
+        setSeparatorColor(getResources().getColor(R.color.colorPrimaryDark));
 
         // You can also hide Skip button
         showSkipButton(true);

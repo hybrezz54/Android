@@ -1,37 +1,27 @@
 package org.technowolves.otpradar.fragment;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.internal.view.menu.ActionMenuItemView;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.framework.DatabaseHandler;
 import org.technowolves.otpradar.framework.DatabaseTeamItem;
 import org.technowolves.otpradar.framework.TeamCursorAdapter;
-
-import java.security.MessageDigest;
 
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
@@ -61,6 +51,9 @@ public class MainFragment extends ListFragment {
     private TeamCursorAdapter mAdapter;
     private DatabaseHandler mDatabaseHandler;
 
+    private FragmentManager mManager;
+    private Activity mActivity;
+
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -84,6 +77,7 @@ public class MainFragment extends ListFragment {
             mSection = getArguments().getInt(ARG_SECTION_NUMBER);
         }
 
+        mManager = getFragmentManager();
     }
 
     @Override
@@ -92,9 +86,9 @@ public class MainFragment extends ListFragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mDatabaseHandler = new DatabaseHandler(getActivity());
-        mDatabaseHandler.addTeamItem(new DatabaseTeamItem("5518", "Techno Wolves", "http://technowolves.org"));
-        mAdapter = new TeamCursorAdapter(getActivity(), mDatabaseHandler.getCursor());
+        mDatabaseHandler = new DatabaseHandler(mActivity);
+        //mDatabaseHandler.addTeamItem(new DatabaseTeamItem("5518", "Techno Wolves", "http://technowolves.org"));
+        mAdapter = new TeamCursorAdapter(mActivity, mDatabaseHandler.getCursor());
         setListAdapter(mAdapter);
 
         setupToolbar(rootView);
@@ -132,6 +126,7 @@ public class MainFragment extends ListFragment {
         super.onAttach(activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
+            mActivity = activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -150,7 +145,7 @@ public class MainFragment extends ListFragment {
         mToolbar.inflateMenu(R.menu.edit);
 
         /*// Use Display metrics to get Screen Dimensions
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Display display = mActivity.getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
 
@@ -262,22 +257,16 @@ public class MainFragment extends ListFragment {
         // start the animation
         anim.start();
 
-        mFab.startAnimation(AnimationUtils.loadAnimation(getActivity(),
+        mFab.startAnimation(AnimationUtils.loadAnimation(mActivity,
                 R.anim.popin_bottom));
         mFab.setVisibility(View.VISIBLE);
     }
 
     private void addTeam() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        final View view = LayoutInflater.from(getActivity())
-                .inflate(R.layout.add_team_dlg, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setView(R.layout.add_team_dlg);
         builder.setTitle(R.string.edit_add);
         builder.setMessage("Please enter the team information.");
-
-        final EditText numberInput = (EditText) view.findViewById(R.id.numberInput);
-        final EditText nameInput = (EditText) view.findViewById(R.id.nameInput);
-        final EditText siteInput = (EditText) view.findViewById(R.id.siteInput);
 
         builder.setPositiveButton("OK", null);
 
@@ -285,11 +274,16 @@ public class MainFragment extends ListFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
+                hideToolbar();
             }
         });
 
-        AlertDialog dialog = builder.create();
+        final AlertDialog dialog = builder.create();
         dialog.show();
+
+        final EditText numberInput = (EditText) dialog.findViewById(R.id.numberInput);
+        final EditText nameInput = (EditText) dialog.findViewById(R.id.nameInput);
+        final EditText siteInput = (EditText) dialog.findViewById(R.id.siteInput);
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -300,14 +294,26 @@ public class MainFragment extends ListFragment {
                 } else if (nameInput.getText().toString().equals("")) {
                     Snackbar.make(v.getRootView(), "Please enter the team name.", Snackbar.LENGTH_LONG)
                             .show();
-                } else if (siteInput.getText().toString().equals("")) {
-                    Snackbar.make(v.getRootView(), "Please enter the website.", Snackbar.LENGTH_LONG)
-                            .show();
                 } else {
                     DatabaseTeamItem team = new DatabaseTeamItem(numberInput.getText().toString(),
                             nameInput.getText().toString(), siteInput.getText().toString());
                     mDatabaseHandler.addTeamItem(team);
-                    ((TeamCursorAdapter) getListAdapter()).notifyDataSetInvalidated();
+                    mAdapter.changeCursor(mDatabaseHandler.getCursor());
+                    mAdapter.notifyDataSetInvalidated();
+                    dialog.dismiss();
+                    if (mDatabaseHandler.checkTeamNumber(team.getNumber())) {
+                        new AlertDialog.Builder(mActivity)
+                                .setTitle("Warning!")
+                                .setIcon(android.R.drawable.stat_sys_warning)
+                                .setMessage("This team's info is already entered.")
+                                .show();
+                    } else {
+                        mManager.beginTransaction()
+                                .addToBackStack(null)
+                                .replace(R.id.container, TeamInfoFragment.newInstance(mDatabaseHandler.getTeamCount(),
+                                        team.getNumber(), team.getName()))
+                                .commit();
+                    }
                 }
             }
         });
@@ -315,7 +321,7 @@ public class MainFragment extends ListFragment {
     }
 
     private void deleteAllTeams() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle(R.string.edit_delete_all);
         builder.setMessage("Are you sure you would like to delete all team items?");
 
@@ -333,6 +339,7 @@ public class MainFragment extends ListFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
+                hideToolbar();
             }
         });
 

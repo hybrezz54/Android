@@ -28,7 +28,9 @@ public class TeamCursorAdapter extends CursorAdapter {
 
         txtNumber.setText(number);
         txtName.setText(name);
-        txtSite.setText(website);
+
+        if (txtSite != null)
+            txtSite.setText(website);
     }
 
     @Override
