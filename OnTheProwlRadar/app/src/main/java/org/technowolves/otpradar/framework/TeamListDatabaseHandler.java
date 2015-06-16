@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseHandler extends SQLiteOpenHelper {
+public class TeamListDatabaseHandler extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "otpradar";
     private static final int DATABASE_VERSION = 1;
@@ -23,7 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_NUMBER + " TEXT NOT NULL UNIQUE, "
             + COLUMN_NAME + " TEXT NOT NULL, " + COLUMN_SITE + " TEXT NOT NULL)";
 
-    public DatabaseHandler(Context context) {
+    public TeamListDatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -38,7 +38,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addTeamItem(DatabaseTeamItem team) {
+    public void addTeamItem(TeamListItem team) {
         // Open db connection
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -53,7 +53,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Close db connection
     }
 
-    public int updateTeamItem(DatabaseTeamItem team) {
+    public int updateTeamItem(TeamListItem team) {
         // Open db connection
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -70,7 +70,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return result; // return the number of rows affected
     }
 
-    public void deleteTeamItem(DatabaseTeamItem team) {
+    public void deleteTeamItem(TeamListItem team) {
         // Open db connection
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete the record with the specified id
@@ -86,12 +86,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public Cursor getCursor() {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT  * FROM " + DatabaseHandler.DATABASE_TABLE;
+        String query = "SELECT  * FROM " + TeamListDatabaseHandler.DATABASE_TABLE;
         Cursor cursor = db.rawQuery(query, null);
         return cursor;
     }
 
-    public DatabaseTeamItem getTeamItem(int id) {
+    public TeamListItem getTeamItem(int id) {
         // Open db
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -105,7 +105,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
 
         // Load item values into model
-        DatabaseTeamItem team = new DatabaseTeamItem(cursor.getString(1),
+        TeamListItem team = new TeamListItem(cursor.getString(1),
                 cursor.getString(2), cursor.getString(3));
         team.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
 
@@ -114,8 +114,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return team;
     }
 
-    public List<DatabaseTeamItem> getAllTeamItems() {
-        List<DatabaseTeamItem> teams = new ArrayList<>();
+    public List<TeamListItem> getAllTeamItems() {
+        List<TeamListItem> teams = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + DATABASE_TABLE;
 
@@ -125,7 +125,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                DatabaseTeamItem item = new DatabaseTeamItem(cursor.getString(1),
+                TeamListItem item = new TeamListItem(cursor.getString(1),
                         cursor.getString(2), cursor.getString(3));
                 item.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
                 teams.add(item);

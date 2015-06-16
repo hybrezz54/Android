@@ -95,6 +95,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                         mToolbar.setTitle(R.string.drawer_item_three);
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
+                    case R.id.navigation_item_4:
+                        menuItem.setChecked(true);
+                        mPosition = 3;
+                        Intent i = new Intent(MainActivity.this,
+                                InitialActivity.class);
+                        startActivity(i);
+                        return true;
                 }
                 return false;
             }

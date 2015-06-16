@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Spinner;
@@ -21,6 +22,7 @@ public class TeamInfoFragment extends Fragment {
     private static final String ARG_POS_NUMBER = "pos_number";
     private static final String ARG_TEAM_NUMBER = "team_number";
     private static final String ARG_TEAM_NAME = "team_name";
+    private static final String ARG_EDIT_MODE = "edit_mode";
 
     public static final String[] HEADER = new String[] {"Number", "Name", "Website", "Location", "Total Yrs.", "Another competition this year?", "Award 1",
             "Year 1", "Award 2", "Year 2", "Award 3", "Year 3", "Notes", "Driver #1 Name", "Driver #2 Name", "Drive Coach Name", "Is drive coach mentor?",
@@ -38,17 +40,20 @@ public class TeamInfoFragment extends Fragment {
     private static int mSection;
     private static String mNumber;
     private static String mName;
+    private static boolean mEditMode;
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static TeamInfoFragment newInstance(int position, String number, String name) {
+    public static TeamInfoFragment newInstance(int position, String number,
+                                               String name, boolean editMode) {
         TeamInfoFragment fragment = new TeamInfoFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_POS_NUMBER, position);
         args.putString(ARG_TEAM_NUMBER, number);
         args.putString(ARG_TEAM_NAME, name);
+        args.putBoolean(ARG_EDIT_MODE, editMode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,6 +69,7 @@ public class TeamInfoFragment extends Fragment {
             mSection = getArguments().getInt(ARG_POS_NUMBER);
             mNumber = getArguments().getString(ARG_TEAM_NUMBER);
             mName = getArguments().getString(ARG_TEAM_NAME);
+            mEditMode = getArguments().getBoolean(ARG_EDIT_MODE);
         }
     }
 
@@ -92,6 +98,36 @@ public class TeamInfoFragment extends Fragment {
         /*Spinner spnHpTote = (Spinner) rootView.findViewById(R.id.hpTote);
         Spinner spnHpLitter = (Spinner) rootView.findViewById(R.id.hpLitter);
         Spinner spnHpThrow = (Spinner) rootView.findViewById(R.id.hpThrow);*/
+
+        if (mEditMode) {
+            edtLocation.setEnabled(false);
+            edtTotal.setEnabled(false);
+            spnParticipate.setEnabled(false);
+            spnAward1.setEnabled(false);
+            spnYear1.setEnabled(false);
+            spnAward2.setEnabled(false);
+            spnYear2.setEnabled(false);
+            spnAward3.setEnabled(false);
+            spnYear3.setEnabled(false);
+            edtNotes.setEnabled(false);
+            spnCoach.setEnabled(false);
+            rbDriver.setEnabled(false);
+            rbHp.setEnabled(false);
+        }
+
+        ArrayAdapter<String> comp = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, COMPETITION);
+        ArrayAdapter<String> simple = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, SIMPLE);
+        ArrayAdapter<String> year = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, YEARS);
+        ArrayAdapter<String> award = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, AWARDS);
+
+        spnParticipate.setAdapter(comp);
+        spnAward1.setAdapter(award);
+        spnAward2.setAdapter(award);
+        spnAward3.setAdapter(award);
+        spnYear1.setAdapter(year);
+        spnYear2.setAdapter(year);
+        spnYear3.setAdapter(year);
+        spnCoach.setAdapter(simple);
 
         return rootView;
     }

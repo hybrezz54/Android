@@ -13,6 +13,9 @@
             android:id="@+id/navigation_item_3"
             android:title="@string/drawer_item_three"
             android:icon="@drawable/ic_settings_white_24dp"/>
+        <item
+            android:id="@+id/navigation_item_4"
+            android:title="@string/drawer_item_four"/>
     </group>
 
 </menu>

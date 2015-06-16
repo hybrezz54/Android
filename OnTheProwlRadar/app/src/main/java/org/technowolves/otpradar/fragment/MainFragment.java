@@ -19,8 +19,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 
 import org.technowolves.otpradar.R;
-import org.technowolves.otpradar.framework.DatabaseHandler;
-import org.technowolves.otpradar.framework.DatabaseTeamItem;
+import org.technowolves.otpradar.framework.TeamListDatabaseHandler;
+import org.technowolves.otpradar.framework.TeamListItem;
 import org.technowolves.otpradar.framework.TeamCursorAdapter;
 
 import io.codetail.animation.SupportAnimator;
@@ -49,7 +49,7 @@ public class MainFragment extends ListFragment {
 
     private OnFragmentInteractionListener mListener;
     private TeamCursorAdapter mAdapter;
-    private DatabaseHandler mDatabaseHandler;
+    private TeamListDatabaseHandler mTeamListDatabaseHandler;
 
     private FragmentManager mManager;
     private Activity mActivity;
@@ -86,9 +86,9 @@ public class MainFragment extends ListFragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mDatabaseHandler = new DatabaseHandler(mActivity);
-        //mDatabaseHandler.addTeamItem(new DatabaseTeamItem("5518", "Techno Wolves", "http://technowolves.org"));
-        mAdapter = new TeamCursorAdapter(mActivity, mDatabaseHandler.getCursor());
+        mTeamListDatabaseHandler = new TeamListDatabaseHandler(mActivity);
+        //mTeamListDatabaseHandler.addTeamItem(new TeamListItem("5518", "Techno Wolves", "http://technowolves.org"));
+        mAdapter = new TeamCursorAdapter(mActivity, mTeamListDatabaseHandler.getCursor());
         setListAdapter(mAdapter);
 
         setupToolbar(rootView);
@@ -295,13 +295,13 @@ public class MainFragment extends ListFragment {
                     Snackbar.make(v.getRootView(), "Please enter the team name.", Snackbar.LENGTH_LONG)
                             .show();
                 } else {
-                    DatabaseTeamItem team = new DatabaseTeamItem(numberInput.getText().toString(),
+                    TeamListItem team = new TeamListItem(numberInput.getText().toString(),
                             nameInput.getText().toString(), siteInput.getText().toString());
-                    mDatabaseHandler.addTeamItem(team);
-                    mAdapter.changeCursor(mDatabaseHandler.getCursor());
+                    mTeamListDatabaseHandler.addTeamItem(team);
+                    mAdapter.changeCursor(mTeamListDatabaseHandler.getCursor());
                     mAdapter.notifyDataSetInvalidated();
                     dialog.dismiss();
-                    if (mDatabaseHandler.checkTeamNumber(team.getNumber())) {
+                    if (mTeamListDatabaseHandler.checkTeamNumber(team.getNumber())) {
                         new AlertDialog.Builder(mActivity)
                                 .setTitle("Warning!")
                                 .setIcon(android.R.drawable.stat_sys_warning)
@@ -310,8 +310,8 @@ public class MainFragment extends ListFragment {
                     } else {
                         mManager.beginTransaction()
                                 .addToBackStack(null)
-                                .replace(R.id.container, TeamInfoFragment.newInstance(mDatabaseHandler.getTeamCount(),
-                                        team.getNumber(), team.getName()))
+                                .replace(R.id.container, TeamInfoFragment.newInstance(mTeamListDatabaseHandler.getTeamCount(),
+                                        team.getNumber(), team.getName(), false))
                                 .commit();
                     }
                 }
@@ -328,8 +328,8 @@ public class MainFragment extends ListFragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mDatabaseHandler.deleteAllTeams();
-                mAdapter.changeCursor(mDatabaseHandler.getCursor());
+                mTeamListDatabaseHandler.deleteAllTeams();
+                mAdapter.changeCursor(mTeamListDatabaseHandler.getCursor());
                 mAdapter.notifyDataSetInvalidated();
                 hideToolbar();
             }

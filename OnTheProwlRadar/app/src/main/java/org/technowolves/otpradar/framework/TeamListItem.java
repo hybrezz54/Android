@@ -1,13 +1,11 @@
 package org.technowolves.otpradar.framework;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+public class TeamListItem {
 
-public class TeamListItem implements Parcelable {
-
-    public String number;
-    public String name;
-    public String website;
+    private long id;
+    private String number;
+    private String name;
+    private String website;
 
     public TeamListItem(String number, String name, String website) {
         this.number = number;
@@ -15,10 +13,12 @@ public class TeamListItem implements Parcelable {
         this.website = website;
     }
 
-    public TeamListItem(Parcel in) {
-        number = in.readString();
-        name = in.readString();
-        website = in.readString();
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getNumber() {
@@ -45,29 +45,8 @@ public class TeamListItem implements Parcelable {
         this.website = website;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String toString() {
+        return number;
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(number);
-        dest.writeString(name);
-        dest.writeString(website);
-    }
-
-    public static final Creator<TeamListItem> CREATOR = new Parcelable.Creator<TeamListItem>() {
-
-        @Override
-        public TeamListItem createFromParcel(Parcel source) {
-            return new TeamListItem(source);
-        }
-
-        @Override
-        public TeamListItem[] newArray(int size) {
-            return new TeamListItem[size];
-        }
-    };
 
 }

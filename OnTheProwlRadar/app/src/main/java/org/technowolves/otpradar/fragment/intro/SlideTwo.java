@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 
 import org.technowolves.otpradar.R;
 
-public class SlideOne extends Fragment {
+public class SlideTwo extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.slide_one, container, false);
+        return inflater.inflate(R.layout.slide_two, container, false);
     }
 
 }
