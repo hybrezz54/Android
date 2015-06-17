@@ -95,9 +95,6 @@ public class TeamInfoFragment extends Fragment {
         Spinner spnCoach = (Spinner) rootView.findViewById(R.id.coachMentor);
         RatingBar rbDriver = (RatingBar) rootView.findViewById(R.id.driverRating);
         RatingBar rbHp = (RatingBar) rootView.findViewById(R.id.hpRating);
-        /*Spinner spnHpTote = (Spinner) rootView.findViewById(R.id.hpTote);
-        Spinner spnHpLitter = (Spinner) rootView.findViewById(R.id.hpLitter);
-        Spinner spnHpThrow = (Spinner) rootView.findViewById(R.id.hpThrow);*/
 
         if (mEditMode) {
             edtLocation.setEnabled(false);

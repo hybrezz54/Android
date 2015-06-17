@@ -19,7 +19,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 
 import org.technowolves.otpradar.R;
-import org.technowolves.otpradar.framework.TeamListDatabaseHandler;
+import org.technowolves.otpradar.framework.DatabaseHandler;
 import org.technowolves.otpradar.framework.TeamListItem;
 import org.technowolves.otpradar.framework.TeamCursorAdapter;
 
@@ -49,7 +49,7 @@ public class MainFragment extends ListFragment {
 
     private OnFragmentInteractionListener mListener;
     private TeamCursorAdapter mAdapter;
-    private TeamListDatabaseHandler mTeamListDatabaseHandler;
+    private DatabaseHandler mDatabaseHandler;
 
     private FragmentManager mManager;
     private Activity mActivity;
@@ -86,9 +86,9 @@ public class MainFragment extends ListFragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mTeamListDatabaseHandler = new TeamListDatabaseHandler(mActivity);
-        //mTeamListDatabaseHandler.addTeamItem(new TeamListItem("5518", "Techno Wolves", "http://technowolves.org"));
-        mAdapter = new TeamCursorAdapter(mActivity, mTeamListDatabaseHandler.getCursor());
+        mDatabaseHandler = new DatabaseHandler(mActivity);
+        //mDatabaseHandler.addTeamItem(new TeamListItem("5518", "Techno Wolves", "http://technowolves.org"));
+        mAdapter = new TeamCursorAdapter(mActivity, mDatabaseHandler.getCursor());
         setListAdapter(mAdapter);
 
         setupToolbar(rootView);
@@ -297,11 +297,11 @@ public class MainFragment extends ListFragment {
                 } else {
                     TeamListItem team = new TeamListItem(numberInput.getText().toString(),
                             nameInput.getText().toString(), siteInput.getText().toString());
-                    mTeamListDatabaseHandler.addTeamItem(team);
-                    mAdapter.changeCursor(mTeamListDatabaseHandler.getCursor());
+                    mDatabaseHandler.addTeamItem(team);
+                    mAdapter.changeCursor(mDatabaseHandler.getCursor());
                     mAdapter.notifyDataSetInvalidated();
                     dialog.dismiss();
-                    if (mTeamListDatabaseHandler.checkTeamNumber(team.getNumber())) {
+                    if (mDatabaseHandler.checkTeamNumber(team.getNumber())) {
                         new AlertDialog.Builder(mActivity)
                                 .setTitle("Warning!")
                                 .setIcon(android.R.drawable.stat_sys_warning)
@@ -310,7 +310,7 @@ public class MainFragment extends ListFragment {
                     } else {
                         mManager.beginTransaction()
                                 .addToBackStack(null)
-                                .replace(R.id.container, TeamInfoFragment.newInstance(mTeamListDatabaseHandler.getTeamCount(),
+                                .replace(R.id.container, TeamInfoFragment.newInstance(mDatabaseHandler.getTeamCount(),
                                         team.getNumber(), team.getName(), false))
                                 .commit();
                     }
@@ -328,8 +328,8 @@ public class MainFragment extends ListFragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mTeamListDatabaseHandler.deleteAllTeams();
-                mAdapter.changeCursor(mTeamListDatabaseHandler.getCursor());
+                mDatabaseHandler.deleteAllTeams();
+                mAdapter.changeCursor(mDatabaseHandler.getCursor());
                 mAdapter.notifyDataSetInvalidated();
                 hideToolbar();
             }

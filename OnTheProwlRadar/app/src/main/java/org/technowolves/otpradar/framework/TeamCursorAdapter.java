@@ -22,9 +22,9 @@ public class TeamCursorAdapter extends CursorAdapter {
         TextView txtName = (TextView) view.findViewById(R.id.txtTeamName);
         TextView txtSite = (TextView) view.findViewById(R.id.txtWebsite);
 
-        String number = cursor.getString(cursor.getColumnIndex(TeamListDatabaseHandler.COLUMN_NUMBER));
-        String name = cursor.getString(cursor.getColumnIndex(TeamListDatabaseHandler.COLUMN_NAME));
-        String website = cursor.getString(cursor.getColumnIndex(TeamListDatabaseHandler.COLUMN_SITE));
+        String number = cursor.getString(cursor.getColumnIndex(DatabaseHandler.COLUMN_NUMBER));
+        String name = cursor.getString(cursor.getColumnIndex(DatabaseHandler.COLUMN_NAME));
+        String website = cursor.getString(cursor.getColumnIndex(DatabaseHandler.COLUMN_SITE));
 
         txtNumber.setText(number);
         txtName.setText(name);
