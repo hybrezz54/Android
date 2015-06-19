@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.framework.DatabaseHandler;
@@ -137,6 +139,30 @@ public class MainFragment extends ListFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        Log.e("OTPRadar", String.valueOf(position));
+        TeamListItem team = mDatabaseHandler.getTeamListItem(position);
+
+        if (isToolbarShown) {
+            mManager.beginTransaction()
+                    .addToBackStack(null)
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .replace(R.id.container, TeamInfoFragment.newInstance(mDatabaseHandler.getTeamCount(),
+                            team.getNumber(), team.getName(), true))
+                    .commit();
+        } else {
+            mManager.beginTransaction()
+                    .addToBackStack(null)
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .replace(R.id.container, TeamInfoFragment.newInstance(mDatabaseHandler.getTeamCount(),
+                            team.getNumber(), team.getName(), false))
+                    .commit();
+        }
     }
 
     private void setupToolbar(View view) {
@@ -297,10 +323,6 @@ public class MainFragment extends ListFragment {
                 } else {
                     TeamListItem team = new TeamListItem(numberInput.getText().toString(),
                             nameInput.getText().toString(), siteInput.getText().toString());
-                    mDatabaseHandler.addTeamItem(team);
-                    mAdapter.changeCursor(mDatabaseHandler.getCursor());
-                    mAdapter.notifyDataSetInvalidated();
-                    dialog.dismiss();
                     if (mDatabaseHandler.checkTeamNumber(team.getNumber())) {
                         new AlertDialog.Builder(mActivity)
                                 .setTitle("Warning!")
@@ -308,12 +330,11 @@ public class MainFragment extends ListFragment {
                                 .setMessage("This team's info is already entered.")
                                 .show();
                     } else {
-                        mManager.beginTransaction()
-                                .addToBackStack(null)
-                                .replace(R.id.container, TeamInfoFragment.newInstance(mDatabaseHandler.getTeamCount(),
-                                        team.getNumber(), team.getName(), false))
-                                .commit();
+                        mDatabaseHandler.addTeamItem(team);
+                        mAdapter.changeCursor(mDatabaseHandler.getCursor());
+                        mAdapter.notifyDataSetChanged();
                     }
+                    dialog.dismiss();
                 }
             }
         });

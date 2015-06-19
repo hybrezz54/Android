@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,20 +142,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Construct and execute query
         Cursor cursor = db.query(TEAM_LIST_TABLE,
                 new String[] { COLUMN_ID, COLUMN_NUMBER, COLUMN_NAME, COLUMN_SITE },
-                COLUMN_ID + "= ?", new String[] { String.valueOf(id) },
-                null, null, "id ASC", "100");
+                COLUMN_ID + " = ?", new String[] { String.valueOf(id + 1) }, null, null,
+                COLUMN_ID + " ASC", null);
 
-        if (cursor != null)
-            cursor.moveToFirst();
+        if (cursor != null && cursor.moveToFirst()) {
+            // Load item values into model
+            TeamListItem team = new TeamListItem(cursor.getString(1),
+                    cursor.getString(2), cursor.getString(3));
+            team.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+            cursor.close(); // Close cursor
+            return team;
+        }
 
-        // Load item values into model
-        TeamListItem team = new TeamListItem(cursor.getString(1),
-                cursor.getString(2), cursor.getString(3));
-        team.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+        Log.e("OTPRadar", "Cursor null or moveToFirst is false");
 
-        cursor.close(); // Close cursor
-
-        return team;
+        return null;
     }
 
     public TeamInfoItem getTeamInfoItem(int id) {
@@ -164,8 +166,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Construct and execute query
         Cursor cursor = db.query(TEAM_INFO_TABLE,
                 new String[] { COLUMN_ID }, /** add columns here **/
-                COLUMN_ID + "= ?", new String[] { String.valueOf(id) },
-                null, null, "id ASC", "100");
+                COLUMN_ID + " = ?", new String[] { String.valueOf(id) },
+                null, null, "_id ASC", "100");
 
         if (cursor != null)
             cursor.moveToFirst();

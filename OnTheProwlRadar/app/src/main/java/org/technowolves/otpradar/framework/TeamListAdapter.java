@@ -28,9 +28,9 @@ public class TeamListAdapter extends ArrayAdapter<TeamListItem> {
         TextView txtName = (TextView) convertView.findViewById(R.id.txtTeamName);
         TextView txtSite = (TextView) convertView.findViewById(R.id.txtWebsite);
 
-        txtNumber.setText(team.number);
-        txtName.setText(team.name);
-        txtSite.setText(team.website);
+        txtNumber.setText(team.getNumber());
+        txtName.setText(team.getName());
+        txtSite.setText(team.getWebsite());
 
         return convertView;
 
