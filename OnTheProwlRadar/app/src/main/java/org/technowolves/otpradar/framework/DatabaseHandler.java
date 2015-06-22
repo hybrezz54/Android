@@ -88,6 +88,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Store values of team item
         ContentValues values = new ContentValues();
+        values.put(COLUMN_LOCATION, team.getLocation());
+        values.put(COLUMN_TOTALYRS, team.getTotalYears());
+        values.put(COLUMN_PARTICIPATE, team.getParticipate());
+        values.put(COLUMN_AWARD1, team.getAward1());
+        values.put(COLUMN_YEAR1, team.getYear1());
+        values.put(COLUMN_AWARD2, team.getAward2());
+        values.put(COLUMN_YEAR2, team.getYear2());
+        values.put(COLUMN_AWARD3, team.getAward3());
+        values.put(COLUMN_YEAR3, team.getYear3());
+        values.put(COLUMN_NOTES, team.getNotes());
+        values.put(COLUMN_COACHMENTOR, team.getCoachMentor());
+        values.put(COLUMN_DRIVER, team.getDriver());
+        values.put(COLUMN_HP, team.getHp());
 
         // Insert row into table
         db.insert(TEAM_INFO_TABLE, null, values);
@@ -106,6 +119,33 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Updating row
         int result = db.update(TEAM_LIST_TABLE, values, COLUMN_ID + " = ?",
+                new String[] { String.valueOf(team.getId()) });
+        db.close(); // Close db connection
+        return result; // return the number of rows affected
+    }
+
+    public int updateTeamItem(TeamInfoItem team) {
+        // Open db connection
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Store values of team item
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_LOCATION, team.getLocation());
+        values.put(COLUMN_TOTALYRS, team.getTotalYears());
+        values.put(COLUMN_PARTICIPATE, team.getParticipate());
+        values.put(COLUMN_AWARD1, team.getAward1());
+        values.put(COLUMN_YEAR1, team.getYear1());
+        values.put(COLUMN_AWARD2, team.getAward2());
+        values.put(COLUMN_YEAR2, team.getYear2());
+        values.put(COLUMN_AWARD3, team.getAward3());
+        values.put(COLUMN_YEAR3, team.getYear3());
+        values.put(COLUMN_NOTES, team.getNotes());
+        values.put(COLUMN_COACHMENTOR, team.getCoachMentor());
+        values.put(COLUMN_DRIVER, team.getDriver());
+        values.put(COLUMN_HP, team.getHp());
+
+        // Updating row
+        int result = db.update(TEAM_INFO_TABLE, values, COLUMN_ID + " = ?",
                 new String[] { String.valueOf(team.getId()) });
         db.close(); // Close db connection
         return result; // return the number of rows affected
@@ -146,15 +186,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 COLUMN_ID + " ASC", null);
 
         if (cursor != null && cursor.moveToFirst()) {
-            // Load item values into model
+            // Load item values
             TeamListItem team = new TeamListItem(cursor.getString(1),
                     cursor.getString(2), cursor.getString(3));
             team.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
             cursor.close(); // Close cursor
             return team;
         }
-
-        Log.e("OTPRadar", "Cursor null or moveToFirst is false");
 
         return null;
     }
@@ -166,19 +204,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Construct and execute query
         Cursor cursor = db.query(TEAM_INFO_TABLE,
                 new String[] { COLUMN_ID }, /** add columns here **/
-                COLUMN_ID + " = ?", new String[] { String.valueOf(id) },
+                COLUMN_ID + " = ?", new String[] { String.valueOf(id + 1) },
                 null, null, "_id ASC", "100");
 
-        if (cursor != null)
-            cursor.moveToFirst();
+        if (cursor != null && cursor.moveToFirst()) {
+            // Load item values
+            TeamInfoItem team = new TeamInfoItem();
+            team.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+            cursor.close(); // Close cursor
+            return team;
+        }
 
-        // Load item values into model
-        TeamInfoItem team = new TeamInfoItem();
-        team.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
-
-        cursor.close(); // Close cursor
-
-        return team;
+        return null;
     }
 
     public List<TeamListItem> getAllTeamItems() {

@@ -3,7 +3,7 @@
 
     <translate
         android:fromYDelta="0%"
-        android:toYDelta="100%"
+        android:toYDelta="50%"
         android:interpolator="@anim/accelerate_cubic"
         android:duration="300" />
 

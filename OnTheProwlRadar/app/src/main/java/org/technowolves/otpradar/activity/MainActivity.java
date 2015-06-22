@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -19,8 +19,13 @@ import android.support.v4.widget.DrawerLayout;
 
 import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.fragment.MainFragment;
+import org.technowolves.otpradar.fragment.TeamInfoFragment;
+import org.technowolves.otpradar.framework.DatabaseHandler;
+import org.technowolves.otpradar.framework.TeamInfoItem;
+import org.technowolves.otpradar.framework.TeamListItem;
 
-public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener,
+        TeamInfoFragment.OnFragmentInteractionListener{
 
     private static final String PREFS_KEY = "org.technowolves.otpradar.PREFERENCES_KEY";
     private static final String PREFS_OPEN_APP = "APP_OPEN_TIME";
@@ -32,14 +37,19 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     private NavigationView mNavView;
     private int mPosition;
 
-    private FragmentManager mManager;
+    private FragmentManager mFragManager;
+    private DatabaseHandler mDatabaseHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mFragManager = getSupportFragmentManager();
+        mDatabaseHandler = new DatabaseHandler(this);
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNavView = (NavigationView) findViewById(R.id.navigation_view);
 
         SharedPreferences prefs = this.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         if (!prefs.getBoolean(PREFS_OPEN_APP, false)) {
@@ -60,12 +70,10 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 R.string.drawer_open, R.string.drawer_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        mNavView = (NavigationView) findViewById(R.id.navigation_view);
-
         if (savedInstanceState != null)
             mPosition = savedInstanceState.getInt(DRAWER_POS_KEY, 0);
         else
-            initMainFragment(1);
+            initMainFragment();
 
         if(mNavView != null)
             setUpNavigationDrawerContent();
@@ -80,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_1:
                         menuItem.setChecked(true);
-                        initMainFragment(1);
+                        initMainFragment();
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_2:
@@ -160,16 +168,64 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     }
 
     @Override
-    public void onFragmentInteraction() {
+    public void onListItemClick(int position, boolean toolbarShown) {
+
+        TeamListItem teamListItem = mDatabaseHandler.getTeamListItem(position);
+        TeamInfoItem teamInfoItem = mDatabaseHandler.getTeamInfoItem(position);
+
+        if (toolbarShown) {
+            mFragManager.beginTransaction()
+                    .addToBackStack(null)
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .replace(R.id.container, TeamInfoFragment.newInstance(teamListItem,
+                            teamInfoItem, true))
+                    .commit();
+        } else {
+            mFragManager.beginTransaction()
+                    .addToBackStack(null)
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .replace(R.id.container, TeamInfoFragment.newInstance(teamListItem,
+                            teamInfoItem, false))
+                    .commit();
+        }
 
     }
 
-    private void initMainFragment(int position) {
+    @Override
+    public Cursor getCursorFromHandler() {
+        return mDatabaseHandler.getCursor();
+    }
+
+    @Override
+    public void deleteAllDatabaseItems() {
+        mDatabaseHandler.deleteAllTeams();
+    }
+
+    @Override
+    public boolean checkTeamNumberExists(String number) {
+        return mDatabaseHandler.checkTeamNumber(number);
+    }
+
+    @Override
+    public void addTeamListItem(TeamListItem team) {
+        mDatabaseHandler.addTeamItem(team);
+    }
+
+    @Override
+    public void saveTeamInfoValues(TeamInfoItem team, boolean update) {
+        if (update)
+            mDatabaseHandler.updateTeamItem(team);
+        else
+            mDatabaseHandler.addTeamItem(team);
+    }
+
+    private void initMainFragment() {
         mPosition = 0;
-        mToolbar.setTitle(getString(R.string.drawer_item_one));
-        mManager = getSupportFragmentManager();
-        mManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance(position))
+        String title = getString(R.string.drawer_item_one);
+        mToolbar.setTitle(title);
+
+        mFragManager.beginTransaction()
+                .replace(R.id.container, MainFragment.newInstance(title))
                 .commit();
     }
 

@@ -2,15 +2,18 @@ package org.technowolves.otpradar.fragment;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.internal.view.menu.ActionMenuItemView;
+import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -21,7 +24,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import org.technowolves.otpradar.R;
-import org.technowolves.otpradar.framework.DatabaseHandler;
+import org.technowolves.otpradar.framework.TeamInfoItem;
 import org.technowolves.otpradar.framework.TeamListItem;
 import org.technowolves.otpradar.framework.TeamCursorAdapter;
 
@@ -41,45 +44,49 @@ public class MainFragment extends ListFragment {
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private static final String ARG_SECTION_NUMBER = "section_number";
+    private static final String ARG_SECTION_TITLE = "section_title";
 
-    private static int mSection;
+    private static int mTitle;
     private boolean isToolbarShown;
 
     private Toolbar mToolbar;
     private FloatingActionButton mFab;
 
     private OnFragmentInteractionListener mListener;
-    private TeamCursorAdapter mAdapter;
-    private DatabaseHandler mDatabaseHandler;
 
-    private FragmentManager mManager;
+    private TeamCursorAdapter mAdapter;
+
     private Activity mActivity;
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static MainFragment newInstance(int sectionNumber) {
+    public static MainFragment newInstance(String sectionTitle) {
         MainFragment fragment = new MainFragment();
+
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        args.putString(ARG_SECTION_TITLE, sectionTitle);
         fragment.setArguments(args);
+
         return fragment;
     }
 
     public MainFragment() {
     }
 
+    /*public void setDatabaseHandler(DatabaseHandler handler) {
+        mDatabaseHandler = handler;
+    }*/
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mSection = getArguments().getInt(ARG_SECTION_NUMBER);
+            mTitle = getArguments().getInt(ARG_SECTION_TITLE);
         }
 
-        mManager = getFragmentManager();
     }
 
     @Override
@@ -88,9 +95,7 @@ public class MainFragment extends ListFragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mDatabaseHandler = new DatabaseHandler(mActivity);
-        //mDatabaseHandler.addTeamItem(new TeamListItem("5518", "Techno Wolves", "http://technowolves.org"));
-        mAdapter = new TeamCursorAdapter(mActivity, mDatabaseHandler.getCursor());
+        mAdapter = new TeamCursorAdapter(mActivity, mListener.getCursorFromHandler());
         setListAdapter(mAdapter);
 
         setupToolbar(rootView);
@@ -99,9 +104,9 @@ public class MainFragment extends ListFragment {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if (mToolbar.getVisibility() == View.GONE) {
-                revealToolbar();
-            }
+                if (mToolbar.getVisibility() == View.GONE) {
+                    revealToolbar();
+                }
             }
         });
 
@@ -144,25 +149,7 @@ public class MainFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-
-        Log.e("OTPRadar", String.valueOf(position));
-        TeamListItem team = mDatabaseHandler.getTeamListItem(position);
-
-        if (isToolbarShown) {
-            mManager.beginTransaction()
-                    .addToBackStack(null)
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.container, TeamInfoFragment.newInstance(mDatabaseHandler.getTeamCount(),
-                            team.getNumber(), team.getName(), true))
-                    .commit();
-        } else {
-            mManager.beginTransaction()
-                    .addToBackStack(null)
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.container, TeamInfoFragment.newInstance(mDatabaseHandler.getTeamCount(),
-                            team.getNumber(), team.getName(), false))
-                    .commit();
-        }
+        mListener.onListItemClick(position, isToolbarShown);
     }
 
     private void setupToolbar(View view) {
@@ -170,7 +157,7 @@ public class MainFragment extends ListFragment {
         mToolbar = (Toolbar) view.findViewById(R.id.editToolbar);
         mToolbar.inflateMenu(R.menu.edit);
 
-        /*// Use Display metrics to get Screen Dimensions
+        // Use Display metrics to get Screen Dimensions
         Display display = mActivity.getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
@@ -208,7 +195,7 @@ public class MainFragment extends ListFragment {
                     }
                 }
             }
-        }*/
+        }
 
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -229,6 +216,9 @@ public class MainFragment extends ListFragment {
 
     private void revealToolbar() {
         isToolbarShown = true;
+
+        mFab.startAnimation(AnimationUtils.loadAnimation(mActivity,
+                R.anim.popout_bottom));
         mFab.setVisibility(View.INVISIBLE);
 
         // get the center for the clipping circle
@@ -245,6 +235,7 @@ public class MainFragment extends ListFragment {
         mToolbar.setVisibility(View.VISIBLE);
         anim.start();
 
+        mToolbar.setTitle("Edit Mode");
     }
 
     private void hideToolbar() {
@@ -286,6 +277,8 @@ public class MainFragment extends ListFragment {
         mFab.startAnimation(AnimationUtils.loadAnimation(mActivity,
                 R.anim.popin_bottom));
         mFab.setVisibility(View.VISIBLE);
+
+        mToolbar.setTitle(mTitle);
     }
 
     private void addTeam() {
@@ -323,15 +316,15 @@ public class MainFragment extends ListFragment {
                 } else {
                     TeamListItem team = new TeamListItem(numberInput.getText().toString(),
                             nameInput.getText().toString(), siteInput.getText().toString());
-                    if (mDatabaseHandler.checkTeamNumber(team.getNumber())) {
+                    if (mListener.checkTeamNumberExists(team.getNumber())) {
                         new AlertDialog.Builder(mActivity)
                                 .setTitle("Warning!")
                                 .setIcon(android.R.drawable.stat_sys_warning)
                                 .setMessage("This team's info is already entered.")
                                 .show();
                     } else {
-                        mDatabaseHandler.addTeamItem(team);
-                        mAdapter.changeCursor(mDatabaseHandler.getCursor());
+                        mListener.addTeamListItem(team);
+                        mAdapter.changeCursor(mListener.getCursorFromHandler());
                         mAdapter.notifyDataSetChanged();
                     }
                     dialog.dismiss();
@@ -349,8 +342,8 @@ public class MainFragment extends ListFragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mDatabaseHandler.deleteAllTeams();
-                mAdapter.changeCursor(mDatabaseHandler.getCursor());
+                mListener.deleteAllDatabaseItems();
+                mAdapter.changeCursor(mListener.getCursorFromHandler());
                 mAdapter.notifyDataSetInvalidated();
                 hideToolbar();
             }
@@ -378,7 +371,11 @@ public class MainFragment extends ListFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction();
+        void onListItemClick(int position, boolean toolbarShown);
+        Cursor getCursorFromHandler();
+        void deleteAllDatabaseItems();
+        void addTeamListItem(TeamListItem team);
+        boolean checkTeamNumberExists(String number);
     }
 
 }
