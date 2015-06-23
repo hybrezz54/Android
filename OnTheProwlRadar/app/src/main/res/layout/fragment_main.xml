@@ -34,8 +34,7 @@
             android:layout_gravity="bottom"
             android:visibility="gone"
             android:background="?attr/colorPrimary"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark"
-            android:layout_alignParentBottom="true"/>
+            app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
 
     </io.codetail.widget.RevealFrameLayout>
 

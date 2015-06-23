@@ -103,6 +103,7 @@ public class TeamInfoFragment extends Fragment {
         final Spinner spnCoach = (Spinner) rootView.findViewById(R.id.coachMentor);
         final RatingBar rbDriver = (RatingBar) rootView.findViewById(R.id.driverRating);
         final RatingBar rbHp = (RatingBar) rootView.findViewById(R.id.hpRating);
+        FloatingActionButton fabSave = (FloatingActionButton) rootView.findViewById(R.id.fabSave);
 
         ArrayAdapter<String> comp = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, COMPETITION);
         ArrayAdapter<String> simple = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, SIMPLE);
@@ -118,7 +119,7 @@ public class TeamInfoFragment extends Fragment {
         spnYear3.setAdapter(year);
         spnCoach.setAdapter(simple);
 
-        if (mEditMode) {
+        if (!mEditMode) {
             edtLocation.setEnabled(false);
             edtTotal.setEnabled(false);
             spnParticipate.setEnabled(false);
@@ -132,6 +133,7 @@ public class TeamInfoFragment extends Fragment {
             spnCoach.setEnabled(false);
             rbDriver.setEnabled(false);
             rbHp.setEnabled(false);
+            fabSave.setVisibility(View.INVISIBLE);
         }
 
         if (mTeam != null) {
@@ -150,7 +152,6 @@ public class TeamInfoFragment extends Fragment {
             rbHp.setRating(mTeam.getHp());
         }
 
-        FloatingActionButton fabSave = (FloatingActionButton) rootView.findViewById(R.id.fabSave);
         fabSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

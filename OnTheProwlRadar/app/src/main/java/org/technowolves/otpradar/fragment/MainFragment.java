@@ -9,12 +9,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.internal.view.menu.ActionMenuItemView;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,9 +22,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import org.technowolves.otpradar.R;
-import org.technowolves.otpradar.framework.TeamInfoItem;
-import org.technowolves.otpradar.framework.TeamListItem;
 import org.technowolves.otpradar.framework.TeamCursorAdapter;
+import org.technowolves.otpradar.framework.TeamListItem;
+import org.technowolves.otpradar.util.EnhancedMenuInflater;
 
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
@@ -46,7 +44,7 @@ public class MainFragment extends ListFragment {
      */
     private static final String ARG_SECTION_TITLE = "section_title";
 
-    private static int mTitle;
+    private static String mTitle;
     private boolean isToolbarShown;
 
     private Toolbar mToolbar;
@@ -57,6 +55,9 @@ public class MainFragment extends ListFragment {
     private TeamCursorAdapter mAdapter;
 
     private Activity mActivity;
+
+    public MainFragment() {
+    }
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -72,9 +73,6 @@ public class MainFragment extends ListFragment {
         return fragment;
     }
 
-    public MainFragment() {
-    }
-
     /*public void setDatabaseHandler(DatabaseHandler handler) {
         mDatabaseHandler = handler;
     }*/
@@ -84,7 +82,7 @@ public class MainFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mTitle = getArguments().getInt(ARG_SECTION_TITLE);
+            mTitle = getArguments().getString(ARG_SECTION_TITLE);
         }
 
     }
@@ -155,47 +153,8 @@ public class MainFragment extends ListFragment {
     private void setupToolbar(View view) {
 
         mToolbar = (Toolbar) view.findViewById(R.id.editToolbar);
+        mToolbar.setContentInsetsAbsolute(0, 0);
         mToolbar.inflateMenu(R.menu.edit);
-
-        // Use Display metrics to get Screen Dimensions
-        Display display = mActivity.getWindowManager().getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        display.getMetrics(metrics);
-
-        // Add 10 spacing on either side of the toolbar
-        mToolbar.setContentInsetsAbsolute(10, 10);
-
-        // Get the ChildCount of your Toolbar, this should only be 1
-        int childCount = mToolbar.getChildCount();
-        // Get the Screen Width in pixels
-        int screenWidth = metrics.widthPixels;
-
-        // Create the Toolbar Params based on the screenWidth
-        Toolbar.LayoutParams toolbarParams = new Toolbar.LayoutParams(screenWidth, Toolbar.LayoutParams.WRAP_CONTENT);
-
-        // Loop through the child Items
-        for(int i = 0; i < childCount; i++){
-            // Get the item at the current index
-            View childView = mToolbar.getChildAt(i);
-            // If its a ViewGroup
-            if(childView instanceof ViewGroup){
-                // Set its layout params
-                childView.setLayoutParams(toolbarParams);
-                // Get the child count of this view group, and compute the item widths based on this count & screen size
-                int innerChildCount = ((ViewGroup) childView).getChildCount();
-                int itemWidth  = (screenWidth / innerChildCount);
-                // Create layout params for the ActionMenuView
-                ActionMenuView.LayoutParams params = new ActionMenuView.LayoutParams(itemWidth, Toolbar.LayoutParams.WRAP_CONTENT);
-                // Loop through the children
-                for(int j = 0; j < innerChildCount; j++){
-                    View grandChild = ((ViewGroup) childView).getChildAt(j);
-                    if(grandChild instanceof ActionMenuItemView){
-                        // set the layout parameters on each View
-                        grandChild.setLayoutParams(params);
-                    }
-                }
-            }
-        }
 
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -235,7 +194,6 @@ public class MainFragment extends ListFragment {
         mToolbar.setVisibility(View.VISIBLE);
         anim.start();
 
-        mToolbar.setTitle("Edit Mode");
     }
 
     private void hideToolbar() {
@@ -278,7 +236,6 @@ public class MainFragment extends ListFragment {
                 R.anim.popin_bottom));
         mFab.setVisibility(View.VISIBLE);
 
-        mToolbar.setTitle(mTitle);
     }
 
     private void addTeam() {
@@ -372,9 +329,13 @@ public class MainFragment extends ListFragment {
      */
     public interface OnFragmentInteractionListener {
         void onListItemClick(int position, boolean toolbarShown);
+
         Cursor getCursorFromHandler();
+
         void deleteAllDatabaseItems();
+
         void addTeamListItem(TeamListItem team);
+
         boolean checkTeamNumberExists(String number);
     }
 
