@@ -1,4 +1,4 @@
-package org.technowolves.otpradar.fragment;
+package org.technowolves.otpradar.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,8 +15,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.technowolves.otpradar.R;
-import org.technowolves.otpradar.framework.TeamInfoItem;
-import org.technowolves.otpradar.framework.TeamListItem;
+import org.technowolves.otpradar.presenter.TeamInfoItem;
+import org.technowolves.otpradar.presenter.TeamListItem;
 
 public class TeamInfoFragment extends Fragment {
     /**
@@ -48,6 +48,15 @@ public class TeamInfoFragment extends Fragment {
     private static boolean mEditMode;
 
     private TeamInfoItem mTeam;
+
+    EditText edtLocation, edtTotal;
+    Spinner spnParticipate;
+    Spinner spnAward1, spnYear1;
+    Spinner spnAward2, spnYear2;
+    Spinner spnAward3, spnYear3;
+    EditText edtNotes;
+    Spinner spnCoach;
+    RatingBar rbDriver, rbHp;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -90,19 +99,19 @@ public class TeamInfoFragment extends Fragment {
         TextView txtTeamInfo = (TextView) rootView.findViewById(R.id.txtTeamInfo);
         txtTeamInfo.setText(mNumber + " - " + mName);
 
-        final EditText edtLocation = (EditText) rootView.findViewById(R.id.edtLocation);
-        final EditText edtTotal = (EditText) rootView.findViewById(R.id.edtTotal);
-        final Spinner spnParticipate = (Spinner) rootView.findViewById(R.id.participate);
-        final Spinner spnAward1 = (Spinner) rootView.findViewById(R.id.award1);
-        final Spinner spnYear1 = (Spinner) rootView.findViewById(R.id.year1);
-        final Spinner spnAward2 = (Spinner) rootView.findViewById(R.id.award2);
-        final Spinner spnYear2 = (Spinner) rootView.findViewById(R.id.year2);
-        final Spinner spnAward3 = (Spinner) rootView.findViewById(R.id.award3);
-        final Spinner spnYear3 = (Spinner) rootView.findViewById(R.id.year3);
-        final EditText edtNotes = (EditText) rootView.findViewById(R.id.notes);
-        final Spinner spnCoach = (Spinner) rootView.findViewById(R.id.coachMentor);
-        final RatingBar rbDriver = (RatingBar) rootView.findViewById(R.id.driverRating);
-        final RatingBar rbHp = (RatingBar) rootView.findViewById(R.id.hpRating);
+        edtLocation = (EditText) rootView.findViewById(R.id.edtLocation);
+        edtTotal = (EditText) rootView.findViewById(R.id.edtTotal);
+        spnParticipate = (Spinner) rootView.findViewById(R.id.participate);
+        spnAward1 = (Spinner) rootView.findViewById(R.id.award1);
+        spnYear1 = (Spinner) rootView.findViewById(R.id.year1);
+        spnAward2 = (Spinner) rootView.findViewById(R.id.award2);
+        spnYear2 = (Spinner) rootView.findViewById(R.id.year2);
+        spnAward3 = (Spinner) rootView.findViewById(R.id.award3);
+        spnYear3 = (Spinner) rootView.findViewById(R.id.year3);
+        edtNotes = (EditText) rootView.findViewById(R.id.notes);
+        spnCoach = (Spinner) rootView.findViewById(R.id.coachMentor);
+        rbDriver = (RatingBar) rootView.findViewById(R.id.driverRating);
+        rbHp = (RatingBar) rootView.findViewById(R.id.hpRating);
         FloatingActionButton fabSave = (FloatingActionButton) rootView.findViewById(R.id.fabSave);
 
         ArrayAdapter<String> comp = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, COMPETITION);

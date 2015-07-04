@@ -1,4 +1,4 @@
-package org.technowolves.otpradar.framework;
+package org.technowolves.otpradar.presenter;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +9,8 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import org.technowolves.otpradar.R;
+import org.technowolves.otpradar.model.DbContract;
+import org.technowolves.otpradar.model.DbHelper;
 
 public class TeamCursorAdapter extends CursorAdapter {
 
@@ -22,9 +24,9 @@ public class TeamCursorAdapter extends CursorAdapter {
         TextView txtName = (TextView) view.findViewById(R.id.txtTeamName);
         TextView txtSite = (TextView) view.findViewById(R.id.txtWebsite);
 
-        String number = cursor.getString(cursor.getColumnIndex(DatabaseHandler.COLUMN_NUMBER));
-        String name = cursor.getString(cursor.getColumnIndex(DatabaseHandler.COLUMN_NAME));
-        String website = cursor.getString(cursor.getColumnIndex(DatabaseHandler.COLUMN_SITE));
+        String number = cursor.getString(cursor.getColumnIndex(DbContract.COLUMN_NUMBER));
+        String name = cursor.getString(cursor.getColumnIndex(DbContract.COLUMN_NAME));
+        String website = cursor.getString(cursor.getColumnIndex(DbContract.COLUMN_SITE));
 
         txtNumber.setText(number);
         txtName.setText(name);

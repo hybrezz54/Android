@@ -1,4 +1,4 @@
-package org.technowolves.otpradar.framework;
+package org.technowolves.otpradar.presenter;
 
 public class TeamListItem {
 

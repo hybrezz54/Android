@@ -1,4 +1,4 @@
-package org.technowolves.otpradar.activity;
+package org.technowolves.otpradar.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,16 +13,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
 import org.technowolves.otpradar.R;
-import org.technowolves.otpradar.fragment.MainFragment;
-import org.technowolves.otpradar.fragment.TeamInfoFragment;
-import org.technowolves.otpradar.framework.DatabaseHandler;
-import org.technowolves.otpradar.framework.TeamInfoItem;
-import org.technowolves.otpradar.framework.TeamListItem;
+import org.technowolves.otpradar.view.fragment.MainFragment;
+import org.technowolves.otpradar.view.fragment.TeamInfoFragment;
+import org.technowolves.otpradar.model.DbHelper;
+import org.technowolves.otpradar.presenter.TeamInfoItem;
+import org.technowolves.otpradar.presenter.TeamListItem;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener,
         TeamInfoFragment.OnFragmentInteractionListener{
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     private int mPosition;
 
     private FragmentManager mFragManager;
-    private DatabaseHandler mDatabaseHandler;
+    private DbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         setContentView(R.layout.activity_main);
 
         mFragManager = getSupportFragmentManager();
-        mDatabaseHandler = new DatabaseHandler(this);
+        mDbHelper = new DbHelper(this);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavView = (NavigationView) findViewById(R.id.navigation_view);
@@ -168,12 +169,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     }
 
     @Override
-    public void onListItemClick(int position, boolean toolbarShown) {
+    public void onListItemClick(int position, boolean toolbarShown, boolean hiddenByTouch) {
 
-        TeamListItem teamListItem = mDatabaseHandler.getTeamListItem(position);
-        TeamInfoItem teamInfoItem = mDatabaseHandler.getTeamInfoItem(position);
+        TeamListItem teamListItem = mDbHelper.getTeamListItem(position);
+        TeamInfoItem teamInfoItem = mDbHelper.getTeamInfoItem(position);
 
-        if (toolbarShown) {
+        if (toolbarShown || hiddenByTouch) {
             mFragManager.beginTransaction()
                     .addToBackStack(null)
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -193,30 +194,37 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
     @Override
     public Cursor getCursorFromHandler() {
-        return mDatabaseHandler.getCursor();
+        return mDbHelper.getCursor();
     }
 
     @Override
     public void deleteAllDatabaseItems() {
-        mDatabaseHandler.deleteAllTeams();
+        mDbHelper.deleteAllTeams();
     }
 
     @Override
     public boolean checkTeamNumberExists(String number) {
-        return mDatabaseHandler.checkTeamNumber(number);
+        return mDbHelper.checkTeamNumber(number);
     }
 
     @Override
     public void addTeamListItem(TeamListItem team) {
-        mDatabaseHandler.addTeamItem(team);
+        mDbHelper.addTeamItem(team);
     }
 
     @Override
     public void saveTeamInfoValues(TeamInfoItem team, boolean update) {
-        if (update)
-            mDatabaseHandler.updateTeamItem(team);
-        else
-            mDatabaseHandler.addTeamItem(team);
+
+        if (update) {
+            mDbHelper.updateTeamItem(team);
+            Log.e("OtpRadar", "Update true");
+        } else {
+            mDbHelper.addTeamItem(team);
+            Log.e("OtpRadar", "Update false");
+        }
+
+        mFragManager.popBackStack();
+
     }
 
     private void initMainFragment() {

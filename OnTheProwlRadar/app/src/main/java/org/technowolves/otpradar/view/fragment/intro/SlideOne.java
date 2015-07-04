@@ -1,4 +1,4 @@
-package org.technowolves.otpradar.fragment.intro;
+package org.technowolves.otpradar.view.fragment.intro;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 
 import org.technowolves.otpradar.R;
 
-public class SlideTwo extends Fragment {
+public class SlideOne extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.slide_two, container, false);
+        return inflater.inflate(R.layout.slide_one, container, false);
     }
 
 }

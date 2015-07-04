@@ -1,4 +1,4 @@
-package org.technowolves.otpradar.fragment;
+package org.technowolves.otpradar.view.fragment;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -11,8 +11,6 @@ import android.support.v4.app.ListFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,9 +20,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import org.technowolves.otpradar.R;
-import org.technowolves.otpradar.framework.TeamCursorAdapter;
-import org.technowolves.otpradar.framework.TeamListItem;
-import org.technowolves.otpradar.util.EnhancedMenuInflater;
+import org.technowolves.otpradar.presenter.TeamCursorAdapter;
+import org.technowolves.otpradar.presenter.TeamListItem;
 
 import io.codetail.animation.SupportAnimator;
 import io.codetail.animation.ViewAnimationUtils;
@@ -46,6 +43,7 @@ public class MainFragment extends ListFragment {
 
     private static String mTitle;
     private boolean isToolbarShown;
+    private boolean isHiddenByTouch;
 
     private Toolbar mToolbar;
     private FloatingActionButton mFab;
@@ -73,7 +71,7 @@ public class MainFragment extends ListFragment {
         return fragment;
     }
 
-    /*public void setDatabaseHandler(DatabaseHandler handler) {
+    /*public void setDatabaseHandler(DbHelper handler) {
         mDatabaseHandler = handler;
     }*/
 
@@ -119,8 +117,10 @@ public class MainFragment extends ListFragment {
         getListView().setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (isToolbarShown)
+                if (isToolbarShown) {
+                    isHiddenByTouch = true;
                     hideToolbar();
+                }
                 return false;
             }
         });
@@ -147,7 +147,8 @@ public class MainFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        mListener.onListItemClick(position, isToolbarShown);
+        mListener.onListItemClick(position, isToolbarShown, isHiddenByTouch);
+        isHiddenByTouch = false;
     }
 
     private void setupToolbar(View view) {
@@ -328,7 +329,7 @@ public class MainFragment extends ListFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onListItemClick(int position, boolean toolbarShown);
+        void onListItemClick(int position, boolean toolbarShown, boolean hiddenByTouch);
 
         Cursor getCursorFromHandler();
 

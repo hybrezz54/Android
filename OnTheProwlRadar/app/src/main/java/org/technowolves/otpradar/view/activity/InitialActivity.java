@@ -1,13 +1,12 @@
-package org.technowolves.otpradar.activity;
+package org.technowolves.otpradar.view.activity;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
 import com.github.paolorotolo.appintro.AppIntro;
 
 import org.technowolves.otpradar.R;
-import org.technowolves.otpradar.fragment.intro.SlideOne;
-import org.technowolves.otpradar.fragment.intro.SlideTwo;
+import org.technowolves.otpradar.view.fragment.intro.SlideOne;
+import org.technowolves.otpradar.view.fragment.intro.SlideTwo;
 
 public class InitialActivity extends AppIntro {
 
