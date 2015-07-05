@@ -25,7 +25,7 @@ public class DbHelper extends SQLiteOpenHelper {
             DbContract.COLUMN_AWARD2 + " INTEGER NOT NULL, " + DbContract.COLUMN_YEAR2 + " INTEGER NOT NULL, " +
             DbContract.COLUMN_AWARD3 + " INTEGER NOT NULL, " + DbContract.COLUMN_YEAR3 + " INTEGER NOT NULL, " +
             DbContract.COLUMN_NOTES + " TEXT, " + DbContract.COLUMN_COACHMENTOR + " INTEGER NOT NULL, " + DbContract.COLUMN_DRIVER +
-            " REAL NOT NULL, " + DbContract.COLUMN_HP + " REAL NOT NULL)";
+            " TEXT NOT NULL, " + DbContract.COLUMN_HP + " TEXT NOT NULL)";
 
     public DbHelper(Context context) {
         super(context, DbContract.DATABASE_NAME, null, DbContract.DATABASE_VERSION);
@@ -76,8 +76,8 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(DbContract.COLUMN_YEAR3, team.getYear3());
         values.put(DbContract.COLUMN_NOTES, team.getNotes());
         values.put(DbContract.COLUMN_COACHMENTOR, team.getCoachMentor());
-        values.put(DbContract.COLUMN_DRIVER, team.getDriver());
-        values.put(DbContract.COLUMN_HP, team.getHp());
+        values.put(DbContract.COLUMN_DRIVER, String.valueOf(team.getDriver()));
+        values.put(DbContract.COLUMN_HP, String.valueOf(team.getHp()));
 
         // Insert row into table
         db.insert(DbContract.TEAM_INFO_TABLE, null, values);
@@ -118,8 +118,8 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(DbContract.COLUMN_YEAR3, team.getYear3());
         values.put(DbContract.COLUMN_NOTES, team.getNotes());
         values.put(DbContract.COLUMN_COACHMENTOR, team.getCoachMentor());
-        values.put(DbContract.COLUMN_DRIVER, team.getDriver());
-        values.put(DbContract.COLUMN_HP, team.getHp());
+        values.put(DbContract.COLUMN_DRIVER, String.valueOf(team.getDriver()));
+        values.put(DbContract.COLUMN_HP, String.valueOf(team.getHp()));
 
         // Updating row
         int result = db.update(DbContract.TEAM_INFO_TABLE, values, DbContract.COLUMN_ID + " = ?",
@@ -180,7 +180,10 @@ public class DbHelper extends SQLiteOpenHelper {
 
         // Construct and execute query
         Cursor cursor = db.query(DbContract.TEAM_INFO_TABLE,
-                new String[] { DbContract.COLUMN_ID }, /** add columns here **/
+                new String[] { DbContract.COLUMN_ID, DbContract.COLUMN_LOCATION, DbContract.COLUMN_TOTALYRS,
+                DbContract.COLUMN_PARTICIPATE, DbContract.COLUMN_AWARD1, DbContract.COLUMN_YEAR1, DbContract.COLUMN_AWARD2,
+                DbContract.COLUMN_YEAR2, DbContract.COLUMN_AWARD3, DbContract.COLUMN_YEAR3, DbContract.COLUMN_NOTES,
+                DbContract.COLUMN_COACHMENTOR, DbContract.COLUMN_DRIVER, DbContract.COLUMN_HP}, /** add columns here **/
                 DbContract.COLUMN_ID + " = ?", new String[] { String.valueOf(id + 1) }, null, null,
                 DbContract.COLUMN_ID + " ASC", null);
 
@@ -188,6 +191,19 @@ public class DbHelper extends SQLiteOpenHelper {
             // Load item values
             TeamInfoItem team = new TeamInfoItem();
             team.setId(cursor.getInt(cursor.getColumnIndex(DbContract.COLUMN_ID)));
+            team.setLocation(cursor.getString(cursor.getColumnIndex(DbContract.COLUMN_LOCATION)));
+            team.setTotalYears(cursor.getString(cursor.getColumnIndex(DbContract.COLUMN_TOTALYRS)));
+            team.setParticipate(cursor.getInt(cursor.getColumnIndex(DbContract.COLUMN_PARTICIPATE)));
+            team.setAward1(cursor.getInt(cursor.getColumnIndex(DbContract.COLUMN_AWARD1)));
+            team.setYear1(cursor.getInt(cursor.getColumnIndex(DbContract.COLUMN_YEAR1)));
+            team.setAward2(cursor.getInt(cursor.getColumnIndex(DbContract.COLUMN_AWARD2)));
+            team.setYear2(cursor.getInt(cursor.getColumnIndex(DbContract.COLUMN_YEAR2)));
+            team.setAward3(cursor.getInt(cursor.getColumnIndex(DbContract.COLUMN_AWARD3)));
+            team.setYear3(cursor.getInt(cursor.getColumnIndex(DbContract.COLUMN_YEAR3)));
+            team.setNotes(cursor.getString(cursor.getColumnIndex(DbContract.COLUMN_NOTES)));
+            team.setCoachMentor(cursor.getInt(cursor.getColumnIndex(DbContract.COLUMN_COACHMENTOR)));
+            team.setDriver(Float.valueOf(cursor.getString(cursor.getColumnIndex(DbContract.COLUMN_DRIVER))));
+            team.setHp(Float.valueOf(cursor.getString(cursor.getColumnIndex(DbContract.COLUMN_HP))));
             cursor.close(); // Close cursor
             return team;
         }

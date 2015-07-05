@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -96,12 +97,14 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                         menuItem.setChecked(true);
                         mPosition = 1;
                         mToolbar.setTitle(getString(R.string.drawer_item_two));
+                        sbComingSoon();
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_3:
                         menuItem.setChecked(true);
                         mPosition = 2;
                         mToolbar.setTitle(R.string.drawer_item_three);
+                        sbComingSoon();
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_4:
@@ -235,6 +238,11 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         mFragManager.beginTransaction()
                 .replace(R.id.container, MainFragment.newInstance(title))
                 .commit();
+    }
+
+    private void sbComingSoon() {
+        Snackbar.make(mNavView, "This feature will be released in an update.", Snackbar.LENGTH_LONG)
+                .show();
     }
 
 }

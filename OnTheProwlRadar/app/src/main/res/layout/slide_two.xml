@@ -16,7 +16,7 @@
         android:textColor="#ffffff"
         android:paddingRight="32dp"
         android:textSize="28sp"
-        android:text="Slide 2 title"/>
+        android:text="@string/slide2_title"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -44,7 +44,7 @@
         android:paddingLeft="64dp"
         android:paddingRight="64dp"
         android:textSize="16sp"
-        android:text="[Description text]"/>
+        android:text="@string/slide2_desc"/>
 
     <TextView
         android:layout_width="fill_parent"
