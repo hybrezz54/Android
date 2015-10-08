@@ -9,7 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.technowolves.otpradar.R;
+
 public class RobotFragment extends Fragment {
+
+    private static final String ARG_TEAM_NUMBER = "team_number";
+    private static final String ARG_SEASON = "frc_season";
+    private static final String ARG_EDIT_MODE = "edit_mode";
+
+    private static String mNumber;
+    private static int mSeason;
+    private static boolean mEditMode;
 
     private OnFragmentInteractionListener mListener;
 
@@ -17,17 +27,36 @@ public class RobotFragment extends Fragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static RobotFragment newInstance() {
+    public static RobotFragment newInstance(String number, int seasonIdx, boolean editMode) {
         RobotFragment fragment = new RobotFragment();
+
         Bundle args = new Bundle();
+        args.putString(ARG_TEAM_NUMBER, number);
+        args.putInt(ARG_SEASON, seasonIdx);
+        args.putBoolean(ARG_EDIT_MODE, editMode);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public RobotFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            mNumber = getArguments().getString(ARG_TEAM_NUMBER);
+            mSeason = getArguments().getInt(ARG_SEASON);
+            mEditMode = getArguments().getBoolean(ARG_EDIT_MODE);
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View rootView = inflater.inflate(R.layout.fragment_robot_info, container, false);
+        return rootView;
     }
 
     @Override

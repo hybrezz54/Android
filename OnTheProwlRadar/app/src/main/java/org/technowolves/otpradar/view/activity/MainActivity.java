@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         //SharedPreferences prefs = this.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mSeason = prefs.getString(SettingsActivity.PREFS_SEASON, SettingsActivity.SEASONS[0]);
+        mSeason = prefs.getString(SettingsActivity.PREF_SEASON, SettingsActivity.SEASONS[0]);
 
         if (!prefs.getBoolean(PREFS_OPEN_APP, false)) {
             Intent intent = new Intent(this, InitialActivity.class);

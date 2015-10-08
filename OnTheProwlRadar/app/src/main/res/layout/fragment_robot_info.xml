@@ -11,8 +11,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="bottom">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -35,23 +34,21 @@
                     android:background="@color/colorAccent"
                     android:layout_marginBottom="5dp"/>
 
-                <TextView
-                    android:id="@+id/txtTeamInfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:layout_margin="5dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-light"/>
-
                 <EditText
-                    android:id="@+id/edtLocation"
+                    android:id="@+id/edtRobotName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/team_location"
+                    android:hint="Robot Name"
                     android:gravity="end"
                     android:layout_margin="5dp"
+                    android:fontFamily="sans-serif-light"/>
+
+                <Spinner
+                    android:id="@+id/robotStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:spinnerMode="dropdown"
                     android:fontFamily="sans-serif-light"/>
 
                 <LinearLayout
@@ -60,11 +57,11 @@
                     android:orientation="horizontal">
 
                     <EditText
+                        android:id="@+id/robotHeight"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:id="@+id/edtTotal"
-                        android:hint="@string/total_years"
+                        android:hint="Height (in.)"
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:maxLength="2"
@@ -72,8 +69,37 @@
                         android:layout_margin="5dp"
                         android:fontFamily="sans-serif-light"/>
 
+                    <EditText
+                        android:id="@+id/robotWeight"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Weight (lbs.)"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
+                        android:inputType="number"
+                        android:maxLength="3"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
                     <Spinner
-                        android:id="@+id/participate"
+                        android:id="@+id/driveTrain"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:spinnerMode="dropdown"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <Spinner
+                        android:id="@+id/wheelType"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -85,94 +111,13 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <Spinner
+                    android:id="@+id/spnStrafe"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <Spinner
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:id="@+id/award1"
-                        android:layout_margin="5dp"
-                        android:spinnerMode="dropdown"
-                        android:fontFamily="sans-serif-light"/>
-
-                    <Spinner
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/year1"
-                        android:layout_margin="5dp"
-                        android:spinnerMode="dropdown"
-                        android:fontFamily="sans-serif-light"/>
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <Spinner
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:id="@+id/award2"
-                        android:layout_margin="5dp"
-                        android:spinnerMode="dropdown"
-                        android:fontFamily="sans-serif-light"/>
-
-                    <Spinner
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/year2"
-                        android:layout_margin="5dp"
-                        android:spinnerMode="dropdown"
-                        android:fontFamily="sans-serif-light"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <Spinner
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:id="@+id/award3"
-                        android:layout_margin="5dp"
-                        android:spinnerMode="dropdown"
-                        android:fontFamily="sans-serif-light"/>
-
-                    <Spinner
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/year3"
-                        android:layout_margin="5dp"
-                        android:spinnerMode="dropdown"
-                        android:fontFamily="sans-serif-light"/>
-
-                </LinearLayout>
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:ems="10"
-                    android:id="@+id/notes"
-                    android:hint="@string/notes"
                     android:layout_margin="5dp"
-                    android:minLines="7"
-                    android:maxLines="9"
-                    android:gravity="end|center"
-                    android:textSize="16sp"
+                    android:spinnerMode="dropdown"
+                    android:layout_gravity="center_vertical"
                     android:fontFamily="sans-serif-light"/>
 
             </LinearLayout>
@@ -187,7 +132,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:paddingTop="16dp"
-                    android:text="@string/header_team_info_two"
+                    android:text="- AUTONOMOUS -"
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:fontFamily="sans-serif-light"/>
@@ -203,85 +148,38 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.5"
-                        android:layout_margin="5dp"
-                        android:gravity="center"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/coach_mentor"
-                        android:textSize="22sp"
-                        android:fontFamily="sans-serif-light"/>
-
-                    <Spinner
-                        android:id="@+id/coachMentor"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:layout_margin="5dp"
-                        android:spinnerMode="dropdown"
-                        android:fontFamily="sans-serif-light"/>
-
                 </LinearLayout>
 
-                <LinearLayout
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_margin="5dp"
-                        android:text="@string/driver_rate"
-                        android:textSize="20sp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:fontFamily="sans-serif-light"/>
-
-                    <RatingBar
-                        android:id="@+id/driverRating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:numStars="5"
-                        android:stepSize="0.5"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_margin="5dp"
-                        android:text="@string/hp_rate"
-                        android:textSize="18.5sp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:fontFamily="sans-serif-light"/>
-
-                    <RatingBar
-                        android:id="@+id/hpRating"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:numStars="5"
-                        android:stepSize="0.5"/>
-
-                </LinearLayout>
+                    android:layout_margin="5dp"
+                    android:paddingTop="16dp"
+                    android:text="- TELEOP -"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-light"/>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="72dp" />
+                    android:layout_height="2dp"
+                    android:background="@color/colorAccent"
+                    android:layout_marginBottom="5dp"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:hint="Max Tote Capacity"
+                    android:inputType="number"
+                    android:maxLength="2" />
 
             </LinearLayout>
 

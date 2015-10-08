@@ -1,6 +1,5 @@
 package org.technowolves.otpradar.view.activity;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -50,7 +49,11 @@ public class InitialActivity extends AppIntro2
     public void storeSeasonPref(String number, String name, int spnIndex) {
         if (isDonePressed) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            prefs.edit().putInt(SettingsActivity.PREFS_SEASON, spnIndex).apply();
+            prefs.edit()
+                    .putString(SettingsActivity.PREF_NUMBER, number)
+                    .putString(SettingsActivity.PREF_NAME, name)
+                    .putInt(SettingsActivity.PREF_SEASON, spnIndex)
+                    .apply();
         }
     }
 

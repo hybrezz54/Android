@@ -15,7 +15,9 @@ public class SettingsActivity extends AppCompatActivity {
             "2013: Ultimate Ascent", "2012: Rebound Rumble"};
 
     //public static final String PREFS_KEY = "org.technowolves.otpradar.PREFS_KEY";
-    public static final String PREFS_SEASON = "frc_season";
+    public static final String PREF_NUMBER = "tm_number";
+    public static final String PREF_NAME = "tm_name";
+    public static final String PREF_SEASON = "frc_season";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
