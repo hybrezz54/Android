@@ -19,6 +19,8 @@
     <string name="header_team_info_one">- TEAM INFO -</string>
     <string name="header_team_info_two">- DRIVE SQUAD -</string>
     <string name="header_team_info_three">- HUMAN PLAYER -</string>
+    <string name="team_name">Team Name</string>
+    <string name="team_number">Team Number</string>
     <string name="team_location">Team Location</string>
     <string name="total_years">Total Years</string>
     <string name="notes">Notes</string>
@@ -31,6 +33,8 @@
     <string name="drawer_item_four">Help</string>
     <string name="slide1_desc">Click on the Edit Button</string>
     <string name="slide2_desc">Add and edit teams through edit toolbar</string>
-    <string name="slide2_title">Adding teams...</string>
-    <string name="slide1_title">Using the app...</string>
+    <string name="slide3_desc">Before you begin, start by setting some preferences.</string>
+    <string name="slide1_title">Using the app&#8230;</string>
+    <string name="slide2_title">Adding teams&#8230;</string>
+    <string name="slide3_title">Get started!</string>
 </resources>

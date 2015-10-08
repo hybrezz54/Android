@@ -1,6 +1,7 @@
 package org.technowolves.otpradar.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -127,13 +128,13 @@ public class MainFragment extends ListFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
+            Activity activity = (Activity) context;
             mListener = (OnFragmentInteractionListener) activity;
-            mActivity = activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }
@@ -241,7 +242,7 @@ public class MainFragment extends ListFragment {
 
     private void addTeam() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-        builder.setView(R.layout.add_team_dlg);
+        builder.setView(R.layout.dlg_add_team);
         builder.setTitle(R.string.edit_add);
         builder.setMessage("Please enter the team information.");
 

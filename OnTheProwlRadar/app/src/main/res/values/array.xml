@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="season_names">
+        <item>---Choose a season---</item>
+        <item>2015: Recycle Rush</item>
+        <item>2014: Aerial Assist</item>
+        <item>2013: Ultimate Ascent</item>
+        <item>2012: Rebound Rumble</item>
+    </string-array>
+
+    <string-array name="season_val">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>

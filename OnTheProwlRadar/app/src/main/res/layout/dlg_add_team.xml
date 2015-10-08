@@ -14,7 +14,8 @@
         android:maxLength="4"
         android:layout_weight="1"
         android:layout_margin="4dp"
-        android:hint="Team Number"/>
+        android:hint="Team Number"
+        android:fontFamily="sans-serif-light"/>
 
     <EditText
         android:id="@+id/nameInput"
@@ -23,7 +24,8 @@
         android:inputType="text"
         android:layout_weight="1"
         android:layout_margin="4dp"
-        android:hint="Team Name"/>
+        android:hint="Team Name"
+        android:fontFamily="sans-serif-light"/>
 
     <EditText
         android:id="@+id/siteInput"
@@ -32,6 +34,7 @@
         android:inputType="textWebEditText"
         android:layout_weight="1"
         android:layout_margin="4dp"
-        android:hint="Website"/>
+        android:hint="Website"
+        android:fontFamily="sans-serif-light"/>
 
 </LinearLayout>

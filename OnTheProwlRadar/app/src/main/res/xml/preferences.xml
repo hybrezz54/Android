@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory>
+
+        <EditTextPreference
+            android:title="Team Number "
+            android:key="tm_number"
+            android:summary="Assigned 4-digit FRC number" />
+
+        <EditTextPreference
+            android:title="Team Name "
+            android:key="tm_name"
+            android:summary="Registered nickname" />
+
+        <ListPreference
+            android:title="Current Season "
+            android:key="frc_season"
+            android:defaultValue="0"
+            android:summary="FRC"
+            android:entries="@array/season_names"
+            android:entryValues="@array/season_val"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

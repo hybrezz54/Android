@@ -1,11 +1,11 @@
 package org.technowolves.otpradar.view.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -21,15 +21,16 @@ import android.support.v4.widget.DrawerLayout;
 
 import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.view.fragment.MainFragment;
+import org.technowolves.otpradar.view.fragment.RobotFragment;
 import org.technowolves.otpradar.view.fragment.TeamInfoFragment;
 import org.technowolves.otpradar.model.DbHelper;
 import org.technowolves.otpradar.presenter.TeamInfoItem;
 import org.technowolves.otpradar.presenter.TeamListItem;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener,
-        TeamInfoFragment.OnFragmentInteractionListener{
+        TeamInfoFragment.OnFragmentInteractionListener, RobotFragment.OnFragmentInteractionListener{
 
-    private static final String PREFS_KEY = "org.technowolves.otpradar.PREFERENCES_KEY";
+    //public static final String PREFS_KEY = "org.technowolves.otpradar.MAIN_PREFS_KEY";
     private static final String PREFS_OPEN_APP = "APP_OPEN_TIME";
     private static final String DRAWER_POS_KEY = "DRAWER_POS_KEY";
 
@@ -37,10 +38,11 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar mToolbar;
     private NavigationView mNavView;
-    private int mPosition;
-
     private FragmentManager mFragManager;
     private DbHelper mDbHelper;
+
+    private int mPosition;
+    public String mSeason;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,15 +54,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNavView = (NavigationView) findViewById(R.id.navigation_view);
-
-        SharedPreferences prefs = this.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
-        if (!prefs.getBoolean(PREFS_OPEN_APP, false)) {
-            Intent intent = new Intent(this, InitialActivity.class);
-            startActivity(intent);
-            prefs.edit()
-                    .putBoolean(PREFS_OPEN_APP, true)
-                    .apply();
-        }
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
@@ -80,6 +73,23 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         if(mNavView != null)
             setUpNavigationDrawerContent();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //SharedPreferences prefs = this.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mSeason = prefs.getString(SettingsActivity.PREFS_SEASON, SettingsActivity.SEASONS[0]);
+
+        if (!prefs.getBoolean(PREFS_OPEN_APP, false)) {
+            Intent intent = new Intent(this, InitialActivity.class);
+            startActivity(intent);
+            prefs.edit()
+                    .putBoolean(PREFS_OPEN_APP, true)
+                    .apply();
+        }
     }
 
     private void setUpNavigationDrawerContent() {
@@ -104,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                         menuItem.setChecked(true);
                         mPosition = 2;
                         mToolbar.setTitle(R.string.drawer_item_three);
-                        sbComingSoon();
+                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_4:
