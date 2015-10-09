@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.technowolves.otpradar.presenter.RobotInfoItem;
 import org.technowolves.otpradar.presenter.TeamInfoItem;
 import org.technowolves.otpradar.presenter.TeamListItem;
 
@@ -84,6 +85,10 @@ public class DbHelper extends SQLiteOpenHelper {
         db.close(); // Close db connection
     }
 
+    public void addRobotItem(RobotInfoItem robot) {
+
+    }
+
     public int updateTeamItem(TeamListItem team) {
         // Open db connection
         SQLiteDatabase db = this.getWritableDatabase();
@@ -126,6 +131,10 @@ public class DbHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(team.getId()) });
         db.close(); // Close db connection
         return result; // return the number of rows affected
+    }
+
+    public int updateRobotItem(RobotInfoItem robot) {
+        return 0;
     }
 
     public void deleteTeamItem(TeamListItem team) {

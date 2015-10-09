@@ -18,7 +18,6 @@ public class TeamInfoItem {
     private float hp;
 
     public TeamInfoItem() {
-
     }
 
     public long getId() {

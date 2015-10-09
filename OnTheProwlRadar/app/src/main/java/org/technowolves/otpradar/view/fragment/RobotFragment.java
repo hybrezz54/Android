@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.technowolves.otpradar.R;
+import org.technowolves.otpradar.presenter.RobotInfoItem;
 
 public class RobotFragment extends Fragment {
 
@@ -78,7 +79,7 @@ public class RobotFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-
+        void saveRobotInfoValues(RobotInfoItem robot, boolean update);
     }
 
 }

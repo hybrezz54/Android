@@ -8,6 +8,7 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
 
 import org.technowolves.otpradar.R;
+import org.technowolves.otpradar.presenter.RobotInfoItem;
 import org.technowolves.otpradar.view.fragment.MainFragment;
 import org.technowolves.otpradar.view.fragment.RobotFragment;
 import org.technowolves.otpradar.view.fragment.TeamInfoFragment;
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     private DbHelper mDbHelper;
 
     private int mPosition;
-    public String mSeason;
+    public int mSeason;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         if (savedInstanceState != null)
             mPosition = savedInstanceState.getInt(DRAWER_POS_KEY, 0);
         else
-            initMainFragment();
+            initMainFragment(0, getString(R.string.drawer_item_one));
 
         if(mNavView != null)
             setUpNavigationDrawerContent();
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         //SharedPreferences prefs = this.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mSeason = prefs.getString(SettingsActivity.PREF_SEASON, SettingsActivity.SEASONS[0]);
+        mSeason = Integer.parseInt(prefs.getString(SettingsActivity.PREF_SEASON, SettingsActivity.SEASONS[0]));
 
         if (!prefs.getBoolean(PREFS_OPEN_APP, false)) {
             Intent intent = new Intent(this, InitialActivity.class);
@@ -100,14 +102,12 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_item_1:
                         menuItem.setChecked(true);
-                        initMainFragment();
+                        initMainFragment(0, getString(R.string.drawer_item_one));
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_2:
                         menuItem.setChecked(true);
-                        mPosition = 1;
-                        mToolbar.setTitle(getString(R.string.drawer_item_two));
-                        sbComingSoon();
+                        initMainFragment(1, getString(R.string.drawer_item_two));
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_3:
@@ -186,23 +186,26 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         TeamListItem teamListItem = mDbHelper.getTeamListItem(position);
         TeamInfoItem teamInfoItem = mDbHelper.getTeamInfoItem(position);
+        Fragment fragment = null;
+        boolean edit = false;
 
-        if (toolbarShown || hiddenByTouch) {
-            mFragManager.beginTransaction()
-                    .addToBackStack(null)
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.container, TeamInfoFragment.newInstance(teamListItem,
-                            teamInfoItem, true))
-                    .commit();
-        } else {
-            mFragManager.beginTransaction()
-                    .addToBackStack(null)
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .replace(R.id.container, TeamInfoFragment.newInstance(teamListItem,
-                            teamInfoItem, false))
-                    .commit();
+        if (toolbarShown || hiddenByTouch)
+            edit = true;
+
+        switch (mPosition) {
+            case 0:
+                fragment = TeamInfoFragment.newInstance(teamListItem, teamInfoItem, edit);
+                break;
+            case 1:
+                fragment = RobotFragment.newInstance(teamListItem.getNumber(), mSeason, edit);
+                break;
         }
 
+        mFragManager.beginTransaction()
+                .addToBackStack(null)
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.container, fragment)
+                .commit();
     }
 
     @Override
@@ -228,21 +231,29 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     @Override
     public void saveTeamInfoValues(TeamInfoItem team, boolean update) {
 
-        if (update) {
+        if (update)
             mDbHelper.updateTeamItem(team);
-            Log.e("OtpRadar", "Update true");
-        } else {
+        else
             mDbHelper.addTeamItem(team);
-            Log.e("OtpRadar", "Update false");
-        }
 
         mFragManager.popBackStack();
 
     }
 
-    private void initMainFragment() {
-        mPosition = 0;
-        String title = getString(R.string.drawer_item_one);
+    @Override
+    public void saveRobotInfoValues(RobotInfoItem robot, boolean update) {
+
+        if (update)
+            mDbHelper.updateRobotItem(robot);
+        else
+            mDbHelper.addRobotItem(robot);
+
+        mFragManager.popBackStack();
+
+    }
+
+    private void initMainFragment(int pos, String title) {
+        mPosition = pos;
         mToolbar.setTitle(title);
 
         mFragManager.beginTransaction()
