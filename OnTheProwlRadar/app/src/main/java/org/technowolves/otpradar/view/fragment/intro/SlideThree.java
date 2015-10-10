@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.technowolves.otpradar.R;
+import org.technowolves.otpradar.view.activity.InitialActivity;
 import org.technowolves.otpradar.view.activity.SettingsActivity;
 
 public class SlideThree extends Fragment {

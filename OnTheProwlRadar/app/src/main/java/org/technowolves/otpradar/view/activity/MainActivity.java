@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
@@ -33,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         TeamInfoFragment.OnFragmentInteractionListener, RobotFragment.OnFragmentInteractionListener{
 
     //public static final String PREFS_KEY = "org.technowolves.otpradar.MAIN_PREFS_KEY";
-    private static final String PREFS_OPEN_APP = "APP_OPEN_TIME";
+    public static final String PREFS_OPEN_APP = "APP_OPEN_TIME";
     private static final String DRAWER_POS_KEY = "DRAWER_POS_KEY";
 
     private DrawerLayout mDrawerLayout;
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         //SharedPreferences prefs = this.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mSeason = Integer.parseInt(prefs.getString(SettingsActivity.PREF_SEASON, SettingsActivity.SEASONS[0]));
+        mSeason = Integer.parseInt(prefs.getString(SettingsActivity.PREF_SEASON, "0"));
 
         if (!prefs.getBoolean(PREFS_OPEN_APP, false)) {
             Intent intent = new Intent(this, InitialActivity.class);

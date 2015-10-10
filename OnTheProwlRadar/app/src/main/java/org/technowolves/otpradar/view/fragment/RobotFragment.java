@@ -28,12 +28,12 @@ public class RobotFragment extends Fragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static RobotFragment newInstance(String number, int seasonIdx, boolean editMode) {
+    public static RobotFragment newInstance(String number, int season, boolean editMode) {
         RobotFragment fragment = new RobotFragment();
 
         Bundle args = new Bundle();
         args.putString(ARG_TEAM_NUMBER, number);
-        args.putInt(ARG_SEASON, seasonIdx);
+        args.putInt(ARG_SEASON, season);
         args.putBoolean(ARG_EDIT_MODE, editMode);
         fragment.setArguments(args);
         return fragment;

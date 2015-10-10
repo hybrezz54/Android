@@ -3,6 +3,7 @@ package org.technowolves.otpradar.view.activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 
 import com.github.paolorotolo.appintro.AppIntro2;
 
@@ -18,11 +19,16 @@ public class InitialActivity extends AppIntro2
     @Override
     public void init(Bundle savedInstanceState) {
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isNextInit = prefs.getBoolean(MainActivity.PREFS_OPEN_APP, false);
+
         // Add your slide's fragments here.
         // AppIntro will automatically generate the dots indicator and buttons.
         addSlide(NewSlide.newInstance(R.layout.slide_one));
         addSlide(NewSlide.newInstance(R.layout.slide_two));
-        addSlide(new SlideThree());
+
+        if (!isNextInit)
+            addSlide(new SlideThree());
 
         // You can override bar/separator color if you want.
         /*setBarColor(getResources().getColor(R.color.colorPrimary));
@@ -52,7 +58,7 @@ public class InitialActivity extends AppIntro2
             prefs.edit()
                     .putString(SettingsActivity.PREF_NUMBER, number)
                     .putString(SettingsActivity.PREF_NAME, name)
-                    .putInt(SettingsActivity.PREF_SEASON, spnIndex)
+                    .putString(SettingsActivity.PREF_SEASON, String.valueOf(spnIndex))
                     .apply();
         }
     }
