@@ -2,11 +2,14 @@ package org.technowolves.otpradar.model;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
 public class OtpProvider extends ContentProvider {
+
+    private static final String AUTHORITY = "org.technowolves.otpradar";
+    private static final String URL = "content://" + AUTHORITY + "/teams";
+    private static final Uri CONTENT_URI = Uri.parse(URL);
 
     @Override
     public String getType(Uri uri) {
