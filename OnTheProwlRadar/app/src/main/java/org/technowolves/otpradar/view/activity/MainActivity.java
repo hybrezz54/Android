@@ -185,6 +185,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
 
         TeamListItem teamListItem = mDbHelper.getTeamListItem(position);
         TeamInfoItem teamInfoItem = mDbHelper.getTeamInfoItem(position);
+        RobotInfoItem robotItem = mDbHelper.getRobotItem(position, mSeason);
+
         Fragment fragment = null;
         boolean edit = false;
 
@@ -196,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 fragment = TeamInfoFragment.newInstance(teamListItem, teamInfoItem, edit);
                 break;
             case 1:
-                fragment = RobotFragment.newInstance(teamListItem.getNumber(), mSeason, edit);
+                fragment = RobotFragment.newInstance(robotItem, teamListItem.getNumber(), edit);
                 break;
         }
 

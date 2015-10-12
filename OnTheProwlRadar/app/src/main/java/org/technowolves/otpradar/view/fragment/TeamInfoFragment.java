@@ -149,7 +149,6 @@ public class TeamInfoFragment extends Fragment {
 
         if (mTeam != null) {
             edtLocation.setText(mTeam.getLocation());
-            Log.e("OtpRadar", mTeam.getLocation());
             edtTotal.setText(mTeam.getTotalYears());
             spnParticipate.setSelection(mTeam.getParticipate());
             spnAward1.setSelection(mTeam.getAward1());
@@ -175,9 +174,7 @@ public class TeamInfoFragment extends Fragment {
                 else
                     mTeam = new TeamInfoItem();
 
-                Log.e("OtpRadar", String.valueOf(update));
                 mTeam.setLocation(edtLocation.getText().toString());
-                Log.e("OtpRadar", edtLocation.getText().toString());
                 mTeam.setTotalYears(edtTotal.getText().toString());
                 mTeam.setParticipate(spnParticipate.getSelectedItemPosition());
                 mTeam.setAward1(spnAward1.getSelectedItemPosition());

@@ -9,8 +9,8 @@ import org.technowolves.otpradar.R;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    public static final String[] SEASONS = new String[] {"---Choose a season---", "2015: Recycle Rush", "2014: Aerial Assist",
-            "2013: Ultimate Ascent", "2012: Rebound Rumble"};
+    public static final String[] SEASONS = new String[] {"---Choose a season---", "2016: ?????",
+            "2015: Recycle Rush"};
 
     //public static final String PREFS_KEY = "org.technowolves.otpradar.PREFS_KEY";
     public static final String PREF_NUMBER = "tm_number";

@@ -34,8 +34,18 @@
                     android:background="@color/colorAccent"
                     android:layout_marginBottom="5dp"/>
 
+                <TextView
+                    android:id="@+id/txtSeasonInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-light"/>
+
                 <EditText
-                    android:id="@+id/edtRobotName"
+                    android:id="@+id/robotName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Robot Name"
@@ -143,14 +153,69 @@
                     android:background="@color/colorAccent"
                     android:layout_marginBottom="5dp"/>
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
+                    <Spinner
+                        android:id="@+id/moveTote"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:spinnerMode="dropdown"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif-light"/>
 
+                    <Spinner
+                        android:id="@+id/moveContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:spinnerMode="dropdown"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif-light"/>
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Spinner
+                        android:id="@+id/acqTote"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:spinnerMode="dropdown"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <Spinner
+                        android:id="@+id/acqContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:spinnerMode="dropdown"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif-light"/>
+
+                </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/startingPos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:spinnerMode="dropdown"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif-light"/>
 
             </LinearLayout>
 
@@ -176,6 +241,7 @@
                     android:layout_marginBottom="5dp"/>
 
                 <EditText
+                    android:id="@+id/maxTote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"

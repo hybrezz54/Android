@@ -3,19 +3,10 @@ package org.technowolves.otpradar.presenter;
 public class TeamInfoItem {
 
     private long id;
-    private String location;
-    private String totalYears;
-    private int participate;
-    private int award1;
-    private int year1;
-    private int award2;
-    private int year2;
-    private int award3;
-    private int year3;
-    private String notes;
-    private int coachMentor;
-    private float driver;
-    private float hp;
+    private String location, totalYears, notes;
+    private int participate, award1, year1, award2,
+            year2, award3, year3, coachMentor;
+    private float driver, hp;
 
     public TeamInfoItem() {
     }
