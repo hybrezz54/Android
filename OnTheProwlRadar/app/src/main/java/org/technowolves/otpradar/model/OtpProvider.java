@@ -2,7 +2,9 @@ package org.technowolves.otpradar.model;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 public class OtpProvider extends ContentProvider {
@@ -10,6 +12,8 @@ public class OtpProvider extends ContentProvider {
     private static final String AUTHORITY = "org.technowolves.otpradar";
     private static final String URL = "content://" + AUTHORITY + "/teams";
     private static final Uri CONTENT_URI = Uri.parse(URL);
+
+    private DbHelper mDbHelper;
 
     @Override
     public String getType(Uri uri) {
@@ -28,7 +32,15 @@ public class OtpProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        return false;
+        Context c = getContext();
+        mDbHelper = new DbHelper(c);
+
+        /**
+         * Create a write able database which will trigger its
+         * creation if it doesn't already exist.
+         */
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        return (db == null)? false:true;
     }
 
     @Override

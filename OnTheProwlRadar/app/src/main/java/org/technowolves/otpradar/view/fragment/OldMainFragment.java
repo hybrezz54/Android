@@ -30,12 +30,12 @@ import io.codetail.animation.ViewAnimationUtils;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MainFragment.OnFragmentInteractionListener} interface
+ * {@link OldMainFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MainFragment#newInstance} factory method to
+ * Use the {@link OldMainFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainFragment extends ListFragment {
+public class OldMainFragment extends ListFragment {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -55,15 +55,15 @@ public class MainFragment extends ListFragment {
 
     private Activity mActivity;
 
-    public MainFragment() {
+    public OldMainFragment() {
     }
 
     /**
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static MainFragment newInstance(String sectionTitle) {
-        MainFragment fragment = new MainFragment();
+    public static OldMainFragment newInstance(String sectionTitle) {
+        OldMainFragment fragment = new OldMainFragment();
 
         Bundle args = new Bundle();
         args.putString(ARG_SECTION_TITLE, sectionTitle);
@@ -80,6 +80,7 @@ public class MainFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mActivity = getActivity();
         if (getArguments() != null) {
             mTitle = getArguments().getString(ARG_SECTION_TITLE);
         }
@@ -90,7 +91,7 @@ public class MainFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_main_old, container, false);
 
         mAdapter = new TeamCursorAdapter(mActivity, mListener.getCursorFromHandler());
         setListAdapter(mAdapter);

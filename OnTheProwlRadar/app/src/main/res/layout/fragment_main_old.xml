@@ -1,0 +1,41 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.fragment.OldMainFragment">
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ListView>
+
+    <io.codetail.widget.RevealFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/action_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/fab_margin"
+            android:layout_gravity="bottom|end"
+            app:fabSize="normal"
+            app:backgroundTint="@color/colorAccent"
+            android:src="@drawable/ic_mode_edit_white_48dp"/>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/editToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_gravity="bottom"
+            android:visibility="gone"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+    </io.codetail.widget.RevealFrameLayout>
+
+</RelativeLayout>

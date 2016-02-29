@@ -21,14 +21,14 @@ import android.support.v4.widget.DrawerLayout;
 
 import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.presenter.RobotInfoItem;
-import org.technowolves.otpradar.view.fragment.MainFragment;
+import org.technowolves.otpradar.view.fragment.OldMainFragment;
 import org.technowolves.otpradar.view.fragment.RobotFragment;
 import org.technowolves.otpradar.view.fragment.TeamInfoFragment;
 import org.technowolves.otpradar.model.DbHelper;
 import org.technowolves.otpradar.presenter.TeamInfoItem;
 import org.technowolves.otpradar.presenter.TeamListItem;
 
-public class MainActivity extends AppCompatActivity implements MainFragment.OnFragmentInteractionListener,
+public class OldMainActivity extends AppCompatActivity implements OldMainFragment.OnFragmentInteractionListener,
         TeamInfoFragment.OnFragmentInteractionListener, RobotFragment.OnFragmentInteractionListener{
 
     //public static final String PREFS_KEY = "org.technowolves.otpradar.MAIN_PREFS_KEY";
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_old);
 
         mFragManager = getSupportFragmentManager();
         mDbHelper = new DbHelper(this);
@@ -113,13 +113,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                         menuItem.setChecked(true);
                         mPosition = 2;
                         mToolbar.setTitle(R.string.drawer_item_three);
-                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                        startActivity(new Intent(OldMainActivity.this, SettingsActivity.class));
                         mDrawerLayout.closeDrawer(GravityCompat.START);
                         return true;
                     case R.id.navigation_item_4:
                         menuItem.setChecked(true);
                         mPosition = 3;
-                        Intent i = new Intent(MainActivity.this,
+                        Intent i = new Intent(OldMainActivity.this,
                                 InitialActivity.class);
                         startActivity(i);
                         return true;
@@ -198,7 +198,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
                 fragment = TeamInfoFragment.newInstance(teamListItem, teamInfoItem, edit);
                 break;
             case 1:
-                fragment = RobotFragment.newInstance(robotItem, teamListItem.getNumber(), edit);
+                fragment = RobotFragment.newInstance(robotItem, teamListItem.getNumber(),
+                        mSeason, position, edit);
                 break;
         }
 
@@ -258,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         mToolbar.setTitle(title);
 
         mFragManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance(title))
+                .replace(R.id.container, OldMainFragment.newInstance(title))
                 .commit();
     }
 

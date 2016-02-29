@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class RobotFragment extends Fragment {
 
     private static final String ARG_TEAM_NUMBER = "team_number";
     private static final String ARG_SEASON = "frc_season";
+    private static final String ARG_POS_ID = "pos_id";
     private static final String ARG_EDIT_MODE = "edit_mode";
 
     public static final String[] STYLE_2015 = new String[] {"------", "TOTE STACKER/LIFTER", "CONTAINER CARRIER",
@@ -41,6 +43,7 @@ public class RobotFragment extends Fragment {
 
     private static String mNumber;
     private static int mSeason;
+    private static int mId;
     private static boolean mEditMode;
 
     private RobotInfoItem mRobot;
@@ -55,13 +58,14 @@ public class RobotFragment extends Fragment {
      * number.
      */
     public static RobotFragment newInstance(RobotInfoItem robot, String number,
-                                            boolean editMode) {
+                                            int season, int id, boolean editMode) {
         RobotFragment fragment = new RobotFragment();
         fragment.setRobotInfoItem(robot);
 
         Bundle args = new Bundle();
         args.putString(ARG_TEAM_NUMBER, number);
-        args.putInt(ARG_SEASON, robot.getSeason());
+        args.putInt(ARG_SEASON, season);
+        args.putInt(ARG_POS_ID, id);
         args.putBoolean(ARG_EDIT_MODE, editMode);
         fragment.setArguments(args);
         return fragment;
@@ -77,6 +81,7 @@ public class RobotFragment extends Fragment {
         if (getArguments() != null) {
             mNumber = getArguments().getString(ARG_TEAM_NUMBER);
             mSeason = getArguments().getInt(ARG_SEASON);
+            mId = getArguments().getInt(ARG_POS_ID);
             mEditMode = getArguments().getBoolean(ARG_EDIT_MODE);
         }
     }
@@ -165,6 +170,9 @@ public class RobotFragment extends Fragment {
                 else
                     mRobot = new RobotInfoItem();
 
+                Log.e("OtpRadar", "fabSave clicked " + String.valueOf(update));
+
+                mRobot.setId(mId);
                 mRobot.setSeason(mSeason);
                 mRobot.setName(edtName.getText().toString());
                 mRobot.setStyle(spnStyle.getSelectedItemPosition());

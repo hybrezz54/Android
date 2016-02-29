@@ -104,6 +104,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         // Store values of team item
         ContentValues values = new ContentValues();
+        values.put(DbContract.COLUMN_ID, robot.getId());
         values.put(DbContract.COLUMN_SEASON, robot.getSeason());
         values.put(DbContract.COLUMN_ROBOT, robot.getName());
         values.put(DbContract.COLUMN_STYLE, robot.getStyle());
@@ -174,6 +175,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         // Store values of team item
         ContentValues values = new ContentValues();
+        values.put(DbContract.COLUMN_ID, robot.getId());
         values.put(DbContract.COLUMN_SEASON, robot.getSeason());
         values.put(DbContract.COLUMN_ROBOT, robot.getName());
         values.put(DbContract.COLUMN_STYLE, robot.getStyle());

@@ -3,7 +3,6 @@ package org.technowolves.otpradar.view.activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 
 import com.github.paolorotolo.appintro.AppIntro2;
 
@@ -20,7 +19,7 @@ public class InitialActivity extends AppIntro2
     public void init(Bundle savedInstanceState) {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean isNextInit = prefs.getBoolean(MainActivity.PREFS_OPEN_APP, false);
+        boolean isNextInit = prefs.getBoolean(OldMainActivity.PREFS_OPEN_APP, false);
 
         // Add your slide's fragments here.
         // AppIntro will automatically generate the dots indicator and buttons.
