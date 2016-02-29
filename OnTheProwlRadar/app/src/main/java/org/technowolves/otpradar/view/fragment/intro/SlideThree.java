@@ -19,7 +19,7 @@ import org.technowolves.otpradar.view.activity.SettingsActivity;
 
 public class SlideThree extends Fragment {
 
-    private OnFragmentReturn mListener;
+    //private OnFragmentReturn mListener;
     private EditText mNumber;
     private EditText mName;
     private Spinner mSpinner;
@@ -40,7 +40,7 @@ public class SlideThree extends Fragment {
         return rootView;
     }
 
-    @Override
+    /*@Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
@@ -50,17 +50,17 @@ public class SlideThree extends Fragment {
             throw new ClassCastException(context.toString()
                     + " must implement onFragmentReturn");
         }
-    }
+    }*/
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mListener.storeSeasonPref(mNumber.getText().toString(), mName.getText().toString(),
-                mSpinner.getSelectedItemPosition());
+        /*mListener.storeSeasonPref(mNumber.getText().toString(), mName.getText().toString(),
+                mSpinner.getSelectedItemPosition());*/
     }
 
-    public interface OnFragmentReturn {
+    /*public interface OnFragmentReturn {
         void storeSeasonPref(String number, String name, int spnIndex);
-    }
+    }*/
 
 }

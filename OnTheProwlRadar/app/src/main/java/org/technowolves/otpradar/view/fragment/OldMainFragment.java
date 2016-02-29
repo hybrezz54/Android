@@ -24,9 +24,6 @@ import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.presenter.TeamCursorAdapter;
 import org.technowolves.otpradar.presenter.TeamListItem;
 
-import io.codetail.animation.SupportAnimator;
-import io.codetail.animation.ViewAnimationUtils;
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -191,11 +188,11 @@ public class OldMainFragment extends ListFragment {
         int finalRadius = Math.max(mToolbar.getWidth(), mToolbar.getHeight());
 
         // create the animator for this view (the start radius is zero)
-        SupportAnimator anim = ViewAnimationUtils.createCircularReveal(mToolbar, cx, cy, 0, finalRadius);
+        /*SupportAnimator anim = ViewAnimationUtils.createCircularReveal(mToolbar, cx, cy, 0, finalRadius);
 
         // make the view visible and start the animation
         mToolbar.setVisibility(View.VISIBLE);
-        anim.start();
+        anim.start();*/
 
     }
 
@@ -208,7 +205,7 @@ public class OldMainFragment extends ListFragment {
         int initialRadius = mFab.getWidth();
 
         // create the animator for this view (the final radius is zero)
-        SupportAnimator anim = ViewAnimationUtils.createCircularReveal(mToolbar, cx, cy, initialRadius, 0);
+        /*SupportAnimator anim = ViewAnimationUtils.createCircularReveal(mToolbar, cx, cy, initialRadius, 0);
 
         // make the view invisible when the animation is done
         anim.addListener(new SupportAnimator.AnimatorListener() {
@@ -237,7 +234,7 @@ public class OldMainFragment extends ListFragment {
 
         mFab.startAnimation(AnimationUtils.loadAnimation(mActivity,
                 R.anim.popin_bottom));
-        mFab.setVisibility(View.VISIBLE);
+        mFab.setVisibility(View.VISIBLE);*/
 
     }
 

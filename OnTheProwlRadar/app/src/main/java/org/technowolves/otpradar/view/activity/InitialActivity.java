@@ -4,14 +4,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
+import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntro2;
 
 import org.technowolves.otpradar.R;
 import org.technowolves.otpradar.view.fragment.intro.NewSlide;
 import org.technowolves.otpradar.view.fragment.intro.SlideThree;
 
-public class InitialActivity extends AppIntro2
-                                implements SlideThree.OnFragmentReturn{
+public class InitialActivity extends AppIntro {
 
     private Boolean isDonePressed = false;
 
@@ -36,19 +36,27 @@ public class InitialActivity extends AppIntro2
         setFlowAnimation();
 
         // You can also hide Skip button
-        //showSkipButton(false);
+        showSkipButton(false);
 
     }
 
-    /*@Override
+    @Override
     public void onSkipPressed() {
-        this.finish();
-    }*/
+        finish();
+    }
 
     @Override
     public void onDonePressed() {
         isDonePressed = true;
-        this.finish();
+        finish();
+    }
+
+    @Override
+    public void onNextPressed() {
+    }
+
+    @Override
+    public void onSlideChanged() {
     }
 
     public void storeSeasonPref(String number, String name, int spnIndex) {
