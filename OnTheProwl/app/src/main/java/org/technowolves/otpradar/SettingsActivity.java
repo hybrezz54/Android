@@ -1,6 +1,5 @@
 package org.technowolves.otpradar;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
@@ -11,13 +10,12 @@ import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -95,19 +93,37 @@ public class SettingsActivity extends AppCompatActivity implements Callback<List
     }
 
     public void getEvents() {
-        SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(this);
-        int idx = Integer.parseInt(manager.getString(FRC_SEASON, "0"));
-        String year = getResources().getStringArray(R.array.season_names)[idx];
-        year = year.substring(0, 4);
+        if (!addTeamsFromStorage()) {
+            SharedPreferences manager = PreferenceManager.getDefaultSharedPreferences(this);
+            int idx = Integer.parseInt(manager.getString(FRC_SEASON, "0"));
+            String year = getResources().getStringArray(R.array.season_names)[idx];
+            year = year.substring(0, 4);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.thebluealliance.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://www.thebluealliance.com/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-        BlueAllianceService service = retrofit.create(BlueAllianceService.class);
-        Call<List<Event>> call = service.listEvents(year, "hybrezz54:ontheprowl:1");
-        call.enqueue(this);
+            BlueAllianceService service = retrofit.create(BlueAllianceService.class);
+            Call<List<Event>> call = service.listEvents(year, "hybrezz54:ontheprowl:1");
+            call.enqueue(this);
+        }
+    }
+
+    private boolean addTeamsFromStorage() {
+        boolean fileExists = IoUtils.isFileExisting(this, MainFragment.TBA_DATA_DIR, getFileName());
+
+        if (fileExists) {
+            Gson gson = new Gson();
+            String json = IoUtils.readStringFromFile(this, MainFragment.TBA_DATA_DIR, getFileName());
+            List<Event> events = gson.fromJson(json, new TypeToken<List<Event>>() {}.getType());
+            EventAdapter adapter = (EventAdapter) eventInfo.getAdapter();
+            adapter.clear();
+            adapter.addAll(events);
+            adapter.notifyDataSetChanged();
+        }
+
+        return fileExists;
     }
 
     private String getFileName() {

@@ -65,6 +65,7 @@ public class IoUtils {
      */
     public static String readStringFromFile(Context context, String fileDir, String fileName) {
         String string = "";
+        String line;
 
         try {
             String path = getStorageDir(context, fileDir).getPath()
@@ -72,7 +73,9 @@ public class IoUtils {
 
             FileInputStream fin = new FileInputStream(path);
             BufferedReader reader = new BufferedReader(new InputStreamReader(fin));
-            string = reader.toString();
+            while ((line = reader.readLine()) != null) {
+                string += line;
+            }
             fin.close();
         } catch (Exception e) {
             e.printStackTrace();

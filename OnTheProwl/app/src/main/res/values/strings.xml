@@ -7,4 +7,7 @@
     <string name="tab_two">TEAMS</string>
     <string name="tab_three">TEAMS</string>
     <string name="event_hint">Event Name</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

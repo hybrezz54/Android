@@ -8,13 +8,10 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,6 +48,8 @@ public class MainFragment extends ListFragment implements Callback<List<Team>>,
         TeamAdapter adapter = new TeamAdapter(getContext(), new ArrayList<Team>());
         setListAdapter(adapter);
 
+        addTeamsFromStorage();
+
         return view;
     }
 
@@ -76,16 +75,7 @@ public class MainFragment extends ListFragment implements Callback<List<Team>>,
 
     @Override
     public void onButtonPressed() {
-        if (IoUtils.isFileExisting(getContext(), TBA_DATA_DIR, getFileName())) {
-            Gson gson = new Gson();
-            String json = IoUtils.readStringFromFile(getContext(), TBA_DATA_DIR, getFileName());
-            List<Team> teams = gson.fromJson(json, new TypeToken<List<Team>>() {}.getType());
-
-            ArrayAdapter<Team> adapter = (ArrayAdapter<Team>) getListAdapter();
-            adapter.clear();
-            adapter.addAll(teams);
-            adapter.notifyDataSetChanged();
-        } else {
+        if (!addTeamsFromStorage()) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("https://www.thebluealliance.com/")
                     .addConverterFactory(GsonConverterFactory.create())
@@ -102,7 +92,7 @@ public class MainFragment extends ListFragment implements Callback<List<Team>>,
 
     @Override
     public void onResponse(Call<List<Team>> call, Response<List<Team>> response) {
-        ArrayAdapter<Team> adapter = (ArrayAdapter<Team>) getListAdapter();
+        TeamAdapter adapter = (TeamAdapter) getListAdapter();
         adapter.clear();
 
         List<Team> teams = (List) response.body();
@@ -128,6 +118,23 @@ public class MainFragment extends ListFragment implements Callback<List<Team>>,
     public void onFailure(Call<List<Team>> call, Throwable t) {
         mFragListener.onCreateSnackbar(getListView(),
                 "Failed to download teams from The Blue Alliance.");
+    }
+
+    private boolean addTeamsFromStorage() {
+        boolean fileExists = IoUtils.isFileExisting(getContext(), TBA_DATA_DIR, getFileName());
+
+        if (fileExists) {
+            Gson gson = new Gson();
+            String json = IoUtils.readStringFromFile(getContext(), TBA_DATA_DIR, getFileName());
+            List<Team> teams = gson.fromJson(json, new TypeToken<List<Team>>() {
+            }.getType());
+            TeamAdapter adapter = (TeamAdapter) getListAdapter();
+            adapter.clear();
+            adapter.addAll(teams);
+            adapter.notifyDataSetChanged();
+        }
+
+        return fileExists;
     }
 
     private String getFileName() {

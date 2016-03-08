@@ -25,6 +25,11 @@ public class Team {
     @Expose
     String rookie;
 
+    public Team(String number, String name) {
+        this.number = number;
+        this.name = name;
+    }
+
     public String getNumber() {
         return number;
     }
