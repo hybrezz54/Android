@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
+import org.technowolves.otpradar.model.Event;
+
 import java.util.ArrayList;
 import java.util.List;
 

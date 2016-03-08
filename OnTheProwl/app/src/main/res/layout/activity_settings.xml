@@ -7,10 +7,10 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="org.technowolves.otpradar.SettingsActivity">
+    tools:context=".view.activity.SettingsActivity">
 
     <fragment
-        android:name="org.technowolves.otpradar.SettingsActivity$SettingsFragment"
+        android:name="org.technowolves.otpradar.view.activity.SettingsActivity$SettingsFragment"
         android:tag="SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

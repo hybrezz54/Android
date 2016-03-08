@@ -4,9 +4,24 @@
     <string name="action_help">Help</string>
 
     <string name="tab_one">TEAMS</string>
-    <string name="tab_two">TEAMS</string>
-    <string name="tab_three">TEAMS</string>
+    <string name="tab_two">TEAM INFO</string>
+    <string name="tab_three">ROBOT SPECS</string>
     <string name="event_hint">Event Name</string>
+
+    <string name="header_team_info_one">- TEAM INFO -</string>
+    <string name="header_team_info_two">- DRIVE SQUAD -</string>
+    <string name="header_team_info_three">- HUMAN PLAYER -</string>
+    <string name="team_name">Team Name</string>
+    <string name="team_number">Team Number</string>
+    <string name="team_location">Team Location</string>
+    <string name="total_years">Total Years</string>
+    <string name="notes">Notes</string>
+    <string name="coach_mentor">Is coach a mentor?</string>
+    <string name="driver_rate">Driver Experience:</string>
+    <string name="hp_rate">Human Player Experience:</string>
+    <string name="hp_question_one">Can load totes?</string>
+    <string name="hp_question_two">Can load litter?</string>
+    <string name="hp_question_three">Can throw litter?</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

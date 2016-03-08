@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import org.technowolves.otpradar.model.Team;
+
 import java.util.ArrayList;
 
 public class TeamAdapter extends ArrayAdapter<Team> {
