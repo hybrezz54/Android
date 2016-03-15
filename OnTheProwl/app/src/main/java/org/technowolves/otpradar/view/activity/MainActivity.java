@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +21,8 @@ import android.view.MenuItem;
 import org.technowolves.otpradar.ActivityInteractionListener;
 import org.technowolves.otpradar.FragmentInteractionListener;
 import org.technowolves.otpradar.R;
+import org.technowolves.otpradar.model.Robot2016;
+import org.technowolves.otpradar.model.Team;
 import org.technowolves.otpradar.view.fragment.MainFragment;
 import org.technowolves.otpradar.view.fragment.RobotFragment;
 import org.technowolves.otpradar.view.fragment.TeamFragment;
@@ -34,6 +37,10 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     public static final String PREFS_OPEN_APP = "APP_OPEN_TIME";
 
     private ActivityInteractionListener mListener;
+    private Team mTeam;
+
+    private TeamFragment teamFragment;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +57,8 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        setupViewPager(viewPager);
+        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        setupViewPager();
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -87,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                     mListener.onButtonPressed();
             }
         });
+
     }
 
     @Override
@@ -123,18 +131,34 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                 .show();
     }
 
-    private void setupViewPager(ViewPager viewPager) {
+    @Override
+    public void onListItemClick(Team team) {
+        mTeam = team;
+
+        if (teamFragment != null)
+            teamFragment.onListItemClick(team);
+    }
+
+    @Override
+    public Team getSelectedTeam() {
+        return mTeam;
+    }
+
+    private void setupViewPager() {
+        teamFragment = TeamFragment.newInstance();
+
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(MainFragment.newInstance(), getString(R.string.tab_one));
-        adapter.addFragment(TeamFragment.newInstance(), getString(R.string.tab_two));
+        adapter.addFragment(teamFragment, getString(R.string.tab_two));
         adapter.addFragment(RobotFragment.newInstance(), getString(R.string.tab_three));
+        adapter.instantiateItem(viewPager, 2);
         viewPager.setAdapter(adapter);
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {
 
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+        private List<Fragment> mFragmentList = new ArrayList<>();
+        private List<String> mFragmentTitleList = new ArrayList<>();
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
@@ -146,8 +170,13 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         }
 
         @Override
+        public int getItemPosition(Object object) {
+            return PagerAdapter.POSITION_NONE;
+        }
+
+        @Override
         public int getCount() {
-            return mFragmentList.size();
+            return 3;
         }
 
         @Override
@@ -158,6 +187,10 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         public void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
+        }
+
+        private String makeFragmentName(int viewId, long id) {
+            return "android:switcher:" + viewId + ":" + id;
         }
 
     }

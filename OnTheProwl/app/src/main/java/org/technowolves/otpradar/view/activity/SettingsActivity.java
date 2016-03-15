@@ -83,9 +83,11 @@ public class SettingsActivity extends AppCompatActivity implements Callback<List
             }
         });
 
-        EventAdapter adapter = new EventAdapter(this,
-                android.R.layout.simple_dropdown_item_1line, events);
-        eventInfo.setAdapter(adapter);
+        if (eventInfo != null) {
+            EventAdapter adapter = new EventAdapter(this,
+                    android.R.layout.simple_dropdown_item_1line, events);
+            eventInfo.setAdapter(adapter);
+        }
 
         if (IoUtils.isExternalStorageAvailable() || IoUtils.isExternalStorageReadOnly()) {
             String json = new Gson().toJson(events);
@@ -120,14 +122,13 @@ public class SettingsActivity extends AppCompatActivity implements Callback<List
     private boolean addTeamsFromStorage() {
         boolean fileExists = IoUtils.isFileExisting(this, SharedMap.TBA_DATA_DIR, getFileName());
 
-        if (fileExists) {
+        if (fileExists && eventInfo != null) {
             Gson gson = new Gson();
             String json = IoUtils.readStringFromFile(this, SharedMap.TBA_DATA_DIR, getFileName());
             List<Event> events = gson.fromJson(json, new TypeToken<List<Event>>() {}.getType());
-            EventAdapter adapter = (EventAdapter) eventInfo.getAdapter();
-            adapter.clear();
-            adapter.addAll(events);
-            adapter.notifyDataSetChanged();
+            EventAdapter adapter = new EventAdapter(this,
+                    android.R.layout.simple_dropdown_item_1line, events);
+            eventInfo.setAdapter(adapter);
         }
 
         return fileExists;

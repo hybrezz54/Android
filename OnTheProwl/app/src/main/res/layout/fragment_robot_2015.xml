@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragment.TeamFragment"
-    android:layout_margin="@dimen/activity_margin">
+    android:layout_margin="@dimen/activity_margin"
+    tools:context=".view.fragment.RobotFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,8 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="bottom">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -26,7 +25,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:paddingTop="16dp"
-                    android:text="@string/header_team_info_one"
+                    android:text="- ROBOT SPECS -"
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:fontFamily="sans-serif-light"/>
@@ -37,22 +36,31 @@
                     android:background="@color/colorAccent"
                     android:layout_marginBottom="5dp"/>
 
-                <EditText
-                    android:id="@+id/website"
+                <TextView
+                    android:id="@+id/txtSeasonInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/team_site"
+                    android:gravity="center"
+                    android:layout_margin="5dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-light"/>
+
+                <EditText
+                    android:id="@+id/robotName2015"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Robot Name"
                     android:gravity="end"
                     android:layout_margin="5dp"
                     android:fontFamily="sans-serif-light"/>
 
-                <EditText
-                    android:id="@+id/location"
+                <Spinner
+                    android:id="@+id/robotStyle2015"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/team_location"
-                    android:gravity="start"
                     android:layout_margin="5dp"
+                    android:spinnerMode="dropdown"
                     android:fontFamily="sans-serif-light"/>
 
                 <LinearLayout
@@ -61,40 +69,30 @@
                     android:orientation="horizontal">
 
                     <EditText
+                        android:id="@+id/robotHeight2015"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:id="@+id/rookieYr"
-                        android:hint="@string/rookie_year"
+                        android:hint="Height (in.)"
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
-                        android:maxLength="4"
+                        android:maxLength="2"
                         android:inputType="number"
                         android:layout_margin="5dp"
                         android:fontFamily="sans-serif-light"/>
 
                     <EditText
-                        android:id="@+id/numCompetition"
-                        android:hint="@string/num_competition"
+                        android:id="@+id/robotWeight2015"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:maxLength="1"
                         android:layout_weight="1"
-                        android:layout_margin="5dp"
+                        android:hint="Weight (lbs.)"
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
-                        android:fontFamily="sans-serif-light"/>
+                        android:inputType="number"
+                        android:maxLength="3"/>
 
                 </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="Awards"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:fontFamily="sans-serif-light"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -102,69 +100,36 @@
                     android:orientation="horizontal">
 
                     <Spinner
+                        android:id="@+id/driveTrain2015"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:id="@+id/award1"
                         android:layout_margin="5dp"
                         android:spinnerMode="dropdown"
-                        android:fontFamily="sans-serif-light"/>
-
-                    <EditText
-                        android:id="@+id/year1"
-                        android:hint="@string/year"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:maxLength="4"
-                        android:layout_margin="5dp"
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:fontFamily="sans-serif-light"/>
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
 
                     <Spinner
+                        android:id="@+id/wheelType2015"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:id="@+id/award2"
                         android:layout_margin="5dp"
                         android:spinnerMode="dropdown"
-                        android:fontFamily="sans-serif-light"/>
-
-                    <EditText
-                        android:id="@+id/year2"
-                        android:hint="@string/year"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:maxLength="4"
-                        android:layout_margin="5dp"
                         android:gravity="center"
                         android:layout_gravity="center_vertical"
                         android:fontFamily="sans-serif-light"/>
 
                 </LinearLayout>
 
-                <EditText
+                <Spinner
+                    android:id="@+id/spnStrafe2015"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
-                    android:ems="10"
-                    android:id="@+id/notes"
-                    android:hint="@string/notes"
                     android:layout_margin="5dp"
-                    android:minLines="7"
-                    android:maxLines="9"
-                    android:gravity="end|center"
-                    android:textSize="16sp"
+                    android:spinnerMode="dropdown"
+                    android:layout_gravity="center_vertical"
                     android:fontFamily="sans-serif-light"/>
 
             </LinearLayout>
@@ -179,7 +144,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:paddingTop="16dp"
-                    android:text="@string/header_team_info_two"
+                    android:text="- AUTONOMOUS -"
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:fontFamily="sans-serif-light"/>
@@ -190,28 +155,31 @@
                     android:background="@color/colorAccent"
                     android:layout_marginBottom="5dp"/>
 
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <Spinner
+                        android:id="@+id/moveTote2015"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="5dp"
-                        android:text="@string/driver_rate"
-                        android:textSize="20sp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
+                        android:spinnerMode="dropdown"
+                        android:layout_gravity="center_vertical"
                         android:fontFamily="sans-serif-light"/>
 
-                    <RatingBar
-                        android:id="@+id/driverExp"
-                        android:layout_width="wrap_content"
+                    <Spinner
+                        android:id="@+id/moveContainer2015"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:layout_margin="5dp"
-                        android:numStars="5"/>
+                        android:spinnerMode="dropdown"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif-light"/>
 
                 </LinearLayout>
 
@@ -220,25 +188,68 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <Spinner
+                        android:id="@+id/acqTote2015"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_margin="5dp"
-                        android:text="@string/hp_rate"
-                        android:textSize="18.5sp"
-                        android:layout_gravity="center"
-                        android:gravity="center"
+                        android:spinnerMode="dropdown"
+                        android:layout_gravity="center_vertical"
                         android:fontFamily="sans-serif-light"/>
 
-                    <RatingBar
-                        android:id="@+id/humanExp"
-                        android:layout_width="wrap_content"
+                    <Spinner
+                        android:id="@+id/acqContainer2015"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:layout_margin="5dp"
-                        android:numStars="5"/>
+                        android:spinnerMode="dropdown"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif-light"/>
 
                 </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/startingPos2015"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:spinnerMode="dropdown"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif-light"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="16dp"
+                    android:text="- TELEOP -"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-light"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/colorAccent"
+                    android:layout_marginBottom="5dp"/>
+
+                <EditText
+                    android:id="@+id/maxTote2015"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:hint="Max Tote Capacity"
+                    android:inputType="number"
+                    android:maxLength="2" />
 
             </LinearLayout>
 

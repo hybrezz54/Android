@@ -74,7 +74,7 @@ public class IoUtils {
             FileInputStream fin = new FileInputStream(path);
             BufferedReader reader = new BufferedReader(new InputStreamReader(fin));
             while ((line = reader.readLine()) != null) {
-                string += line;
+                string += line + System.getProperty("line.separator");
             }
             fin.close();
         } catch (Exception e) {

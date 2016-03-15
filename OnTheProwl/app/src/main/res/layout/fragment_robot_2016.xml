@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_margin"
+    tools:context=".view.fragment.RobotFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/robotNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:fontFamily="sans-serif-light"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="16dp"
+                    android:text="@string/robot_header_one"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-light"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/colorAccent"
+                    android:layout_marginBottom="5dp"/>
+
+
+                <EditText
+                    android:id="@+id/robotName2016"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/robot_name"
+                    android:gravity="end"
+                    android:layout_margin="5dp"
+                    android:fontFamily="sans-serif-light"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/robotHeight2016"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/height"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
+                        android:maxLength="2"
+                        android:inputType="number"
+                        android:layout_margin="5dp"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <EditText
+                        android:id="@+id/robotWeight2016"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/weight"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
+                        android:inputType="number"
+                        android:maxLength="3"/>
+
+                </LinearLayout>
+
+                <Spinner
+                    android:id="@+id/robotStyle2016"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:spinnerMode="dropdown"
+                    android:fontFamily="sans-serif-light"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Spinner
+                        android:id="@+id/driveTrain2016"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:spinnerMode="dropdown"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <Spinner
+                        android:id="@+id/wheels2016"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:spinnerMode="dropdown"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="sans-serif-light"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="16dp"
+                    android:text="@string/robot_header_two"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-light"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/colorAccent"
+                    android:layout_marginBottom="5dp"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/shootBall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/shoot_ball"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/visionTrack"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/track_target"
+                        android:fontFamily="sans-serif-light"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/defense"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:fontFamily="sans-serif-light"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/portcullisAuto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/portcullis"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/chevalDeFriseAuto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/cheval_de_frise"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/drawbridgeAuto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/drawbridge"
+                        android:fontFamily="sans-serif-light"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/moatAuto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/moat"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/rampartsAuto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/ramparts"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/sallyportAuto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/sallyport"
+                        android:fontFamily="sans-serif-light"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/rockWallAuto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/rock_wall"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/roughTerrainAuto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/rough_terrain"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/lowbarAuto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/low_bar"
+                        android:fontFamily="sans-serif-light"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:paddingTop="16dp"
+                    android:text="@string/header_robot_three"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-light"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/colorAccent"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/defense"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:fontFamily="sans-serif-light"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/portcullis"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/portcullis"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/chevalDeFrise"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/cheval_de_frise"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/drawbridge"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/drawbridge"
+                        android:fontFamily="sans-serif-light"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/moat"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/moat"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/ramparts"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/ramparts"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/sallyport"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/sallyport"
+                        android:fontFamily="sans-serif-light"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/rockWall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/rock_wall"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/roughTerrain"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/rough_terrain"
+                        android:fontFamily="sans-serif-light"/>
+
+                    <CheckBox
+                        android:id="@+id/lowbar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/low_bar"
+                        android:fontFamily="sans-serif-light"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>
